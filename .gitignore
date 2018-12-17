@@ -2,3 +2,13 @@
 node_modules/
 .vs-code/
 *.log
+*.exe
+
+/.idea/
+/*.iml
+
+/vendor/
+
+/.env
+/.env.local
+/.env.*.local
