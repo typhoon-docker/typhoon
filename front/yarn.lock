@@ -1271,7 +1271,7 @@ chardet@^0.7.0:
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
-chokidar@^2.0.3:
+chokidar@^2.0.0, chokidar@^2.0.3:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-2.0.4.tgz#356ff4e2b0e8e43e322d18a372460bbcf3accd26"
   integrity sha512-z9n7yt9rOvIJrMhvDtDictKrkFHeihkNl6uWMmZlmL6tJtX9Cs+87oK+teBx+JIgzvbX3yZHT3eF8vpbDxHJXQ==
@@ -5198,6 +5198,13 @@ safer-eval@^1.2.3:
   integrity sha512-nDwXOhiheoaBT6op02n8wzsshjLXHhh4YAeqsDEoVmy1k2+lGv/ENLsGaWqkaKArUkUx48VO12/ZPa3sI/OEqQ==
   dependencies:
     clones "^1.1.0"
+
+sass@^1.15.3:
+  version "1.15.3"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.15.3.tgz#12c8c62f707a9cd28856e9463914fcb5a7f556c7"
+  integrity sha512-9e6zdkLEjMAX/zXUWKs9GreDLFYozFOEu4gMZBZpkp+AiQgaofimqGZm9qMhS5V+4V2OWBapnM5xoJn2Rw9pQg==
+  dependencies:
+    chokidar "^2.0.0"
 
 sax@^1.2.4, sax@~1.2.1, sax@~1.2.4:
   version "1.2.4"
