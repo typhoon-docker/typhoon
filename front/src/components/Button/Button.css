@@ -4,4 +4,7 @@
   color: white;
   padding: 1em;
   font-size: inherit;
+  &:hover {
+    cursor: pointer;
+  }
 }
