@@ -1,6 +1,7 @@
 {
   "modules": true,
   "plugins": {
+    "postcss-nested" : {},
     "autoprefixer": {
       "grid": true
     }

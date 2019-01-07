@@ -1,0 +1,12 @@
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
+.img {
+  align-self: center;
+}
+
+.title {
+  font-size: 2em;
+}
