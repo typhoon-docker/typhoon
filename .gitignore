@@ -1,14 +1,18 @@
 .DS_Store
 node_modules/
 .vs-code/
+.vscode/
 *.log
 *.exe
 
-/.idea/
-/*.iml
+.idea/
+*.iml
 
-/vendor/
+vendor/
 
-/.env
-/.env.local
-/.env.*.local
+.env
+.env.local
+.env.*.local
+
+.cache/
+dist/

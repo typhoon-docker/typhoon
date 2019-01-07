@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-react": "^7.0.0",
+    "eslint": "^5.10.0",
+    "eslint-config-linkcs-react": "^0.1.5",
+    "parcel-bundler": "^1.10.3"
+  },
+  "dependencies": {
+    "@reach/router": "^1.2.1",
+    "autoprefixer": "^9.4.4",
+    "postcss-modules": "^1.4.1",
+    "react": "^16.7.0-alpha.2",
+    "react-dom": "^16.7.0-alpha.2"
+  }
+}
