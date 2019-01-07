@@ -1,0 +1,16 @@
+.underline {
+  --color: var(--text);
+  border-bottom: 1px;
+  text-decoration: none;
+  color: var(--color);
+  border-bottom-color: var(--color);
+  transition: color 150ms ease-in-out, border-bottom-color 150ms ease-in-out;
+  &:hover {
+    --color: pink !important;
+  }
+}
+
+.bold {
+  font-weight: bold;
+  border-bottom: 2px;
+}
