@@ -3,6 +3,7 @@
 $colorsTheme: (
   text: #0e1e25,
   primary: #53ccfc,
+  secondary: #ffc0cb,
   viarezo: #4f62c1
 );
 
@@ -23,7 +24,7 @@ $colorsTheme: (
 body {
   font-size: 16px;
   font-family: "Roboto", sans-serif;
-  max-width: 680px;
+  max-width: 700px;
   margin: 2em auto;
   color: var(--text);
 }

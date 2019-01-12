@@ -1,1 +1,1 @@
-export const isConnected = () => false;
+export const isConnected = () => true;

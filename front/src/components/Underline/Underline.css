@@ -6,7 +6,7 @@
   border-bottom-color: var(--color);
   transition: color 150ms ease-in-out, border-bottom-color 150ms ease-in-out;
   &:hover {
-    --color: pink !important;
+    --color: var(--secondary) !important;
   }
 }
 

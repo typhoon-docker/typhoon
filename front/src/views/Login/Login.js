@@ -17,7 +17,7 @@ const Login = () => {
         internet.
       </p>
       <p>
-        <Link color="primary" bold href="https://viarezo.fr/" title="Connecte toi">
+        <Link color="primary" bold href="/" title="Connecte toi">
           Se connecter
         </Link>{" "}
         avec mon compte{" "}
