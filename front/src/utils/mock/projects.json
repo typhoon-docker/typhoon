@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "Typhoon",
+    "repository_url": "https://github.com/typhoon-docker/typhoon.git",
+    "template_id": "go"
+  },
+  {
+    "id": 2,
+    "name": "Rafale",
+    "repository_url": "https://gitlab.viarezo.fr/via/admin-rafale.git",
+    "template_id": "php"
+  }
+]
