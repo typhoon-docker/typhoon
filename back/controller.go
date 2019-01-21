@@ -17,6 +17,7 @@ func test() {
 
 	// Create a session which maintains a pool of socket connections
 	// to our MongoDB.
+	fmt.Println("test")
 	session, err := mgo.Dial("mongodb://root:example@mongo:27017/")
 	if err != nil {
 		log.Fatalf("CreateSession: %s\n", err)
@@ -26,18 +27,26 @@ func test() {
 	// Optional. Switch the session to a monotonic behavior.
 	session.SetMode(mgo.Monotonic, true)
 
-	c := session.DB("test").C("people")
-	err = c.Insert(&Person{"Ale", "+55 53 8116 9639"},
-		&Person{"Cla", "+55 53 8402 8510"})
+	c := session.DB("test").C("projects")
+	err = c.Insert(
+		&Project{
+			Name:           "sade",
+			RepositoryType: "github",
+		},
+		&Project{
+			Name:           "delthasss",
+			RepositoryType: "github",
+		})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	result := Person{}
-	err = c.Find(bson.M{"name": "Ale"}).One(&result)
+	result := Project{}
+	err = c.Find(bson.M{"name": "sade"}).One(&result)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Phone:", result.Phone)
+	fmt.Println("Project:", result.RepositoryType)
+
 }
