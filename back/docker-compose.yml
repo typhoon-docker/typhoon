@@ -33,3 +33,6 @@ services:
       - mongo
     stdin_open: true
     tty: true
+    command: watcher server.go
+    volumes:
+      - .:/typhoon
