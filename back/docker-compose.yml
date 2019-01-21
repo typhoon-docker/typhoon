@@ -14,14 +14,14 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - "./mongodb:/data/db"
 
   code:
-    build: .
-    volumes:
-      - .:/go/src/app
-    # command: go run server.go
-    command: watcher server.go
-    working_dir: /go/src/app
+    # use `docker build -t typhoon-go-back .` in this directory to build the image
+    image: typhoon-go-back
+    container_name: typhoon_go_back
+    restart: always
     environment:
       - PORT=3000
       - VIRTUAL_HOST=typhoon-dev.viarezo.fr
@@ -29,5 +29,7 @@ services:
       - "3000:80"
     expose:
       - "3000"
+    depends_on:
+      - mongo
     stdin_open: true
     tty: true
