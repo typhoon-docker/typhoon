@@ -29,7 +29,7 @@ const Underline = ({
   const el = useRef(null);
 
   useEffect(() => {
-    el.current.style.setProperty("--color", `var(--${color})`);
+    el.current.style.setProperty("--color", `rgb(var(--${color}))`);
   });
 
   let className = [underline];

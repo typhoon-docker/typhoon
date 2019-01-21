@@ -4,10 +4,13 @@ import { button } from "./Button.css";
 
 const Button = ({ color, className: cn, style: s, ...props }) => {
   const style = s ? { ...s } : {};
-  style.backgroundColor = `var(--${color || "text"})`;
+  style.backgroundColor = `rgb(var(--${color || "text"}))`;
 
-  const className = cn ? [cn, button] : button;
-  return <button {...props} className={className} style={style} type="button" />;
+  const className = [button];
+  if (cn) {
+    className.push(cn);
+  }
+  return <button {...props} className={className.join(" ")} style={style} type="button" />;
 };
 
 export default Button;

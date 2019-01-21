@@ -1,12 +1,12 @@
 .underline {
-  --color: var(--text);
+  --color: rgb(var(--text));
   border-bottom: 1px;
   text-decoration: none;
-  color: var(--color);
-  border-bottom-color: var(--color);
+  color: rgb(var(--color));
+  border-bottom-color: rgb(var(--color));
   transition: color 150ms ease-in-out, border-bottom-color 150ms ease-in-out;
   &:hover {
-    --color: var(--secondary) !important;
+    --color: rgb(var(--secondary)) !important;
   }
 }
 

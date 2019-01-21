@@ -6,7 +6,7 @@ import Login from "/views/Login/";
 
 import { isConnected } from "/utils/connect";
 
-import "/App.scss";
+import "/App.css";
 
 const App = (
   <Router>
