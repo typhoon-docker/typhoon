@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  mongo:
+    image: mongo
+    container_name: typhoon_back_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - "/typhoon_database:/data/db"
+
+  code:
+    # use `docker build -t typhoon-back-go .` in this directory to build the image
+    image: typhoon-back-go
+    container_name: typhoon_back_go
+    restart: always
+    ports:
+      - "8037:80"
+    expose:
+      - "8037"
+    depends_on:
+      - mongo
+    stdin_open: true
+    tty: true

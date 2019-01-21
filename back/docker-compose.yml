@@ -10,6 +10,7 @@ services:
 
   mongo:
     image: mongo
+    container_name: typhoon_back_mongodb
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
@@ -19,8 +20,8 @@ services:
 
   code:
     # use `docker build -t typhoon-go-back .` in this directory to build the image
-    image: typhoon-go-back
-    container_name: typhoon_go_back
+    image: typhoon-back-go
+    container_name: typhoon_back_go
     restart: always
     environment:
       - PORT=3000

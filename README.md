@@ -1,7 +1,10 @@
 # Commands
 
-- Start in dev1: `docker build -t typhoon-go-back .`
-- Start in dev2: `docker-compose up`
+- Build image: (from `./back`) `docker build -t typhoon-back-go .`
+
+- Start in dev: (from `./back`) `docker-compose up`
+- Start in prod: (from `./back/docker_compose_production`) `docker-compose up`
+
 - Open console: `docker-compose run code bash`
 
 # Env variable
