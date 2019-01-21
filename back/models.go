@@ -2,7 +2,7 @@ package main
 
 import "github.com/globalsign/mgo/bson"
 
-type Project struct {
+type project struct {
 	Id                  bson.ObjectId     `bson:"_id,omitempty" json:"id"`
 	Name                string            `bson:"name" json:"name"`
 	RepositoryType      string            `bson:"repository_type" json:"repository_type"`
@@ -20,20 +20,20 @@ type Project struct {
 	BuildScript         string            `bson:"build_script" json:"build_script,omitempty"`
 	StartScript         string            `bson:"start_script" json:"start_script,omitempty"`
 	StaticFolder        string            `bson:"static_folder" json:"static_folder,omitempty"`
-	Databases           []ProjectDatabase `bson:"databases" json:"databases"`
+	Databases           []projectDatabase `bson:"databases" json:"databases"`
 	Env                 map[string]string `bson:"env" json:"env"`
 	BelongsToId         string            `bson:"belongs_to" json:"-"`
-	BelongsTo           ProjectUser       `bson:"-" json:"belongs_to"`
+	BelongsTo           projectUser       `bson:"-" json:"belongs_to"`
 }
 
-type ProjectDatabase struct {
+type projectDatabase struct {
 	Type        string `bson:"type" json:"type"`
 	EnvDatabase string `bson:"env_db" json:"env_db"`
 	EnvUsername string `bson:"env_user" json:"env_user"`
 	EnvPassword string `bson:"env_password" json:"env_password"`
 }
 
-type ProjectUser struct {
+type projectUser struct {
 	Id        bson.ObjectId `bson:"_id,omitempty" json:"id"`
 	FirstName string        `json:"first_name"`
 	LastName  string        `json:"last_name"`

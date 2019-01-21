@@ -17,7 +17,7 @@
 | .env.{GO_ENV}.local    | ✔️          | ✖️            |
 
 Notably:
-* `GO_ENV` defaults to `development`,
+* `GO_ENV` defaults to `development`, can be `development`, `test`, `production`
 * `.env.local` and `.env.test.local` aren't loaded when `GO_ENV=test` since tests should produce the same results for everyone
 
 # Doc

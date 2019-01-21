@@ -1,0 +1,45 @@
+FROM python:{{DockerImageVersion}}-slim
+
+RUN mkdir /typhoon
+WORKDIR /typhoon
+
+{{if SystemDependencies}}
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    {{range SystemDependencies}}{{.}} {{end}}
+    && rm -rf /var/lib/apt/lists/*
+{{end}}
+
+{{range DependencyFiles}}
+COPY {{.}} /typhoon/{{.}}
+{{end}}
+
+{{if DependencyFiles}}
+RUN pip3 install -U pip --no-cache-dir
+{{range DependencyFiles}}
+RUN pip3 install -r {{.}} --no-cache-dir
+{{end}}
+{{end}}
+
+{{if InstallScript}}
+RUN {{InstallScript}}
+{{end}}
+
+COPY . /typhoon
+
+ENV PYTHONPATH /typhoon
+
+{{range Key, Val := Env}}
+ENV {{Key}} {{Val}}
+{{end}}
+
+{{if BuildScript}}
+RUN {{BuildScript}}
+{{end}}
+
+{{if ExposedPort}}
+EXPOSE {{ExposedPort}}
+{{end}}
+
+{{if StartScript}}
+CMD {{StartScript}}
+{{end}}

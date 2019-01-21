@@ -7,12 +7,14 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/imroc/req"
 	"github.com/labstack/echo"
 )
@@ -34,6 +36,22 @@ type githubTokenResponse struct {
 
 type githubUserResponse struct {
 	Login string `json:"login"`
+}
+
+type viarezoTokenResponse struct {
+	AccessToken  string `json:"access_token"`
+	ExpiresAt    int    `json:"expires_at"`
+	ExpiresIn    int    `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	Scope        string `json:"scope"`
+}
+
+type viarezoUserResponse struct {
+	Id        string `json:"id"`
+	Login     string `json:"login"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
 }
 
 type oauthService struct {
@@ -76,14 +94,6 @@ type githubHook struct {
 			Login string `json:"login"`
 		} `json:"owner"`
 	} `json:"repository"`
-}
-
-type Token struct {
-	AccessToken  string `json:"access_token"`
-	ExpiresAt    int    `json:"expires_at"`
-	ExpiresIn    int    `json:"expires_in"`
-	RefreshToken string `json:"refresh_token"`
-	Scope        string `json:"scope"`
 }
 
 func authorizeUrl(oauth string) (string, error) {
@@ -165,14 +175,39 @@ func main() {
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
-		var token Token
-		err = res.ToJSON(&token)
+		var viarezoToken viarezoTokenResponse
+		err = res.ToJSON(&viarezoToken)
 		if err != nil {
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
-		// TODO redirect to front rather than printing token
-		return c.JSONPretty(http.StatusOK, token, "    ")
+
+		res, err = req.Post("https://auth.viarezo.fr/api/user/show/me", req.Header{"Authorization": "Bearer " + viarezoToken.AccessToken})
+		if err != nil {
+			log.Println(err)
+			return c.String(http.StatusInternalServerError, "server error")
+		}
+		var user viarezoUserResponse
+		err = res.ToJSON(&user)
+		if err != nil {
+			log.Println(err)
+			return c.String(http.StatusInternalServerError, "server error")
+		}
+
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"user": map[string]string{
+				"id":         user.Id,
+				"login":      user.Login,
+				"first_name": user.FirstName,
+				"last_name":  user.LastName,
+				"email":      user.Email,
+				"scope":      "user", // TODO admin if in an admin table
+			},
+		})
+		tokenString, err := token.SignedString(os.Getenv("JWT_SECRET"))
+		values := url.Values{}
+		values.Add("token", tokenString)
+		return c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"/callback/viarezo?"+values.Encode())
 	})
 	e.GET("/callback/github", func(c echo.Context) error {
 		body := req.Param{
@@ -215,9 +250,10 @@ func main() {
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
-		setToken(userReponse.Login, tokenResponse.AccessToken)
-		// TODO redirect to front rather than printing token
-		return c.String(http.StatusOK, tokenResponse.AccessToken)
+
+		values := url.Values{}
+		values.Add("token", tokenResponse.AccessToken)
+		return c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"/callback/github?"+values.Encode())
 	})
 	for k := range oauthServices {
 		e.GET("/login/"+k, func(c echo.Context) error {
