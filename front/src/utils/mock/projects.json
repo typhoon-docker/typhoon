@@ -1,14 +1,50 @@
 [
   {
+    "repository_type": "github",
     "id": 1,
     "name": "Typhoon",
     "repository_url": "https://github.com/typhoon-docker/typhoon.git",
-    "template_id": "go"
+    "template_id": "react",
+    "repository_token": null,
+    "external_domain_names": [],
+    "use_https": true,
+    "docker_image_version": null,
+    "root_folder": "front",
+    "exposed_port": null,
+    "system_dependencies": [],
+    "dependency_files": ["yarn.lock"],
+    "install_script": "yarn --pure-lockfile",
+    "build_script": "yarn build",
+    "start_script": null,
+    "static_folder": "build",
+    "databases": [],
+    "env": {
+      "BACKEND_URL": "https://api.typhoon.viarezo.fr"
+    }
   },
   {
     "id": 2,
     "name": "Rafale",
     "repository_url": "https://gitlab.viarezo.fr/via/admin-rafale.git",
-    "template_id": "php"
+    "template_id": "php",
+    "repository_type": "gitlab",
+    "repository_token": null,
+    "external_domain_names": [],
+    "use_https": true,
+    "docker_image_version": null,
+    "root_folder": null,
+    "exposed_port": 80,
+    "system_dependencies": [],
+    "dependency_files": [],
+    "install_script": null,
+    "build_script": null,
+    "start_script": null,
+    "static_folder": null,
+    "databases": ["mysql"],
+    "env": {
+      "TYPHOON_DB_NAME": "db",
+      "TYPHOON_DB_USERNAME": "user",
+      "TYPHOON_DB_PASSWORD": "password"
+    }
   }
 ]
