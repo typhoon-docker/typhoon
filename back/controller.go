@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/globalsign/mgo"
-	"github.com/mongodb/mongo-go-driver/bson"
+	"github.com/globalsign/mgo/bson"
 )
 
 type Person struct {

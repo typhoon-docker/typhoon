@@ -8,11 +8,16 @@ node_modules/
 .idea/
 *.iml
 
-back/vendor/
-
 .env
 .env.local
 .env.*.local
 
 .cache/
 dist/
+
+/back/back.exe
+/back/back
+/back/main.exe
+/back/main
+/back/typhoon-back.exe
+/back/typhoon-back
