@@ -1,6 +1,0 @@
-{
-  "extends": "linkcs-react",
-  "rules": {
-    "camelcase": "off"
-  }
-}

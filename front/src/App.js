@@ -1,5 +1,5 @@
 import React from "react";
-import { Router, Link } from "@reach/router";
+import { Router } from "@reach/router";
 
 import Home from "/views/Home/";
 import Login from "/views/Login/";

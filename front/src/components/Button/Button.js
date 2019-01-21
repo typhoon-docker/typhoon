@@ -7,7 +7,7 @@ const Button = ({ color, className: cn, style: s, ...props }) => {
   style.backgroundColor = `var(--${color || "text"})`;
 
   const className = cn ? [cn, button] : button;
-  return <button {...props} className={className} style={style} />;
+  return <button {...props} className={className} style={style} type="button" />;
 };
 
 export default Button;

@@ -2307,6 +2307,13 @@ eslint-import-resolver-node@^0.3.1:
     debug "^2.6.9"
     resolve "^1.5.0"
 
+eslint-import-resolver-parcel@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/eslint-import-resolver-parcel/-/eslint-import-resolver-parcel-1.7.0.tgz#e85f780a1b7568a753d8bbc9ea6f1e5eed57ef56"
+  integrity sha512-8J+lyRzUBQBv89lYQ6mZY+g8mMPrCdOiRmbjyIIXBAJD4T2FWehPr8sxJMCGQJEVa9rH8PraUoJ1mnpDfWqgMQ==
+  dependencies:
+    resolve "^1.8.1"
+
 eslint-module-utils@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/eslint-module-utils/-/eslint-module-utils-2.2.0.tgz#b270362cd88b1a48ad308976ce7fa54e98411746"

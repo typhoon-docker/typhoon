@@ -15,7 +15,7 @@ export const getToken = () => decode(getRawToken());
 
 export const hasToken = () => {
   try {
-    const token = getToken();
+    getToken();
     return true;
   } catch (error) {
     return false;
@@ -26,7 +26,7 @@ export const isConnected = () => {
   try {
     const token = getToken();
     if (token.exp < Date.now() / 1000 || !token.exp) {
-      throw "";
+      throw new Error("");
     }
     return true;
   } catch (error) {

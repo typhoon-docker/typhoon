@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 
 const Project = ({ project: { id, name, repository_url, template_id }, onSelect, selected }) => (
   <details key={id} open={selected}>
