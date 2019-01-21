@@ -21,5 +21,8 @@
     "eslint-config-linkcs-react": "^0.2.3",
     "parcel-bundler": "^1.11.0",
     "sass": "^1.15.3"
+  },
+  "installConfig": {
+    "pnp": true
   }
 }
