@@ -8,7 +8,7 @@ node_modules/
 .idea/
 *.iml
 
-vendor/
+back/vendor/
 
 .env
 .env.local
