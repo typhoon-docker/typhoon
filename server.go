@@ -279,5 +279,7 @@ func main() {
 		// addHook(user, repo)
 		return c.String(http.StatusOK, "")
 	})
+	Routes(e)
+	test()
 	e.Logger.Fatal(e.Start(":80"))
 }
