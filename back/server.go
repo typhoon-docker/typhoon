@@ -62,28 +62,6 @@ var (
 	}
 )
 
-func authorizeUrl(oauth string) (string, error) {
-	s, ok := oauthServices[oauth]
-	if !ok {
-		return "", errors.New("oauth: unknown oauth service: " + oauth)
-	}
-
-	r, err := http.NewRequest("GET", s.Authorize, nil)
-	if err != nil {
-		return "", err
-	}
-
-	q := r.URL.Query()
-	for k, v := range s.Parameters {
-		q.Add(k, v)
-	}
-	q.Add("redirect_uri", os.Getenv("BACKEND_URL")+"/callback/"+oauth)
-	q.Add("client_id", oauth+"_CLIENT_ID")
-	r.URL.RawQuery = q.Encode()
-
-	return r.URL.String(), nil
-}
-
 type hook struct {
 	ref      string
 	cloneUrl string
@@ -106,6 +84,28 @@ type Token struct {
 	ExpiresIn    int    `json:"expires_in"`
 	RefreshToken string `json:"refresh_token"`
 	Scope        string `json:"scope"`
+}
+
+func authorizeUrl(oauth string) (string, error) {
+	s, ok := oauthServices[oauth]
+	if !ok {
+		return "", errors.New("oauth: unknown oauth service: " + oauth)
+	}
+
+	r, err := http.NewRequest("GET", s.Authorize, nil)
+	if err != nil {
+		return "", err
+	}
+
+	q := r.URL.Query()
+	for k, v := range s.Parameters {
+		q.Add(k, v)
+	}
+	q.Add("redirect_uri", os.Getenv("BACKEND_URL")+"/callback/"+oauth)
+	q.Add("client_id", oauth+"_CLIENT_ID")
+	r.URL.RawQuery = q.Encode()
+
+	return r.URL.String(), nil
 }
 
 func getToken(user string) string {
@@ -272,11 +272,6 @@ func main() {
 			// TODO push the image to a docker image repository
 			// TODO notify the docker slave to restart the container (and use the latest image)
 		}()
-		return c.String(http.StatusOK, "")
-	})
-	e.POST("/repos", func(c echo.Context) error {
-		// TODO process the repo request, extract the repository url, add a hook using addHook
-		// addHook(user, repo)
 		return c.String(http.StatusOK, "")
 	})
 	Routes(e)
