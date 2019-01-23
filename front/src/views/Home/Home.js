@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import { getProjects } from "/utils/axios";
+import { getProjects } from '/utils/axios';
 
-import Box from "/components/Box/";
-import Project from "/components/Project/";
+import Box from '/components/Box/';
+import Project from '/components/Project/';
+import EmptyProject from '/components/EmptyProject/';
 
-import { title, button } from "./Home.css";
+import { title, button } from './Home.css';
 
 const Home = () => {
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState(null);
   const [selectedProjects, selectProject] = useState({});
 
   useEffect(() => {
@@ -28,14 +29,18 @@ const Home = () => {
           Nouveau projet
         </button>
       </h1>
-      {projects.map(project => (
-        <Project
-          key={project.id}
-          project={project}
-          onSelect={onSelect(project.id)}
-          selected={selectedProjects[project.id]}
-        />
-      ))}
+      {projects && projects.length > 0 ? (
+        projects.map(project => (
+          <Project
+            key={project.id}
+            project={project}
+            onSelect={onSelect(project.id)}
+            selected={selectedProjects[project.id]}
+          />
+        ))
+      ) : (
+        <EmptyProject />
+      )}
     </Box>
   );
 };
