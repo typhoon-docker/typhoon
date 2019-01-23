@@ -17,7 +17,7 @@ export const importMocks = async () => {
   const mockProjects = (await import('./mock/projects.json')).map(project => ({ ...project, owner: mockUser }));
 
   // getProjects
-  mock.onGet('/projects').reply(200, []);
+  mock.onGet('/projects').reply(200, mockProjects);
 
   // getAllProjects
   mock.onGet('/projects?all').reply(200, mockProjects);

@@ -29,18 +29,19 @@ const Home = () => {
           Nouveau projet
         </button>
       </h1>
-      {projects && projects.length > 0 ? (
-        projects.map(project => (
-          <Project
-            key={project.id}
-            project={project}
-            onSelect={onSelect(project.id)}
-            selected={selectedProjects[project.id]}
-          />
-        ))
-      ) : (
-        <EmptyProject />
-      )}
+      {projects &&
+        (projects.length > 0 ? (
+          projects.map(project => (
+            <Project
+              key={project.id}
+              project={project}
+              onSelect={onSelect(project.id)}
+              selected={selectedProjects[project.id]}
+            />
+          ))
+        ) : (
+          <EmptyProject />
+        ))}
     </Box>
   );
 };

@@ -1,8 +1,11 @@
 import React from 'react';
 
+import { content } from './EmptyProject.css';
+
 const EmptyProject = () => (
-  <div>
-    <p>{"Oh non, tu n'as pas encore de projet 😥"}</p>
+  <div className={content}>
+    <p>{"Oh non, tu n'as pas encore créé de projets 😥"}</p>
+    <p>{'Rejoins nous vite 😎'}</p>
   </div>
 );
 
