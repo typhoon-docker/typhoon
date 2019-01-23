@@ -1,9 +1,9 @@
-import { decode, sign } from "jsonwebtoken";
-import { shouldMock } from "./env";
+import { decode, sign } from 'jsonwebtoken';
+import { shouldMock } from './env';
 
 const storage = sessionStorage;
 
-const TOKEN_KEY = "token-hjqbgk-oiqjwe-1-4.0";
+const TOKEN_KEY = 'token-hjqbgk-oiqjwe-1-4.0';
 
 export const saveToken = token => storage.setItem(TOKEN_KEY, token);
 
@@ -26,7 +26,7 @@ export const isConnected = () => {
   try {
     const token = getToken();
     if (token.exp < Date.now() / 1000 || !token.exp) {
-      throw new Error("");
+      throw new Error('');
     }
     return true;
   } catch (error) {
@@ -35,7 +35,7 @@ export const isConnected = () => {
 };
 
 if (shouldMock) {
-  import("./mock/user.json").then(mockUser => {
+  import('./mock/user.json').then(mockUser => {
     const iat = parseInt(Date.now() / 1000, 10) - 60;
     const exp = iat + 3600;
     saveToken(
@@ -43,10 +43,10 @@ if (shouldMock) {
         {
           user: mockUser,
           iat,
-          exp
+          exp,
         },
-        "secret"
-      )
+        'secret',
+      ),
     );
   });
 }

@@ -1,29 +1,29 @@
-import axios from "axios";
+import axios from 'axios';
 
-import { getRawToken } from "./connect";
+import { getRawToken } from './connect';
 
 const config = {
   baseURL: process.env.BACKEND_URL,
-  headers: { Authorization: `Bearer ${getRawToken()}` }
+  headers: { Authorization: `Bearer ${getRawToken()}` },
 };
 
 const client = axios.create(config);
 
 export const importMocks = async () => {
-  const MockAdapter = await import("axios-mock-adapter");
+  const MockAdapter = await import('axios-mock-adapter');
   const mock = new MockAdapter(client);
 
-  const mockUser = await import("./mock/user.json");
-  const mockProjects = (await import("./mock/projects.json")).map(project => ({ ...project, owner: mockUser }));
+  const mockUser = await import('./mock/user.json');
+  const mockProjects = (await import('./mock/projects.json')).map(project => ({ ...project, owner: mockUser }));
 
   // getProjects
-  mock.onGet("/projects").reply(200, mockProjects);
+  mock.onGet('/projects').reply(200, []);
 
   // getAllProjects
-  mock.onGet("/projects?all").reply(200, mockProjects);
+  mock.onGet('/projects?all').reply(200, mockProjects);
 
   // postProject
-  mock.onPost("/projects").reply(({ data }) => {
+  mock.onPost('/projects').reply(({ data }) => {
     const { project } = JSON.parse(data);
     if (!mockProjects.map(({ id }) => id).includes(project.id)) {
       mockProjects.push(project);
@@ -56,9 +56,9 @@ export const importMocks = async () => {
   });
 };
 
-export const getProjects = () => client.get("/projects");
-export const getAllProjects = () => client.get("/projects?all");
-export const postProject = project => client.post("/projects", { project });
+export const getProjects = () => client.get('/projects');
+export const getAllProjects = () => client.get('/projects?all');
+export const postProject = project => client.post('/projects', { project });
 export const getProject = projectID => client.get(`/projects/${projectID}`);
 export const putProject = project => client.put(`/projects/${project.id}`, { project });
 export const deleteProject = project => client.delete(`/projects/${project.id}`);

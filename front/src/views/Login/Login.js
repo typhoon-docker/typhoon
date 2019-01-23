@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 
-import Link from "/components/Link/";
+import Link from '/components/Link/';
 
-import { main, img, title } from "./Login.css";
+import { main, img, title } from './Login.css';
 
-import typhoonImg from "/public/docker-swarm-typhoon.196x196.png";
+import typhoonImg from '/public/docker-swarm-typhoon.196x196.png';
 
 const Login = () => (
   <div className={main}>
@@ -18,8 +18,8 @@ const Login = () => (
     <p>
       <Link color="primary" bold href="/" title="Connecte toi">
         Se connecter
-      </Link>{" "}
-      avec mon compte{" "}
+      </Link>{' '}
+      avec mon compte{' '}
       <Link color="viarezo" href="https://viarezo.fr/" title="Site web de ViaRezo" newTab>
         ViaRezo
       </Link>

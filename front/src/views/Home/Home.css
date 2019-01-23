@@ -31,7 +31,7 @@
   }
 
   &:after {
-    content: "\291A\27F6";
+    content: '\291A\27F6';
     letter-spacing: -0.2em;
     clip-path: inset(0 0 0 0.3em);
     overflow: hidden;

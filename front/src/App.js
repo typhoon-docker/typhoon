@@ -1,12 +1,12 @@
-import React from "react";
-import { Router } from "@reach/router";
+import React from 'react';
+import { Router } from '@reach/router';
 
-import Home from "/views/Home/";
-import Login from "/views/Login/";
+import Home from '/views/Home/';
+import Login from '/views/Login/';
 
-import { isConnected } from "/utils/connect";
+import { isConnected } from '/utils/connect';
 
-import "/App.css";
+import '/App.css';
 
 const App = (
   <Router>
