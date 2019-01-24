@@ -1,0 +1,25 @@
+.wrapper {
+  position: relative;
+  display: block;
+}
+
+.hidden_left,
+.visible_middle,
+.hidden_right {
+  position: absolute;
+  top: 0;
+  transition: transform 1s;
+  width: 100%;
+}
+
+.hidden_left {
+  transform: translateX(-100vw);
+}
+
+.visible_middle {
+  transform: translateX(0);
+}
+
+.hidden_right {
+  transform: translateX(100vw);
+}
