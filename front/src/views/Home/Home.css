@@ -1,5 +1,5 @@
 .title {
-  margin: 0.5em 1.2em;
+  margin: 0.5em;
   font-weight: 300;
   font-size: 1.4em;
   display: flex;
@@ -31,7 +31,7 @@
   }
 
   &:after {
-    content: '\291A\27F6';
+    content: "\291A\27F6";
     letter-spacing: -0.2em;
     clip-path: inset(0 0 0 0.3em);
     overflow: hidden;
