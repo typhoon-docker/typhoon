@@ -16,10 +16,10 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
-      - "./mongodb:/data/db"
+      - mongodata:/data/db
 
   code:
-    # use `docker build -t typhoon-go-back .` in this directory to build the image
+    # use `docker build -t typhoon-back-go .` in this directory to build the image
     image: typhoon-back-go
     container_name: typhoon_back_go
     restart: always
@@ -37,3 +37,6 @@ services:
     command: watcher server.go
     volumes:
       - .:/typhoon
+
+volumes:
+  mongodata:
