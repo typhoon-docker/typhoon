@@ -52,7 +52,7 @@ func Routes(e *echo.Echo) {
 			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
 		}
 		if _, err := dao.FindProjectByName(project.Name); err == nil {
-			return c.String(http.StatusBadRequest, "This project name seems to already exist")
+			return c.String(http.StatusConflict, "This project name seems to already exist")
 		}
 		project.Id = bson.NewObjectId()
 		if err := dao.InsertProject(*project); err != nil {
@@ -67,7 +67,7 @@ func Routes(e *echo.Echo) {
 			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
 		}
 		if _, err := dao.FindProjectByName(project.Name); err == nil {
-			return c.String(http.StatusBadRequest, "This project name seems to already exist")
+			return c.String(http.StatusConflict, "This project name seems to already exist")
 		}
 		if err := dao.UpdateProject(*project); err != nil {
 			return c.String(http.StatusInternalServerError, err.Error())
