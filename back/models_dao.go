@@ -21,6 +21,7 @@ func (d *TyphoonDAO) Connect() {
 		log.Fatal(err)
 	}
 	db = session.DB(d.Database)
+	log.Println("DAO: db connected")
 }
 
 // Find list of project

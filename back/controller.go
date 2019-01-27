@@ -47,5 +47,5 @@ func test() {
 	}
 
 	fmt.Println("project:", result.RepositoryType)
-
+	return
 }
