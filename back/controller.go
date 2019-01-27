@@ -8,13 +8,12 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
-type Person struct {
+type person struct {
 	Name  string
 	Phone string
 }
 
 func test() {
-
 	// Create a session which maintains a pool of socket connections
 	// to our MongoDB.
 	fmt.Println("test")
@@ -47,6 +46,6 @@ func test() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Project:", result.RepositoryType)
+	fmt.Println("project:", result.RepositoryType)
 
 }
