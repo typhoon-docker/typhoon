@@ -52,7 +52,7 @@ func (m *TyphoonDAO) InsertProject(project Project) error {
 
 // Delete an existing project
 func (m *TyphoonDAO) DeleteProject(project Project) error {
-	err := db.C("projects").Remove(&project)
+	err := db.C("projects").RemoveId(project.Id)
 	return err
 }
 

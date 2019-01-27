@@ -51,6 +51,9 @@ func Routes(e *echo.Echo) {
 		if err := c.Bind(project); err != nil {
 			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
 		}
+		if _, err := dao.FindProjectByName(project.Name); err == nil {
+			return c.String(http.StatusBadRequest, "This project name seems to already exist")
+		}
 		project.Id = bson.NewObjectId()
 		if err := dao.InsertProject(*project); err != nil {
 			return c.String(http.StatusInternalServerError, err.Error())
@@ -59,22 +62,25 @@ func Routes(e *echo.Echo) {
 	})
 	e.PUT("/projects", func(c echo.Context) error {
 		// Update project in db (no need to add hook again)
-		var project Project
+		project := new(Project)
 		if err := c.Bind(project); err != nil {
 			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
 		}
-		if err := dao.UpdateProject(project); err != nil {
+		if _, err := dao.FindProjectByName(project.Name); err == nil {
+			return c.String(http.StatusBadRequest, "This project name seems to already exist")
+		}
+		if err := dao.UpdateProject(*project); err != nil {
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
 		return c.JSON(http.StatusOK, project)
 	})
 	e.DELETE("/projects", func(c echo.Context) error {
 		// Delete the project in db
-		var project Project
+		project := new(Project)
 		if err := c.Bind(project); err != nil {
 			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
 		}
-		if err := dao.DeleteProject(project); err != nil {
+		if err := dao.DeleteProject(*project); err != nil {
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
 		return c.JSON(http.StatusOK, project)
