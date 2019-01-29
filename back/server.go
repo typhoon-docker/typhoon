@@ -17,6 +17,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/imroc/req"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 type githubHookCreate struct {
@@ -155,7 +156,15 @@ func addHook(user string, repo string) error {
 
 func main() {
 	loadEnv()
+
+	// echo web server
 	e := echo.New()
+
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	// echo routes
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "")
 	})
@@ -311,6 +320,6 @@ func main() {
 		return c.String(http.StatusOK, "")
 	})
 	Routes(e)
-	test()
+	// test()
 	e.Logger.Fatal(e.Start(":80"))
 }

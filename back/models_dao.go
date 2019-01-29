@@ -31,6 +31,13 @@ func (m *TyphoonDAO) FindAllProjects() ([]Project, error) {
 	return projects, err
 }
 
+// Find list of project for given user id
+func (m *TyphoonDAO) FindProjectsOfUser(uid string) ([]Project, error) {
+	var projects []Project
+	err := db.C("projects").Find(bson.M{"belongs_to": uid}).All(&projects)
+	return projects, err
+}
+
 // Find a project by its id
 func (m *TyphoonDAO) FindProjectById(id string) (Project, error) {
 	var project Project
