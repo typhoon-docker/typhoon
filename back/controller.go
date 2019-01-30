@@ -8,9 +8,8 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
+// Create a session which maintains a pool of socket connections to MongoDB
 func test() {
-	// Create a session which maintains a pool of socket connections
-	// to our MongoDB.
 	fmt.Println("test")
 	session, err := mgo.Dial("mongodb://root:example@mongo:27017/")
 	if err != nil {

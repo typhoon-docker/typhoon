@@ -1,6 +1,9 @@
 package main
 
-import "github.com/globalsign/mgo/bson"
+import (
+	"github.com/dgrijalva/jwt-go"
+	"github.com/globalsign/mgo/bson"
+)
 
 type Project struct {
 	Id                  bson.ObjectId     `bson:"_id,omitempty" json:"id"`
@@ -35,7 +38,21 @@ type ProjectDatabase struct {
 
 type ProjectUser struct {
 	Id        bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	Login     string        `json:"login"`
 	FirstName string        `json:"first_name"`
 	LastName  string        `json:"last_name"`
 	Email     string        `json:"email"`
+	Scope     string        `json:"scope"`
+}
+
+// JwtCustomClaims are custom claims extending default ones.
+type JwtCustomClaims struct {
+	Id        string `json:"id"`
+	Login     string `json:"login"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+	MongoId   string `json:"mongo_id"`
+	Scope     string `json:"scope"`
+	jwt.StandardClaims
 }

@@ -13,8 +13,10 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/globalsign/mgo"
 	"github.com/imroc/req"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -154,8 +156,16 @@ func addHook(user string, repo string) error {
 	return nil
 }
 
+// DAO to access data from the database
+var dao = TyphoonDAO{}
+
 func main() {
 	loadEnv()
+
+	// Create the DAO object and connect it to the mongo server
+	dao.Server = "mongodb://root:example@mongo:27017/"
+	dao.Database = "typhoon"
+	dao.Connect()
 
 	// echo web server
 	e := echo.New()
@@ -168,6 +178,7 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "")
 	})
+
 	e.GET("/callback/viarezo", func(c echo.Context) error {
 		body := req.Param{
 			"grant_type":    "authorization_code",
@@ -203,21 +214,47 @@ func main() {
 			return c.String(http.StatusInternalServerError, "server error")
 		}
 
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-			"user": map[string]string{
-				"id":         user.Id,
-				"login":      user.Login,
-				"first_name": user.FirstName,
-				"last_name":  user.LastName,
-				"email":      user.Email,
-				"scope":      "user", // TODO admin if in an admin table
+		// Get user from mongoDB, create the entry in db if not found. Get its Id and Scope.
+		pUser, err := dao.FindUserByLogin(user.Login)
+		if err == mgo.ErrNotFound {
+			log.Println("New user will be made with login: " + user.Login)
+			tUser := ProjectUser{Login: user.Login, FirstName: user.FirstName, LastName: user.LastName, Email: user.Email, Scope: "user"}
+			nUser, nErr := dao.InsertUser(tUser)
+			if nErr != nil {
+				log.Println("InsertUser error: " + nErr.Error())
+				return c.String(http.StatusInternalServerError, "server error")
+			}
+			pUser = nUser
+		}
+		if err != nil {
+			log.Println("FindUserByLogin error for " + user.Login + ": " + err.Error())
+			return c.String(http.StatusInternalServerError, "server error")
+		}
+		// Now user Id and Scope should have the right value
+
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, JwtCustomClaims{
+			user.Id,
+			user.Login,
+			user.FirstName,
+			user.LastName,
+			user.Email,
+			pUser.Id.Hex(),
+			pUser.Scope,
+			jwt.StandardClaims{
+				ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 			},
 		})
-		tokenString, err := token.SignedString(os.Getenv("JWT_SECRET"))
+
+		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+		if err != nil {
+			log.Println("Error while using SignedString(): " + err.Error())
+			return c.String(http.StatusInternalServerError, "server error")
+		}
 		values := url.Values{}
 		values.Add("token", tokenString)
 		return c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"/callback/viarezo?"+values.Encode())
 	})
+
 	e.GET("/callback/github", func(c echo.Context) error {
 		body := req.Param{
 			"code":          c.QueryParam("code"),
@@ -274,6 +311,7 @@ func main() {
 			return c.Redirect(http.StatusTemporaryRedirect, u)
 		})
 	}
+
 	e.POST("/hook", func(c echo.Context) error {
 		func() {
 			var h hook
@@ -319,7 +357,8 @@ func main() {
 		}()
 		return c.String(http.StatusOK, "")
 	})
-	Routes(e)
+
+	Routes(e, dao)
 	// test()
 	e.Logger.Fatal(e.Start(":80"))
 }
