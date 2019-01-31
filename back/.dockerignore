@@ -3,5 +3,6 @@
 
 .idea/
 
-vendor/
+bin/
 mongodb/
+vendor/

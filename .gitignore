@@ -17,6 +17,8 @@ dist/
 
 /back/vendor
 /back/mongodb
+/back/bin
+/back/src/golang.org
 /back/back.exe
 /back/back
 /back/main.exe
