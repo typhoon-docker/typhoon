@@ -10,11 +10,20 @@ node_modules/
 .idea/
 *.iml
 
-vendor/
-
 .env
 .env.local
 .env.*.local
 
 .cache/
 dist/
+
+/back/vendor
+/back/mongodb
+/back/bin
+/back/src/golang.org
+/back/back.exe
+/back/back
+/back/main.exe
+/back/main
+/back/typhoon-back.exe
+/back/typhoon-back

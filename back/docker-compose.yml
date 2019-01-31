@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  mongo:
+    image: mongo
+    container_name: typhoon_back_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongodata:/data/db
+
+  code:
+    # use `docker build -t typhoon-back-go .` in this directory to build the image
+    image: typhoon-back-go
+    container_name: typhoon_back_go
+    restart: always
+    environment:
+      - PORT=3000
+      - VIRTUAL_HOST=typhoon-dev.viarezo.fr
+    ports:
+      - "3000:80"
+    expose:
+      - "3000"
+    depends_on:
+      - mongo
+    stdin_open: true
+    tty: true
+    command: watcher server.go
+    volumes:
+      - .:/typhoon
+
+volumes:
+  mongodata:

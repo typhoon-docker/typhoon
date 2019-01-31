@@ -7,14 +7,19 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/globalsign/mgo"
 	"github.com/imroc/req"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 type githubHookCreate struct {
@@ -34,6 +39,22 @@ type githubTokenResponse struct {
 
 type githubUserResponse struct {
 	Login string `json:"login"`
+}
+
+type viarezoTokenResponse struct {
+	AccessToken  string `json:"access_token"`
+	ExpiresAt    int    `json:"expires_at"`
+	ExpiresIn    int    `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	Scope        string `json:"scope"`
+}
+
+type viarezoUserResponse struct {
+	Id        string `json:"id"`
+	Login     string `json:"login"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
 }
 
 type oauthService struct {
@@ -62,6 +83,22 @@ var (
 	}
 )
 
+type hook struct {
+	ref      string
+	cloneUrl string
+	user     string
+}
+
+type githubHook struct {
+	GitRef     string `json:"ref"`
+	Repository struct {
+		CloneUrl string `json:"clone_url"`
+		Owner    struct {
+			Login string `json:"login"`
+		} `json:"owner"`
+	} `json:"repository"`
+}
+
 func authorizeUrl(oauth string) (string, error) {
 	s, ok := oauthServices[oauth]
 	if !ok {
@@ -82,30 +119,6 @@ func authorizeUrl(oauth string) (string, error) {
 	r.URL.RawQuery = q.Encode()
 
 	return r.URL.String(), nil
-}
-
-type hook struct {
-	ref      string
-	cloneUrl string
-	user     string
-}
-
-type githubHook struct {
-	GitRef     string `json:"ref"`
-	Repository struct {
-		CloneUrl string `json:"clone_url"`
-		Owner    struct {
-			Login string `json:"login"`
-		} `json:"owner"`
-	} `json:"repository"`
-}
-
-type Token struct {
-	AccessToken  string `json:"access_token"`
-	ExpiresAt    int    `json:"expires_at"`
-	ExpiresIn    int    `json:"expires_in"`
-	RefreshToken string `json:"refresh_token"`
-	Scope        string `json:"scope"`
 }
 
 func getToken(user string) string {
@@ -143,12 +156,29 @@ func addHook(user string, repo string) error {
 	return nil
 }
 
+// DAO to access data from the database
+var dao = TyphoonDAO{}
+
 func main() {
 	loadEnv()
+
+	// Create the DAO object and connect it to the mongo server
+	dao.Server = "mongodb://root:example@mongo:27017/"
+	dao.Database = "typhoon"
+	dao.Connect()
+
+	// echo web server
 	e := echo.New()
+
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	// echo routes
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "")
 	})
+
 	e.GET("/callback/viarezo", func(c echo.Context) error {
 		body := req.Param{
 			"grant_type":    "authorization_code",
@@ -165,15 +195,66 @@ func main() {
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
-		var token Token
-		err = res.ToJSON(&token)
+		var viarezoToken viarezoTokenResponse
+		err = res.ToJSON(&viarezoToken)
 		if err != nil {
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
-		// TODO redirect to front rather than printing token
-		return c.JSONPretty(http.StatusOK, token, "    ")
+
+		res, err = req.Post("https://auth.viarezo.fr/api/user/show/me", req.Header{"Authorization": "Bearer " + viarezoToken.AccessToken})
+		if err != nil {
+			log.Println(err)
+			return c.String(http.StatusInternalServerError, "server error")
+		}
+		var user viarezoUserResponse
+		err = res.ToJSON(&user)
+		if err != nil {
+			log.Println(err)
+			return c.String(http.StatusInternalServerError, "server error")
+		}
+
+		// Get user from mongoDB, create the entry in db if not found. Get its Id and Scope.
+		pUser, err := dao.FindUserByLogin(user.Login)
+		if err == mgo.ErrNotFound {
+			log.Println("New user will be made with login: " + user.Login)
+			tUser := ProjectUser{Login: user.Login, FirstName: user.FirstName, LastName: user.LastName, Email: user.Email, Scope: "user"}
+			nUser, nErr := dao.InsertUser(tUser)
+			if nErr != nil {
+				log.Println("InsertUser error: " + nErr.Error())
+				return c.String(http.StatusInternalServerError, "server error")
+			}
+			pUser = nUser
+		}
+		if err != nil {
+			log.Println("FindUserByLogin error for " + user.Login + ": " + err.Error())
+			return c.String(http.StatusInternalServerError, "server error")
+		}
+		// Now user Id and Scope should have the right value
+
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, JwtCustomClaims{
+			user.Id,
+			user.Login,
+			user.FirstName,
+			user.LastName,
+			user.Email,
+			pUser.Id.Hex(),
+			pUser.Scope,
+			jwt.StandardClaims{
+				ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+			},
+		})
+
+		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+		if err != nil {
+			log.Println("Error while using SignedString(): " + err.Error())
+			return c.String(http.StatusInternalServerError, "server error")
+		}
+		values := url.Values{}
+		values.Add("token", tokenString)
+		return c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"/callback/viarezo?"+values.Encode())
 	})
+
 	e.GET("/callback/github", func(c echo.Context) error {
 		body := req.Param{
 			"code":          c.QueryParam("code"),
@@ -215,9 +296,10 @@ func main() {
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
-		setToken(userReponse.Login, tokenResponse.AccessToken)
-		// TODO redirect to front rather than printing token
-		return c.String(http.StatusOK, tokenResponse.AccessToken)
+
+		values := url.Values{}
+		values.Add("token", tokenResponse.AccessToken)
+		return c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"/callback/github?"+values.Encode())
 	})
 	for k := range oauthServices {
 		e.GET("/login/"+k, func(c echo.Context) error {
@@ -229,6 +311,7 @@ func main() {
 			return c.Redirect(http.StatusTemporaryRedirect, u)
 		})
 	}
+
 	e.POST("/hook", func(c echo.Context) error {
 		func() {
 			var h hook
@@ -274,10 +357,8 @@ func main() {
 		}()
 		return c.String(http.StatusOK, "")
 	})
-	e.POST("/repos", func(c echo.Context) error {
-		// TODO process the repo request, extract the repository url, add a hook using addHook
-		// addHook(user, repo)
-		return c.String(http.StatusOK, "")
-	})
+
+	Routes(e, dao)
+	// test()
 	e.Logger.Fatal(e.Start(":80"))
 }

@@ -1,0 +1,37 @@
+FROM php:{{DockerImageVersion}}-apache
+
+WORKDIR /var/www/html
+
+RUN docker-php-ext-install pdo pdo_mysql
+
+{{if SystemDependencies}}
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    {{range SystemDependencies}}{{.}} {{end}}
+    && rm -rf /var/lib/apt/lists/*
+{{end}}
+
+{{range DependencyFiles}}
+COPY {{.}} /typhoon/{{.}}
+{{end}}
+{{if InstallScript}}
+RUN {{InstallScript}}
+{{end}}
+
+COPY . /var/www/html/
+
+{{range Key, Val := Env}}
+ENV {{Key}} {{Val}}
+{{end}}
+
+{{if BuildScript}}
+RUN {{BuildScript}}
+{{end}}
+
+{{if ExposedPort}}
+EXPOSE {{ExposedPort}}
+{{end}}
+EXPOSE 80
+
+{{if StartScript}}
+CMD {{StartScript}}
+{{end}}
