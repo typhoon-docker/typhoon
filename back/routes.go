@@ -197,6 +197,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		if _, err := dao.FindProjectByName(project.Name); err == nil {
 			return c.String(http.StatusConflict, "This project name seems to already exist")
 		}
+		// TODO: Not sure of about the belongs_to behaviour
 		// Update project in database
 		if err := dao.UpdateProject(*project); err != nil {
 			return c.String(http.StatusInternalServerError, err.Error())
