@@ -42,7 +42,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		// Get user from mongoDB, create the entry in db if not found. Get its Id and Scope.
 		pUser, err := dao.FindUserByLogin(userLoginToTest)
 		if err == mgo.ErrNotFound {
-			tUser := ProjectUser{Login: userLoginToTest, FirstName: "foo", LastName: "bar", Email: "nope@nope.fr", Scope: "user"}
+			tUser := ProjectUser{Login: userLoginToTest, FirstName: "foo", LastName: "bar", Email: "nope@nope.fr", Scope: scope}
 			nUser, nErr := dao.InsertUser(tUser)
 			if nErr != nil {
 				log.Println("InsertUser error: " + nErr.Error())
