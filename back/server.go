@@ -360,5 +360,7 @@ func main() {
 
 	Routes(e, dao)
 	// test()
+	// TemplateTest()
+
 	e.Logger.Fatal(e.Start(":80"))
 }

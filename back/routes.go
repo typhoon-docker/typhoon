@@ -227,4 +227,37 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		}
 		return c.JSON(http.StatusOK, project)
 	})
+
+	/////////////////////////////
+	/////////// TEMP? ///////////
+	d := e.Group("/docker")
+	d.Use(middleware.JWTWithConfig(jwtConfig))
+
+	// List projects
+	d.POST("", func(c echo.Context) error {
+		// Parse the JWT
+		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
+
+		// Parse the body to find the project info
+		project := new(Project)
+		if err := c.Bind(project); err != nil {
+			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
+		}
+
+		// Get user info (with its id found in JWT)
+		user, err := dao.FindUserById(claims.MongoId)
+		if err != nil {
+			return c.String(http.StatusInternalServerError, "Could not find you in the user database: "+err.Error())
+		}
+
+		// The project is attributed to the user that requested it
+		project.Id = bson.NewObjectId()
+		project.BelongsToId = claims.MongoId
+		project.BelongsTo = user
+
+		// Creates the docker files
+		results := Template(project)
+
+		return c.JSON(http.StatusOK, results)
+	})
 }

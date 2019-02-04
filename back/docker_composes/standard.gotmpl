@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  code:
+    image: {{.Name}}
+    container_name: cn_{{.Name}}
+    restart: always
+    environment:
+      - VIRTUAL_HOST={{.Name}}.typhoon.viarezo.fr
+{{- if .UseHttps}}
+      - LETSENCRYPT_HOST={{.Name}}.typhoon.viarezo.fr{{range .ExternalDomainNames}} {{.}}{{end}}
+      - LETSENCRYPT_EMAIL={{.BelongsTo.Email}}
+{{- end}}
+{{- if .Databases}}
+    depends_on:
+{{- range .Databases}}
+      - {{.Type}}
+{{- end}}
+{{- end}}
+{{range .Databases}}
+  {{.Type}}:
+    image: {{.Type}}:{{.Version}}
+    container_name: {{$.Name}}_{{.Type}}
+    restart: always
+    environment:
+      - MYSQL_DATABASE={{.EnvDatabase}}
+      - MYSQL_USER={{.EnvUsername}}
+      - MYSQL_PASSWORD={{.EnvPassword}}
+    volumes:
+      - /dbs/{{$.Name}}/{{.Type}}:{{.LinkDirectory}}
+{{- end}}
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
