@@ -21,28 +21,41 @@ services:
 
 {{- if eq .Type "mysql"}}
   mysql:
-    image: mysql:{{.Version}}
+    image: mysql{{if .Version}}:{{.Version}}{{end}}
     container_name: {{$.Name}}_mysql
     restart: always
     environment:
-      - MYSQL_DATABASE={{.EnvDatabase}}
-      - MYSQL_USER={{.EnvUsername}}
-      - MYSQL_PASSWORD={{.EnvPassword}}
+      - {{if .EnvDatabase}}MYSQL_DATABASE={{.EnvDatabase}}{{end}}
+      - {{if .EnvUsername}}MYSQL_USER={{.EnvUsername}}{{end}}
+      - {{if .EnvPassword}}MYSQL_PASSWORD={{.EnvPassword}}{{end}}
     volumes:
       - /dbs/{{$.Name}}/mysql:/var/lib/mysql
 {{- end}}
 
 {{- if eq .Type "postgres"}}
   postgres:
-    image: postgres:{{.Version}}
+    image: postgres{{if .Version}}:{{.Version}}{{end}}
     container_name: {{$.Name}}_postgres
     restart: always
     environment:
-      - POSTGRES_DB={{.EnvDatabase}}
-      - POSTGRES_USER={{.EnvUsername}}
-      - POSTGRES_PASSWORD={{.EnvPassword}}
+      - {{if .EnvDatabase}}POSTGRES_DB={{.EnvDatabase}}{{end}}
+      - {{if .EnvUsername}}POSTGRES_USER={{.EnvUsername}}{{end}}
+      - {{if .EnvPassword}}POSTGRES_PASSWORD={{.EnvPassword}}{{end}}
     volumes:
       - /dbs/{{$.Name}}/postgres:/var/lib/postgresql/data
+{{- end}}
+
+{{- if eq .Type "mongo"}}
+  postgres:
+    image: mongo{{if .Version}}:{{.Version}}{{end}}
+    container_name: {{$.Name}}_mongo
+    restart: always
+    environment:
+      - {{if .EnvDatabase}}MONGO_INITDB_DATABASE={{.EnvDatabase}}{{end}}
+      - {{if .EnvUsername}}MONGO_INITDB_ROOT_USERNAME={{.EnvUsername}}{{end}}
+      - {{if .EnvPassword}}MONGO_INITDB_ROOT_PASSWORD={{.EnvPassword}}{{end}}
+    volumes:
+      - /dbs/{{$.Name}}/mongo:/data/db
 {{- end}}
 
 {{- end}}

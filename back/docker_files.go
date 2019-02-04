@@ -31,7 +31,7 @@ var d1 = ProjectDatabase{
 // TEMP: Example
 var d2 = ProjectDatabase{
 	Type:        "postgres",
-	Version:     "11.1",
+	Version:     "",
 	EnvDatabase: "tp",
 	EnvUsername: "rootp",
 	EnvPassword: "passwordp",
