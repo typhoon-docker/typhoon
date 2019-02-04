@@ -78,18 +78,18 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	/////////// /TEMP ///////////
 	/////////////////////////////
 
-	r := e.Group("/projects")
-
 	// Configure middleware with the custom claims type for JWT
-	config := middleware.JWTConfig{
+	jwtConfig := middleware.JWTConfig{
 		Claims:     &JwtCustomClaims{},
 		SigningKey: []byte(os.Getenv("JWT_SECRET")),
 	}
-	r.Use(middleware.JWTWithConfig(config))
 	log.Println("JWT_SECRET is: '" + os.Getenv("JWT_SECRET") + "'")
 
+	p := e.Group("/projects")
+	p.Use(middleware.JWTWithConfig(jwtConfig))
+
 	// List projects
-	r.GET("", func(c echo.Context) error {
+	p.GET("", func(c echo.Context) error {
 		// Parse the JWT
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
 
@@ -117,7 +117,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	})
 
 	// Return the project with the specified id
-	r.GET("/:id", func(c echo.Context) error {
+	p.GET("/:id", func(c echo.Context) error {
 		id := c.Param("id")
 
 		// Parse the JWT
@@ -137,7 +137,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	})
 
 	// Create a new project
-	r.POST("", func(c echo.Context) error {
+	p.POST("", func(c echo.Context) error {
 		// Parse the JWT
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
 
@@ -174,7 +174,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	})
 
 	// Update project in db (no need to add hook again)
-	r.PUT("/:id", func(c echo.Context) error {
+	p.PUT("/:id", func(c echo.Context) error {
 		id := c.Param("id")
 
 		// Parse the JWT
@@ -206,7 +206,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	})
 
 	// Delete the project in db
-	r.DELETE("/:id", func(c echo.Context) error {
+	p.DELETE("/:id", func(c echo.Context) error {
 		id := c.Param("id")
 
 		// Parse the JWT
