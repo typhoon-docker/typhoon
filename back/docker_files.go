@@ -22,6 +22,7 @@ var u1 = ProjectUser{
 // TEMP: Example
 var d1 = ProjectDatabase{
 	Type:        "mysql",
+	Version:     "5.7",
 	EnvDatabase: "test",
 	EnvUsername: "root",
 	EnvPassword: "password",
@@ -30,6 +31,7 @@ var d1 = ProjectDatabase{
 // TEMP: Example
 var d2 = ProjectDatabase{
 	Type:        "postgres",
+	Version:     "11.1",
 	EnvDatabase: "tp",
 	EnvUsername: "rootp",
 	EnvPassword: "passwordp",
@@ -104,12 +106,6 @@ var templateIdToFiles = map[string]DockerData{
 	},
 }
 
-// Makes the mapping between the chosen project template and template files
-var linkDirectory = map[string]string{
-	"mysql":    "/var/lib/mysql",
-	"postgres": "/var/lib/postgresql/data",
-}
-
 // From a project, a template and output info, writes and returns the filled template
 func MakeStringAndFile(p interface{}, templateFile string, outputDirectory string, fileName string) string {
 	outputFile := filepath.Join(outputDirectory, fileName)
@@ -149,10 +145,6 @@ func MakeStringAndFile(p interface{}, templateFile string, outputDirectory strin
 
 // From a project, will write all the templates in files
 func Template(p *Project) map[string]string {
-	for _, db := range p.Databases {
-		db.LinkDirectory = linkDirectory[db.Type]
-	}
-
 	dd, ok := templateIdToFiles[p.TemplateId]
 
 	if !ok {

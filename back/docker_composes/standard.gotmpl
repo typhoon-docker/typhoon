@@ -17,17 +17,34 @@ services:
       - {{.Type}}
 {{- end}}
 {{- end}}
-{{range .Databases}}
-  {{.Type}}:
-    image: {{.Type}}:{{.Version}}
-    container_name: {{$.Name}}_{{.Type}}
+{{- range .Databases}}
+
+{{- if eq .Type "mysql"}}
+  mysql:
+    image: mysql:{{.Version}}
+    container_name: {{$.Name}}_mysql
     restart: always
     environment:
       - MYSQL_DATABASE={{.EnvDatabase}}
       - MYSQL_USER={{.EnvUsername}}
       - MYSQL_PASSWORD={{.EnvPassword}}
     volumes:
-      - /dbs/{{$.Name}}/{{.Type}}:{{.LinkDirectory}}
+      - /dbs/{{$.Name}}/mysql:/var/lib/mysql
+{{- end}}
+
+{{- if eq .Type "postgres"}}
+  postgres:
+    image: postgres:{{.Version}}
+    container_name: {{$.Name}}_postgres
+    restart: always
+    environment:
+      - POSTGRES_DB={{.EnvDatabase}}
+      - POSTGRES_USER={{.EnvUsername}}
+      - POSTGRES_PASSWORD={{.EnvPassword}}
+    volumes:
+      - /dbs/{{$.Name}}/postgres:/var/lib/postgresql/data
+{{- end}}
+
 {{- end}}
 
 networks:

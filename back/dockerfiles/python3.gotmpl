@@ -8,14 +8,11 @@ ENV PYTHONPATH /typhoon
     {{range .SystemDependencies}}{{.}} {{end}}\
     && rm -rf /var/lib/apt/lists/*{{end}}
 
+{{if .DependencyFiles}}RUN pip3 install -U pip --no-cache-dir
 {{range .DependencyFiles}}COPY {{.}} /typhoon/{{.}}
-{{end}}
-
-{{- if .DependencyFiles}}RUN pip3 install -U pip --no-cache-dir
-{{range .DependencyFiles}}RUN pip3 install -r {{.}} --no-cache-dir
+RUN pip3 install -r {{.}} --no-cache-dir
 {{end}}{{end}}
-
-{{- if .InstallScript}}RUN {{.InstallScript}}{{end}}
+{{if .InstallScript}}RUN {{.InstallScript}}{{end}}
 
 COPY . /typhoon
 

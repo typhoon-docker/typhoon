@@ -32,7 +32,6 @@ type Project struct {
 type ProjectDatabase struct {
 	Type          string `bson:"type" json:"type"`
 	Version       string `bson:"version" json:"version"`
-	LinkDirectory string `bson:"-" json:"-"`
 	EnvDatabase   string `bson:"env_db" json:"env_db"`
 	EnvUsername   string `bson:"env_user" json:"env_user"`
 	EnvPassword   string `bson:"env_password" json:"env_password"`
