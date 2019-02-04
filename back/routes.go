@@ -34,8 +34,12 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	////////////////////////////  // TEMP Make JWTs for tests, and allow routes to list and delete users
 	/////////// TEMP ///////////
 	e.GET("/token/:login", func(c echo.Context) error {
-		// Get user from mongoDB, create the entry in db if not found. Get its Id and Scope.
 		userLoginToTest := c.Param("login")
+		scope := c.QueryParam("scope")
+		if scope == "" {
+			scope = "user"
+		}
+		// Get user from mongoDB, create the entry in db if not found. Get its Id and Scope.
 		pUser, err := dao.FindUserByLogin(userLoginToTest)
 		if err == mgo.ErrNotFound {
 			tUser := ProjectUser{Login: userLoginToTest, FirstName: "foo", LastName: "bar", Email: "nope@nope.fr", Scope: "user"}
