@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -30,51 +31,54 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		return c.String(http.StatusOK, "true")
 	})
 
-	////////////////////////////  // Uncomment to make your users and JWTs "by hand", and allow routes to list and delete users
+	////////////////////////////  // TEMP Make JWTs for tests, and allow routes to list and delete users
 	/////////// TEMP ///////////
-	// // Get user from mongoDB, create the entry in db if not found. Get its Id and Scope.
-	// userLoginToTest := "2019barf"
-	// pUser, err := dao.FindUserByLogin(userLoginToTest)
-	// if err == mgo.ErrNotFound {
-	// 	tUser := ProjectUser{Login: userLoginToTest, FirstName: "foo", LastName: "bar", Email: "nope@nope.fr", Scope: "user"}
-	// 	nUser, nErr := dao.InsertUser(tUser)
-	// 	if nErr != nil {
-	// 		log.Println("InsertUser error: " + nErr.Error())
-	// 	}
-	// 	pUser = nUser
-	// }
-	// if err != nil {
-	// 	log.Println("FindUserByLogin error for " + userLoginToTest + ": " + err.Error())
-	// }
-	// // Now user Id and Scope should have the right value
+	e.GET("/token/:login", func(c echo.Context) error {
+		// Get user from mongoDB, create the entry in db if not found. Get its Id and Scope.
+		userLoginToTest := c.Param("login")
+		pUser, err := dao.FindUserByLogin(userLoginToTest)
+		if err == mgo.ErrNotFound {
+			tUser := ProjectUser{Login: userLoginToTest, FirstName: "foo", LastName: "bar", Email: "nope@nope.fr", Scope: "user"}
+			nUser, nErr := dao.InsertUser(tUser)
+			if nErr != nil {
+				log.Println("InsertUser error: " + nErr.Error())
+			}
+			pUser = nUser
+		}
+		if err != nil {
+			log.Println("FindUserByLogin error for " + userLoginToTest + ": " + err.Error())
+		}
+		// Now user Id and Scope should have the right value
 
-	// token := jwt.NewWithClaims(jwt.SigningMethodHS256, JwtCustomClaims{pUser.Id.Hex(),
-	// 	pUser.Login, pUser.FirstName, pUser.LastName,
-	// 	pUser.Email, pUser.Id.Hex(), pUser.Scope, jwt.StandardClaims{},
-	// })
-	// tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
-	// if err != nil {
-	// 	log.Println("Could not make JWT: " + err.Error())
-	// }
-	// log.Println("Made JWT for " + pUser.Login + ": " + tokenString)
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, JwtCustomClaims{pUser.Id.Hex(),
+			pUser.Login, pUser.FirstName, pUser.LastName,
+			pUser.Email, pUser.Id.Hex(), pUser.Scope, jwt.StandardClaims{},
+		})
+		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+		if err != nil {
+			log.Println("Could not make JWT: " + err.Error())
+		}
+		log.Println("Made JWT for " + pUser.Login + ": " + tokenString)
+		return c.String(http.StatusOK, tokenString)
+	})
 
-	// // List users
-	// e.GET("/users", func(c echo.Context) error {
-	// 	users, err := dao.FindAllUsers()
-	// 	if err != nil {
-	// 		return c.String(http.StatusInternalServerError, err.Error())
-	// 	}
-	// 	return c.JSON(http.StatusOK, users)
-	// })
+	// List users
+	e.GET("/users", func(c echo.Context) error {
+		users, err := dao.FindAllUsers()
+		if err != nil {
+			return c.String(http.StatusInternalServerError, err.Error())
+		}
+		return c.JSON(http.StatusOK, users)
+	})
 
-	// // Delete user
-	// e.DELETE("/users/:id", func(c echo.Context) error {
-	// 	id := c.Param("id")
-	// 	if err := dao.DeleteUser(id); err != nil {
-	// 		return c.String(http.StatusInternalServerError, err.Error())
-	// 	}
-	// 	return c.JSON(http.StatusOK, id)
-	// })
+	// Delete user
+	e.DELETE("/users/:id", func(c echo.Context) error {
+		id := c.Param("id")
+		if err := dao.DeleteUser(id); err != nil {
+			return c.String(http.StatusInternalServerError, err.Error())
+		}
+		return c.JSON(http.StatusOK, id)
+	})
 	/////////// /TEMP ///////////
 	/////////////////////////////
 
