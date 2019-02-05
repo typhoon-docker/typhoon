@@ -15,15 +15,17 @@ func GetSourceCode(p *Project) error {
 	if p.RepositoryUrl == "" {
 		return errors.New("RepositoryUrl not specified")
 	}
-
+	// Where to clone the code
 	baseDir := "/typhoon_sites"
 	clonePath := filepath.Join(baseDir, p.Id.Hex())
 
 	log.Println("Will try to clone " + p.RepositoryUrl + " in " + clonePath + "...")
 
+	// Clean the target directory (maybe pull if already cloned?)
 	os.RemoveAll(clonePath)
 	os.MkdirAll(clonePath, os.ModePerm)
 
+	// Run the clone command
 	cmdGit := exec.Command("git", "clone", "-q", "--depth", "1", "--", p.RepositoryUrl, clonePath)
 	cmdGit.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
 	if err := cmdGit.Run(); err != nil {
@@ -42,6 +44,7 @@ func WriteFromTemplates(p *Project) (map[string]string, error) {
 
 	outputDirectory := ""
 
+	// results will hold template results, errors, and the project JSON itself
 	ps, err := json.Marshal(p)
 	results := map[string]string{"project": string(ps)}
 
@@ -76,13 +79,16 @@ func BuildImages(p *Project) error {
 
 	// Build from Dockerfiles
 	for _, dfd := range dd.Dockerfiles {
-		outputDirectory := filepath.Join("/typhoon_dockerfile", p.Id.Hex()+dfd.ImageName)
-		fileName := filepath.Join(outputDirectory, "Dockerfile")
+		// Location of the Dockerfile to build
+		dockerfileDirectory := filepath.Join("/typhoon_dockerfile", p.Id.Hex()+dfd.ImageName)
+		fileName := filepath.Join(dockerfileDirectory, "Dockerfile")
+
+		// Location of the code, from where the Dockerfile is based
 		context := filepath.Join("/typhoon_sites", p.Id.Hex(), p.RootFolder)
 
+		// Run command to build. Uses the host's /var/run/docker.sock to build image into host
 		log.Println("Will try to build cn_" + p.Name + " from " + fileName + "...")
 		cmdGit := exec.Command("docker", "build", "-t", "cn_"+p.Name, "-f", fileName, context)
-		cmdGit.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
 		if err := cmdGit.Run(); err != nil {
 			log.Println("Could build image: " + err.Error())
 			return err
