@@ -2,65 +2,65 @@ package main
 
 import (
 	"bytes"
-	"fmt"
+	"errors"
 	"log"
 	"os"
 	"path/filepath"
 	"text/template"
 )
 
-// TEMP: Example
-var u1 = ProjectUser{
-	Id:        "5c509e17910f118485a1a7ba",
-	Login:     "2015bernarda",
-	FirstName: "aymeric",
-	LastName:  "bernard",
-	Email:     "nope@nope.fr",
-	Scope:     "admin",
-}
+// // TEMP: Example
+// var u1 = ProjectUser{
+// 	Id:        "5c509e17910f118485a1a7ba",
+// 	Login:     "2015bernarda",
+// 	FirstName: "aymeric",
+// 	LastName:  "bernard",
+// 	Email:     "nope@nope.fr",
+// 	Scope:     "admin",
+// }
 
-// TEMP: Example
-var d1 = ProjectDatabase{
-	Type:        "mysql",
-	Version:     "5.7",
-	EnvDatabase: "test",
-	EnvUsername: "root",
-	EnvPassword: "password",
-}
+// // TEMP: Example
+// var d1 = ProjectDatabase{
+// 	Type:        "mysql",
+// 	Version:     "5.7",
+// 	EnvDatabase: "test",
+// 	EnvUsername: "root",
+// 	EnvPassword: "password",
+// }
 
-// TEMP: Example
-var d2 = ProjectDatabase{
-	Type:        "postgres",
-	Version:     "",
-	EnvDatabase: "tp",
-	EnvUsername: "rootp",
-	EnvPassword: "passwordp",
-}
+// // TEMP: Example
+// var d2 = ProjectDatabase{
+// 	Type:        "postgres",
+// 	Version:     "",
+// 	EnvDatabase: "tp",
+// 	EnvUsername: "rootp",
+// 	EnvPassword: "passwordp",
+// }
 
-// TEMP: Example
-var p1 = Project{
-	Id:                  "123456",
-	Name:                "goProject1",
-	RepositoryType:      "github",
-	RepositoryUrl:       "https://github.com/typhoon-docker/example-flask",
-	RepositoryToken:     "",
-	ExternalDomainNames: []string{"myflask.fr", "cake.fr"},
-	UseHttps:            true,
-	TemplateId:          "python3",
-	DockerImageVersion:  "3.7",
-	RootFolder:          "",
-	ExposedPort:         8042,
-	SystemDependencies:  []string{"git", "screen"},
-	DependencyFiles:     []string{"requirements.txt", "nope.txt"},
-	InstallScript:       "echo installing",
-	BuildScript:         "echo building",
-	StartScript:         "python3 flaskserver.py",
-	StaticFolder:        "",
-	Databases:           []*ProjectDatabase{&d1, &d2},
-	Env:                 map[string]string{"test1": "lol", "test2": "mdr"},
-	BelongsToId:         "5c509e17910f118485a1a7ba",
-	BelongsTo:           u1,
-}
+// // TEMP: Example
+// var p1 = Project{
+// 	Id:                  "123456",
+// 	Name:                "goProject1",
+// 	RepositoryType:      "github",
+// 	RepositoryUrl:       "https://github.com/typhoon-docker/example-flask",
+// 	RepositoryToken:     "",
+// 	ExternalDomainNames: []string{"myflask.fr", "cake.fr"},
+// 	UseHttps:            true,
+// 	TemplateId:          "python3",
+// 	DockerImageVersion:  "3.7",
+// 	RootFolder:          "",
+// 	ExposedPort:         8042,
+// 	SystemDependencies:  []string{"git", "screen"},
+// 	DependencyFiles:     []string{"requirements.txt", "nope.txt"},
+// 	InstallScript:       "echo installing",
+// 	BuildScript:         "echo building",
+// 	StartScript:         "python3 flaskserver.py",
+// 	StaticFolder:        "",
+// 	Databases:           []*ProjectDatabase{&d1, &d2},
+// 	Env:                 map[string]string{"test1": "lol", "test2": "mdr"},
+// 	BelongsToId:         "5c509e17910f118485a1a7ba",
+// 	BelongsTo:           u1,
+// }
 
 type DockerfileData struct {
 	TemplateFile string `json:"template_file"`
@@ -107,73 +107,35 @@ var templateIdToFiles = map[string]DockerData{
 }
 
 // From a project, a template and output info, writes and returns the filled template
-func MakeStringAndFile(p interface{}, templateFile string, outputDirectory string, fileName string) string {
+func MakeStringAndFile(p interface{}, templateFile string, outputDirectory string, fileName string) (string, error) {
 	outputFile := filepath.Join(outputDirectory, fileName)
+	log.Println("Will try to write " + templateFile + " filled in " + outputFile + "...")
 
 	// Get the template, make the result
 	t, err := template.ParseFiles(templateFile)
 	if err != nil {
-		log.Print("ParseFiles: ", err)
-		return ""
+		return "", errors.New("MakeStringAndFile ParseFiles: " + err.Error())
 	}
 	var tpl bytes.Buffer
 	if err := t.Execute(&tpl, p); err != nil {
-		log.Print("Execute: ", err)
-		return ""
+		return "", errors.New("MakeStringAndFile Execute: " + err.Error())
 	}
 	result := tpl.String()
-	log.Print("Template result:\n", result) // TEMP
+	// log.Print("Template result:\n", result) // TEMP
 
 	// Writing to file
 	if fileName != "" {
 		os.MkdirAll(outputDirectory, os.ModePerm)
 		f, err := os.Create(outputFile)
 		if err != nil {
-			log.Println("Create: ", err)
-			return ""
+			return "", errors.New("MakeStringAndFile Create: " + err.Error())
 		}
 		if _, err := tpl.WriteTo(f); err != nil {
-			log.Print("WriteTo: ", err)
-			return ""
+			return "", errors.New("MakeStringAndFile WriteTo: " + err.Error())
 		} else {
-			log.Println("Wrote Dockerfile in " + outputFile)
+			log.Println("Wrote in " + outputFile)
 		}
 		f.Close()
 	}
-	return result
-}
-
-// From a project, will write all the templates in files
-func Template(p *Project) map[string]string {
-	dd, ok := templateIdToFiles[p.TemplateId]
-
-	if !ok {
-		log.Println("Unknown template: " + p.TemplateId)
-		return nil
-	}
-
-	templateFile := ""
-	outputDirectory := ""
-	res := ""
-	results := map[string]string{}
-
-	// Dockerfiles
-	for i, dfd := range dd.Dockerfiles {
-		templateFile = dfd.TemplateFile
-		outputDirectory = "/typhoon_dockerfile/" + p.Id.Hex() + dfd.ImageName
-		res = MakeStringAndFile(p, templateFile, outputDirectory, "") // "Dockerfile" to save
-		results[fmt.Sprintf("dockerfile_%d", i)] = res
-	}
-
-	// docker-compose file
-	templateFile = dd.DockerCompose
-	outputDirectory = "/typhoon_docker_compose/" + p.Id.Hex()
-	res = MakeStringAndFile(p, templateFile, outputDirectory, "") // "docker-compose.yml" to save
-	results["docker_compose"] = res
-
-	return results
-}
-
-func TemplateTest() {
-	Template(&p1)
+	return result, nil
 }

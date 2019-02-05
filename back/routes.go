@@ -134,7 +134,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		// Get the project from database
 		project, err := dao.FindProjectById(id)
 		if err != nil {
-			return c.String(http.StatusBadRequest, "Invalid Project ID:"+err.Error())
+			return c.String(http.StatusBadRequest, "Invalid Project ID: "+err.Error())
 		}
 
 		// Only give project if it belongs to the user that requested the info (JWT)
@@ -202,7 +202,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 			return c.String(http.StatusUnauthorized, "The project does not belong to you")
 		}
 		// Check if the requested name is available
-		if _, err := dao.FindProjectByName(project.Name); err == nil {
+		if curProject, err := dao.FindProjectByName(project.Name); curProject.Id.Hex() != id && err == nil {
 			return c.String(http.StatusConflict, "This project name seems to already exist")
 		}
 		// TODO: Not sure of about the belongs_to behaviour
@@ -223,7 +223,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		// Get the project in database
 		project, err := dao.FindProjectById(id)
 		if err != nil {
-			return c.String(http.StatusBadRequest, "Invalid Project ID:"+err.Error())
+			return c.String(http.StatusBadRequest, "Invalid Project ID: "+err.Error())
 		}
 		// Only continue if project belongs to the user that requested the info (JWT)
 		if "admin" != claims.Scope && project.BelongsToId != claims.MongoId {
@@ -241,31 +241,37 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	d := e.Group("/docker")
 	d.Use(middleware.JWTWithConfig(jwtConfig))
 
-	// List projects
-	d.POST("", func(c echo.Context) error {
+	// Clone and apply templates for given project id
+	d.POST("/apply/:id", func(c echo.Context) error {
+		id := c.Param("id")
+
 		// Parse the JWT
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
 
-		// Parse the body to find the project info
-		project := new(Project)
-		if err := c.Bind(project); err != nil {
-			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
-		}
-
-		// Get user info (with its id found in JWT)
-		user, err := dao.FindUserById(claims.MongoId)
+		// Get the project from database
+		project, err := dao.FindProjectById(id)
 		if err != nil {
-			return c.String(http.StatusInternalServerError, "Could not find you in the user database: "+err.Error())
+			return c.String(http.StatusBadRequest, "Invalid Project ID: "+err.Error())
 		}
 
-		// The project is attributed to the user that requested it
-		project.Id = bson.NewObjectId()
-		project.BelongsToId = claims.MongoId
-		project.BelongsTo = user
+		// Only give project if it belongs to the user that requested the info (JWT)
+		if "admin" != claims.Scope && project.BelongsToId != claims.MongoId {
+			return c.String(http.StatusUnauthorized, "The project does not belong to you")
+		}
 
-		// Creates the docker files
-		results := Template(project)
+		// Clone the source code
+		if err := GetSourceCode(&project); err != nil {
+			return c.String(http.StatusInternalServerError, "Could not clone: "+err.Error())
+		}
 
-		return c.JSON(http.StatusOK, results)
+		// Write the templates
+		if res, err := WriteFromTemplates(&project); err != nil {
+			return c.String(http.StatusInternalServerError, "Could not write from templates: "+err.Error())
+		} else {
+			return c.JSON(http.StatusOK, res)
+		}
+
+		// Return ok
+		return c.JSON(http.StatusOK, project)
 	})
 }
