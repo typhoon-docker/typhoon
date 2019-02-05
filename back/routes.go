@@ -265,13 +265,17 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		}
 
 		// Write the templates
-		if res, err := WriteFromTemplates(&project); err != nil {
+		res, err := WriteFromTemplates(&project)
+		if err != nil {
 			return c.String(http.StatusInternalServerError, "Could not write from templates: "+err.Error())
-		} else {
-			return c.JSON(http.StatusOK, res)
+		}
+
+		// Build images
+		if err := BuildImages(&project); err != nil {
+			return c.String(http.StatusInternalServerError, "Could not build: "+err.Error())
 		}
 
 		// Return ok
-		return c.JSON(http.StatusOK, project)
+		return c.JSON(http.StatusOK, res)
 	})
 }

@@ -27,7 +27,8 @@ func GetSourceCode(p *Project) error {
 	cmdGit := exec.Command("git", "clone", "-q", "--depth", "1", "--", p.RepositoryUrl, clonePath)
 	cmdGit.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
 	if err := cmdGit.Run(); err != nil {
-		log.Fatal(err)
+		log.Println("Could not clone: " + err.Error())
+		return err
 	}
 	return nil
 }
@@ -59,8 +60,33 @@ func WriteFromTemplates(p *Project) (map[string]string, error) {
 	res, err := MakeStringAndFile(p, dd.DockerCompose, outputDirectory, "docker-compose.yml")
 	results["docker_compose"] = res
 	if err != nil {
+		log.Println("Could not create from template: " + err.Error())
 		results["error_docker_compose"] = err.Error()
 	}
 
 	return results, nil
+}
+
+// From a project, will write all the templates in files
+func BuildImages(p *Project) error {
+	dd, ok := templateIdToFiles[p.TemplateId]
+	if !ok {
+		return errors.New("Unknown template: " + p.TemplateId)
+	}
+
+	// Build from Dockerfiles
+	for _, dfd := range dd.Dockerfiles {
+		outputDirectory := filepath.Join("/typhoon_dockerfile", p.Id.Hex()+dfd.ImageName)
+		fileName := filepath.Join(outputDirectory, "Dockerfile")
+		context := filepath.Join("/typhoon_sites", p.Id.Hex(), p.RootFolder)
+
+		log.Println("Will try to build cn_" + p.Name + " from " + fileName + "...")
+		cmdGit := exec.Command("docker", "build", "-t", "cn_"+p.Name, "-f", fileName, context)
+		cmdGit.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
+		if err := cmdGit.Run(); err != nil {
+			log.Println("Could build image: " + err.Error())
+			return err
+		}
+	}
+	return nil
 }
