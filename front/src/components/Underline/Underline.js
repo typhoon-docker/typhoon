@@ -1,27 +1,27 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 
-import { underline, bold } from "./Underline.css";
+import { underline, bold } from './Underline.css';
 
 const validStyle = [
-  "none",
-  "hidden",
-  "dotted",
-  "dashed",
-  "solid",
-  "double",
-  "groove",
-  "ridge",
-  "inset",
-  "outset",
-  "initial",
-  "inherit"
+  'none',
+  'hidden',
+  'dotted',
+  'dashed',
+  'solid',
+  'double',
+  'groove',
+  'ridge',
+  'inset',
+  'outset',
+  'initial',
+  'inherit',
 ];
 
 const Underline = ({
-  as = "span",
-  color = "text",
+  as = 'span',
+  color = 'text',
   className: cn,
-  variant = "solid",
+  variant = 'solid',
   bold: isBold = false,
   style: s = {},
   ...props
@@ -29,14 +29,14 @@ const Underline = ({
   const el = useRef(null);
 
   useEffect(() => {
-    el.current.style.setProperty("--color", `rgb(var(--${color}))`);
+    el.current.style.setProperty('--color', `rgb(var(--${color}))`);
   });
 
   let className = [underline];
 
   const style = {
     ...s,
-    borderBottomStyle: variant && validStyle.includes(variant) ? variant : "solid"
+    borderBottomStyle: variant && validStyle.includes(variant) ? variant : 'solid',
   };
 
   if (cn) {
@@ -46,13 +46,13 @@ const Underline = ({
     className.push(bold);
   }
 
-  className = className.join(" ");
+  className = className.join(' ');
 
   return React.createElement(as, {
     ...props,
     ref: el,
     className,
-    style
+    style,
   });
 };
 
