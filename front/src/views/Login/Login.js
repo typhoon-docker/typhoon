@@ -16,7 +16,7 @@ const Login = () => (
       }
     </p>
     <p>
-      <Link color="primary" bold href="/" title="Connecte toi">
+      <Link color="primary" bold href={`${process.env.BACKEND_URL}/login/viarezo`} title="Connecte toi">
         Se connecter
       </Link>{' '}
       avec mon compte{' '}
