@@ -218,7 +218,7 @@ func main() {
 			return c.String(http.StatusInternalServerError, "server error")
 		}
 
-		res, err = req.Post("https://auth.viarezo.fr/api/user/show/me", req.Header{"Authorization": "Bearer " + viarezoToken.AccessToken})
+		res, err = req.Get("https://auth.viarezo.fr/api/user/show/me", req.Header{"Authorization": "Bearer " + viarezoToken.AccessToken})
 		if err != nil {
 			log.Println("Failed to get my infos")
 			log.Println(err)
