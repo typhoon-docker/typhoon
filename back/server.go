@@ -202,24 +202,33 @@ func main() {
 			body,
 		)
 		if err != nil {
+			log.Println("Failed to get token")
+			log.Println(body)
+
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
 		var viarezoToken viarezoTokenResponse
 		err = res.ToJSON(&viarezoToken)
 		if err != nil {
+			log.Println("Failed to get token")
+			log.Println(res)
+
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
 
 		res, err = req.Post("https://auth.viarezo.fr/api/user/show/me", req.Header{"Authorization": "Bearer " + viarezoToken.AccessToken})
 		if err != nil {
+			log.Println("Failed to get my infos")
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
 		var user viarezoUserResponse
 		err = res.ToJSON(&user)
 		if err != nil {
+			log.Println("Failed to parse my infos")
+			log.Println(res)
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
