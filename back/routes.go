@@ -48,8 +48,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 				log.Println("InsertUser error: " + nErr.Error())
 			}
 			pUser = nUser
-		}
-		if err != nil {
+		} else if err != nil {
 			log.Println("FindUserByLogin error for " + userLoginToTest + ": " + err.Error())
 		}
 		// Now user Id and Scope should have the right value

@@ -244,8 +244,7 @@ func main() {
 				return c.String(http.StatusInternalServerError, "server error")
 			}
 			pUser = nUser
-		}
-		if err != nil {
+		} else if err != nil {
 			log.Println("FindUserByLogin error for " + user.Login + ": " + err.Error())
 			return c.String(http.StatusInternalServerError, "server error")
 		}
