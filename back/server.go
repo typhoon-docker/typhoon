@@ -99,10 +99,12 @@ type githubHook struct {
 	} `json:"repository"`
 }
 
-func authorizeURL(oauth string) (string, error) {
-	service, ok := oauthServices[oauth]
+func authorizeURL(rawOauth string) (string, error) {
+	upperOauth := strings.ToUpper(rawOauth)
+	lowerOauth := strings.ToLower(rawOauth)
+	service, ok := oauthServices[upperOauth]
 	if !ok {
-		return "", errors.New("oauth: unknown oauth service: " + oauth)
+		return "", errors.New("oauth: unknown oauth service: " + lowerOauth)
 	}
 
 	req, err := http.NewRequest("GET", service.Authorize, nil)
@@ -114,8 +116,8 @@ func authorizeURL(oauth string) (string, error) {
 	for param, value := range service.Parameters {
 		query.Add(param, value)
 	}
-	query.Add("redirect_uri", os.Getenv("BACKEND_URL")+"/callback/"+oauth)
-	query.Add("client_id", os.Getenv(oauth+"_CLIENT_ID"))
+	query.Add("redirect_uri", os.Getenv("BACKEND_URL")+"/callback/"+lowerOauth)
+	query.Add("client_id", os.Getenv(upperOauth+"_CLIENT_ID"))
 	req.URL.RawQuery = query.Encode()
 
 	return req.URL.String(), nil
