@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  code:
+    image: 2015koltesb-typhoon
+    container_name: 2015koltesb_typhoon
+    restart: always
+    environment:
+      - VIRTUAL_HOST=typhoon.viarezo.fr
+      - LETSENCRYPT_HOST=typhoon.viarezo.fr
+      - LETSENCRYPT_EMAIL=benjamin.koltes@student.ecp.fr
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
