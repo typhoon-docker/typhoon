@@ -32,7 +32,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	})
 
 	////////////////////////////  // TEMP Make JWTs for tests, and allow routes to list and delete users
-	/////////// TEMP ///////////
+	/////////// TEMP ///////////  // Those routes are open for everyone, should not be accessible as is in prod
 	e.GET("/token/:login", func(c echo.Context) error {
 		userLoginToTest := c.Param("login")
 		scope := c.QueryParam("scope")
@@ -72,6 +72,26 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
 		return c.JSON(http.StatusOK, users)
+	})
+
+	// Update user
+	e.PUT("/users/:id", func(c echo.Context) error {
+		id := c.Param("id")
+
+		// Parse the body to find the new user info
+		user := new(ProjectUser)
+		if err := c.Bind(user); err != nil {
+			return c.String(http.StatusBadRequest, "Invalid user info: "+err.Error())
+		}
+		// Check if the id given in url is the same as id in the body
+		if id != user.Id.Hex() {
+			return c.String(http.StatusBadRequest, "Users id mismatch")
+		}
+		// Update user in database
+		if err := dao.UpdateUser(*user); err != nil {
+			return c.String(http.StatusInternalServerError, err.Error())
+		}
+		return c.JSON(http.StatusOK, user)
 	})
 
 	// Delete user

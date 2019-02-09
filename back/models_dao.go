@@ -99,7 +99,13 @@ func (m *TyphoonDAO) FindAllUsers() ([]ProjectUser, error) {
 	return users, err
 }
 
-// Find list of users
+// Update an existing user
+func (m *TyphoonDAO) UpdateUser(user ProjectUser) error {
+	err := db.C("users").UpdateId(user.Id, &user)
+	return err
+}
+
+// Delete user
 func (m *TyphoonDAO) DeleteUser(id string) error {
 	err := db.C("users").RemoveId(bson.ObjectIdHex(id))
 	return err
