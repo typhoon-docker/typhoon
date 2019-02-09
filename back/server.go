@@ -237,7 +237,7 @@ func main() {
 		pUser, err := dao.FindUserByLogin(user.Login)
 		if err == mgo.ErrNotFound {
 			log.Println("New user will be made with login: " + user.Login)
-			tUser := ProjectUser{Login: user.Login, FirstName: user.FirstName, LastName: user.LastName, Email: user.Email, Scope: "user"}
+			tUser := ProjectUser{OauthId: user.Id, Login: user.Login, FirstName: user.FirstName, LastName: user.LastName, Email: user.Email, Scope: "user"}
 			nUser, nErr := dao.InsertUser(tUser)
 			if nErr != nil {
 				log.Println("InsertUser error: " + nErr.Error())
