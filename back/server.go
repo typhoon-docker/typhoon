@@ -118,6 +118,7 @@ func authorizeURL(rawOauth string) (string, error) {
 	}
 	query.Add("redirect_uri", os.Getenv("BACKEND_URL")+"/callback/"+lowerOauth)
 	query.Add("client_id", os.Getenv(upperOauth+"_CLIENT_ID"))
+	query.Add("state", "connection-to-oauth")
 	req.URL.RawQuery = query.Encode()
 
 	return req.URL.String(), nil
