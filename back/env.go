@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -12,6 +13,7 @@ func loadEnv() {
 	if "" == env {
 		env = "development"
 	}
+	log.Println("running in " + env + " mode")
 
 	// Load .env
 	godotenv.Load()
