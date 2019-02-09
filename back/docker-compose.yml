@@ -43,5 +43,10 @@ services:
       - /typhoon_docker_compose:/typhoon_docker_compose
       - /typhoon_volumes:/typhoon_volumes
 
+networks:
+  default:
+    external:
+      name: nginx-proxy
+
 volumes:
   mongodata:

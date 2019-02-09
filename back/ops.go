@@ -110,7 +110,7 @@ func DockerUp(p *Project) error {
 	cmd := exec.Command("docker-compose", "up", "-d") // -d ?
 	cmd.Dir = dockerComposeFileDir
 	if err := cmd.Run(); err != nil {
-		return errors.New("Could run docker-compose up: " + err.Error())
+		return errors.New("Could not run docker-compose up: " + err.Error())
 	}
 	return nil
 }
