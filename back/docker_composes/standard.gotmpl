@@ -28,9 +28,15 @@ services:
     container_name: {{$.Name}}_mysql
     restart: always
     environment:
-      - {{if .EnvDatabase}}MYSQL_DATABASE={{.EnvDatabase}}{{end}}
-      - {{if .EnvUsername}}MYSQL_USER={{.EnvUsername}}{{end}}
-      - {{if .EnvPassword}}MYSQL_PASSWORD={{.EnvPassword}}{{end}}
+    {{- if .EnvDatabase}}
+      - MYSQL_DATABASE={{.EnvDatabase}}
+    {{- end}}
+    {{- if .EnvUsername}}
+      - MYSQL_USER={{.EnvUsername}}
+    {{- end}}
+    {{- if .EnvPassword}}
+      - MYSQL_PASSWORD={{.EnvPassword}}
+    {{- end}}
     volumes:
       - /typhoon_volumes/{{$.Name}}/mysql:/var/lib/mysql
 {{- end}}
@@ -41,22 +47,34 @@ services:
     container_name: {{$.Name}}_postgres
     restart: always
     environment:
-      - {{if .EnvDatabase}}POSTGRES_DB={{.EnvDatabase}}{{end}}
-      - {{if .EnvUsername}}POSTGRES_USER={{.EnvUsername}}{{end}}
-      - {{if .EnvPassword}}POSTGRES_PASSWORD={{.EnvPassword}}{{end}}
+    {{- if .EnvDatabase}}
+      - POSTGRES_DB={{.EnvDatabase}}
+    {{- end}}
+    {{- if .EnvUsername}}
+      - POSTGRES_USER={{.EnvUsername}}
+    {{- end}}
+    {{- if .EnvPassword}}
+      - POSTGRES_PASSWORD={{.EnvPassword}}
+    {{- end}}
     volumes:
       - /typhoon_volumes/{{$.Name}}/postgres:/var/lib/postgresql/data
 {{- end}}
 
 {{- if eq .Type "mongo"}}
-  postgres:
+  mongo:
     image: mongo{{if .Version}}:{{.Version}}{{end}}
     container_name: {{$.Name}}_mongo
     restart: always
     environment:
-      - {{if .EnvDatabase}}MONGO_INITDB_DATABASE={{.EnvDatabase}}{{end}}
-      - {{if .EnvUsername}}MONGO_INITDB_ROOT_USERNAME={{.EnvUsername}}{{end}}
-      - {{if .EnvPassword}}MONGO_INITDB_ROOT_PASSWORD={{.EnvPassword}}{{end}}
+    {{- if .EnvDatabase}}
+      - MONGO_INITDB_DATABASE={{.EnvDatabase}}
+    {{- end}}
+    {{- if .EnvUsername}}
+      - MONGO_INITDB_ROOT_USERNAME={{.EnvUsername}}
+    {{- end}}
+    {{- if .EnvPassword}}
+      - MONGO_INITDB_ROOT_PASSWORD={{.EnvPassword}}
+    {{- end}}
     volumes:
       - /typhoon_volumes/{{$.Name}}/mongo:/data/db
 {{- end}}
