@@ -314,7 +314,7 @@ func main() {
 		)
 	})
 	for service := range oauthServices {
-		e.GET("/login/"+service, func(c echo.Context) error {
+		e.GET("/login/"+strings.ToLower(service), func(c echo.Context) error {
 			url, err := authorizeURL(service)
 			if err != nil {
 				log.Println(err)
