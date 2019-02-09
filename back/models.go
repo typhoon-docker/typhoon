@@ -39,6 +39,7 @@ type ProjectDatabase struct {
 
 type ProjectUser struct {
 	Id        bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	OauthId   int           `bson:"oauth_id" json:"oauth_id"`
 	Login     string        `json:"login"`
 	FirstName string        `json:"first_name"`
 	LastName  string        `json:"last_name"`
@@ -55,12 +56,12 @@ type ProjectFiles struct {
 
 // JwtCustomClaims are custom claims extending default ones.
 type JwtCustomClaims struct {
-	Id        int `json:"id"`
+	OauthId   int    `json:"oauth_id"`
 	Login     string `json:"login"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Email     string `json:"email"`
-	MongoId   string `json:"mongo_id"`
+	TyphoonId string `json:"typhoon_id"`
 	Scope     string `json:"scope"`
 	jwt.StandardClaims
 }

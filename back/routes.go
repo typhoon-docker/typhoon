@@ -54,8 +54,8 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		}
 		// Now user Id and Scope should have the right value
 
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, JwtCustomClaims{pUser.Id.Hex(),
-			pUser.Login, pUser.FirstName, pUser.LastName,
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, JwtCustomClaims{
+			pUser.OauthId, pUser.Login, pUser.FirstName, pUser.LastName,
 			pUser.Email, pUser.Id.Hex(), pUser.Scope, jwt.StandardClaims{},
 		})
 		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
@@ -116,7 +116,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 
 		} else {
 			// User asks for his projects. Login is taken fron the JWT
-			projects, err := dao.FindProjectsOfUser(claims.MongoId)
+			projects, err := dao.FindProjectsOfUser(claims.TyphoonId)
 			if err != nil {
 				return c.String(http.StatusInternalServerError, err.Error())
 			}
@@ -138,7 +138,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		}
 
 		// Only give project if it belongs to the user that requested the info (JWT)
-		if "admin" != claims.Scope && project.BelongsToId != claims.MongoId {
+		if "admin" != claims.Scope && project.BelongsToId != claims.TyphoonId {
 			return c.String(http.StatusUnauthorized, "The project does not belong to you")
 		}
 		return c.JSON(http.StatusOK, project)
@@ -161,14 +161,14 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		}
 
 		// Get user info (with its id found in JWT)
-		user, err := dao.FindUserById(claims.MongoId)
+		user, err := dao.FindUserById(claims.TyphoonId)
 		if err != nil {
 			return c.String(http.StatusInternalServerError, "Could not find you in the user database: "+err.Error())
 		}
 
 		// The project is attributed to the user that requested it
 		project.Id = bson.NewObjectId()
-		project.BelongsToId = claims.MongoId
+		project.BelongsToId = claims.TyphoonId
 		project.BelongsTo = user
 
 		// Insert the project into the database
@@ -198,7 +198,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 			return c.String(http.StatusBadRequest, "Projects id mismatch")
 		}
 		// Only continue if project belongs to the user that requested the info (JWT)
-		if "admin" != claims.Scope && project.BelongsToId != claims.MongoId {
+		if "admin" != claims.Scope && project.BelongsToId != claims.TyphoonId {
 			return c.String(http.StatusUnauthorized, "The project does not belong to you")
 		}
 		// Check if the requested name is available
@@ -226,7 +226,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 			return c.String(http.StatusBadRequest, "Invalid Project ID: "+err.Error())
 		}
 		// Only continue if project belongs to the user that requested the info (JWT)
-		if "admin" != claims.Scope && project.BelongsToId != claims.MongoId {
+		if "admin" != claims.Scope && project.BelongsToId != claims.TyphoonId {
 			return c.String(http.StatusUnauthorized, "The project does not belong to you")
 		}
 		// Delete project in database
@@ -255,7 +255,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		}
 
 		// Only give project if it belongs to the user that requested the info (JWT)
-		if "admin" != claims.Scope && project.BelongsToId != claims.MongoId {
+		if "admin" != claims.Scope && project.BelongsToId != claims.TyphoonId {
 			return c.String(http.StatusUnauthorized, "The project does not belong to you")
 		}
 
@@ -298,7 +298,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		}
 
 		// Only give project if it belongs to the user that requested the info (JWT)
-		if "admin" != claims.Scope && project.BelongsToId != claims.MongoId {
+		if "admin" != claims.Scope && project.BelongsToId != claims.TyphoonId {
 			return c.String(http.StatusUnauthorized, "The project does not belong to you")
 		}
 
