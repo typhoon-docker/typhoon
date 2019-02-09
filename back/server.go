@@ -50,7 +50,7 @@ type viarezoTokenResponse struct {
 }
 
 type viarezoUserResponse struct {
-	Id        string `json:"id"`
+	Id        int    `json:"id"`
 	Login     string `json:"login"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`

@@ -55,7 +55,7 @@ type ProjectFiles struct {
 
 // JwtCustomClaims are custom claims extending default ones.
 type JwtCustomClaims struct {
-	Id        string `json:"id"`
+	Id        int `json:"id"`
 	Login     string `json:"login"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
