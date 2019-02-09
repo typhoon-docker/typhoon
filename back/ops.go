@@ -87,7 +87,7 @@ func BuildImages(p *Project) error {
 		context := filepath.Join("/typhoon_sites", p.Id.Hex(), p.RootFolder)
 
 		// Run command to build. Uses the host's /var/run/docker.sock to build image into host
-		log.Println("Will try to build cn_" + p.Name + " from " + fileName + "...")
+		log.Println("Will try to build " + p.Name + " from " + fileName + "...")
 		cmd := exec.Command("docker", "build", "-t", p.Name, "-f", fileName, context)
 		if err := cmd.Run(); err != nil {
 			log.Println("Could build image: " + err.Error())

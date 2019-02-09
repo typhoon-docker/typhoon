@@ -102,6 +102,12 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		}
 		return c.JSON(http.StatusOK, id)
 	})
+
+	// Get my token info
+	e.GET("/users/me", func(c echo.Context) error {
+		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
+		return c.JSON(http.StatusOK, claims)
+	})
 	/////////// /TEMP ///////////
 	/////////////////////////////
 
