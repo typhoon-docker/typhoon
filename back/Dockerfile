@@ -7,6 +7,7 @@ WORKDIR /typhoon
 # Install git + the latest Docker CE binaries
 RUN apt-get update && apt-get install -y --no-install-recommends \
   git \
+  python python-dev python-distribute python-pip \
   apt-transport-https \
   ca-certificates \
   curl \
@@ -19,7 +20,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       stable" && \
   apt-get update && \
   apt-get -y install docker-ce \
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/* \
+  && pip install docker-compose --no-cache-dir
 
 # Go watcher dependency for dev purposes
 RUN go get github.com/canthefason/go-watcher

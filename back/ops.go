@@ -88,11 +88,47 @@ func BuildImages(p *Project) error {
 
 		// Run command to build. Uses the host's /var/run/docker.sock to build image into host
 		log.Println("Will try to build cn_" + p.Name + " from " + fileName + "...")
-		cmdGit := exec.Command("docker", "build", "-t", "cn_"+p.Name, "-f", fileName, context)
-		if err := cmdGit.Run(); err != nil {
+		cmd := exec.Command("docker", "build", "-t", p.Name, "-f", fileName, context)
+		if err := cmd.Run(); err != nil {
 			log.Println("Could build image: " + err.Error())
 			return err
 		}
+	}
+	return nil
+}
+
+// From a project, will write all the templates in files
+func DockerUp(p *Project) error {
+	dockerComposeFileDir := filepath.Join("/typhoon_docker_compose", p.Id.Hex())
+	dockerComposeFilePath := filepath.Join(dockerComposeFileDir, "docker-compose.yml")
+	if _, err := os.Stat(dockerComposeFilePath); os.IsNotExist(err) {
+		return errors.New("docker-composse.yml file not found in: " + dockerComposeFilePath)
+	}
+
+	// Run command to up
+	log.Println("Will try to up from " + dockerComposeFilePath + "...")
+	cmd := exec.Command("docker-compose", "up", "-d") // -d ?
+	cmd.Dir = dockerComposeFileDir
+	if err := cmd.Run(); err != nil {
+		return errors.New("Could run docker-compose up: " + err.Error())
+	}
+	return nil
+}
+
+// From a project, will write all the templates in files
+func DockerDown(p *Project) error {
+	dockerComposeFileDir := filepath.Join("/typhoon_docker_compose", p.Id.Hex())
+	dockerComposeFilePath := filepath.Join(dockerComposeFileDir, "docker-compose.yml")
+	if _, err := os.Stat(dockerComposeFilePath); os.IsNotExist(err) {
+		return errors.New("docker-composse.yml file not found in: " + dockerComposeFilePath)
+	}
+
+	// Run command to down
+	log.Println("Will try to down from " + dockerComposeFilePath + "...")
+	cmd := exec.Command("docker-compose", "down")
+	cmd.Dir = dockerComposeFileDir
+	if err := cmd.Run(); err != nil {
+		return errors.New("Could run docker-compose down: " + err.Error())
 	}
 	return nil
 }

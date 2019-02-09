@@ -275,7 +275,39 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 			return c.String(http.StatusInternalServerError, "Could not build: "+err.Error())
 		}
 
+		// Docker-compose up
+		if err := DockerUp(&project); err != nil {
+			return c.String(http.StatusInternalServerError, "Could not up: "+err.Error())
+		}
+
 		// Return ok
 		return c.JSON(http.StatusOK, res)
+	})
+
+	// Down the deployment
+	d.POST("/down/:id", func(c echo.Context) error {
+		id := c.Param("id")
+
+		// Parse the JWT
+		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
+
+		// Get the project from database
+		project, err := dao.FindProjectById(id)
+		if err != nil {
+			return c.String(http.StatusBadRequest, "Invalid Project ID: "+err.Error())
+		}
+
+		// Only give project if it belongs to the user that requested the info (JWT)
+		if "admin" != claims.Scope && project.BelongsToId != claims.MongoId {
+			return c.String(http.StatusUnauthorized, "The project does not belong to you")
+		}
+
+		// Docker-compose down
+		if err := DockerDown(&project); err != nil {
+			return c.String(http.StatusInternalServerError, "Could not down: "+err.Error())
+		}
+
+		// Return ok
+		return c.String(http.StatusOK, "OK")
 	})
 }
