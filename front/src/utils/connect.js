@@ -42,7 +42,6 @@ if (shouldMock) {
       sign(
         {
           user: mockUser,
-          iat,
           exp,
         },
         'secret',

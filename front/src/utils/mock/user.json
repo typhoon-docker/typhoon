@@ -1,5 +1,6 @@
 {
-  "id": 1337,
+  "oauth_id": 1337,
+  "typhoon_id": "qwertyuiop",
   "login": "2019doej",
   "scope": "admin",
   "first_name": "John",
