@@ -174,6 +174,13 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	// CORS restricted
+	// Allows requests from those origins with GET, PUT, POST or DELETE method
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"https://typhoon.viarezo.fr", "http://typhoon-dev.viarezo.fr:1234/"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
+
 	// echo routes
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "")
