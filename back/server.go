@@ -313,16 +313,24 @@ func main() {
 			os.Getenv("FRONTEND_URL")+"/callback/github?"+values.Encode(),
 		)
 	})
-	for service := range oauthServices {
-		e.GET("/login/"+strings.ToLower(service), func(c echo.Context) error {
-			url, err := authorizeURL(service)
-			if err != nil {
-				log.Println(err)
-				return c.String(http.StatusInternalServerError, "server error")
-			}
-			return c.Redirect(http.StatusTemporaryRedirect, url)
-		})
-	}
+
+	e.GET("/login/viarezo", func(c echo.Context) error {
+		url, err := authorizeURL("VIAREZO")
+		if err != nil {
+			log.Println(err)
+			return c.String(http.StatusInternalServerError, "server error")
+		}
+		return c.Redirect(http.StatusTemporaryRedirect, url)
+	})
+
+	e.GET("/login/github", func(c echo.Context) error {
+		url, err := authorizeURL("GITHUB")
+		if err != nil {
+			log.Println(err)
+			return c.String(http.StatusInternalServerError, "server error")
+		}
+		return c.Redirect(http.StatusTemporaryRedirect, url)
+	})
 
 	e.POST("/hook", func(c echo.Context) error {
 		func() {
