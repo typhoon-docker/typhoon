@@ -65,7 +65,7 @@ type oauthService struct {
 
 var (
 	oauthServices = map[string]oauthService{
-		"viarezo": {
+		"VIAREZO": {
 			Authorize: "https://auth.viarezo.fr/oauth/authorize",
 			Token:     "https://auth.viarezo.fr/oauth/token",
 			Parameters: map[string]string{
@@ -73,7 +73,7 @@ var (
 				"response_type": "code",
 			},
 		},
-		"github": {
+		"GITHUB": {
 			Authorize: "https://github.com/login/oauth/authorize",
 			Token:     "https://github.com/login/oauth/access_token",
 			Parameters: map[string]string{
@@ -99,26 +99,26 @@ type githubHook struct {
 	} `json:"repository"`
 }
 
-func authorizeUrl(oauth string) (string, error) {
-	s, ok := oauthServices[oauth]
+func authorizeURL(oauth string) (string, error) {
+	service, ok := oauthServices[oauth]
 	if !ok {
 		return "", errors.New("oauth: unknown oauth service: " + oauth)
 	}
 
-	r, err := http.NewRequest("GET", s.Authorize, nil)
+	req, err := http.NewRequest("GET", service.Authorize, nil)
 	if err != nil {
 		return "", err
 	}
 
-	q := r.URL.Query()
-	for k, v := range s.Parameters {
-		q.Add(k, v)
+	query := req.URL.Query()
+	for param, value := range service.Parameters {
+		query.Add(param, value)
 	}
-	q.Add("redirect_uri", os.Getenv("BACKEND_URL")+"/callback/"+oauth)
-	q.Add("client_id", oauth+"_CLIENT_ID")
-	r.URL.RawQuery = q.Encode()
+	query.Add("redirect_uri", os.Getenv("BACKEND_URL")+"/callback/"+oauth)
+	query.Add("client_id", os.Getenv(oauth+"_CLIENT_ID"))
+	req.URL.RawQuery = query.Encode()
 
-	return r.URL.String(), nil
+	return req.URL.String(), nil
 }
 
 func getToken(user string) string {
@@ -195,7 +195,7 @@ func main() {
 			"client_secret": os.Getenv("VIAREZO_CLIENT_SECRET"),
 		}
 		res, err := req.Post(
-			oauthServices["viarezo"].Token,
+			oauthServices["VIAREZO"].Token,
 			body,
 		)
 		if err != nil {
@@ -270,7 +270,7 @@ func main() {
 			"client_secret": os.Getenv("GITHUB_CLIENT_SECRET"),
 		}
 		res, err := req.Post(
-			oauthServices["github"].Token,
+			oauthServices["GITHUB"].Token,
 			req.BodyJSON(&body),
 			req.Header{"Accept": "application/json"},
 		)
@@ -284,7 +284,7 @@ func main() {
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
-		if tokenResponse.Scope != oauthServices["github"].Parameters["scope"] {
+		if tokenResponse.Scope != oauthServices["GITHUB"].Parameters["scope"] {
 			// user didn't authorize the repo scope
 			// TODO prompt the user to authorize again instead of throwing 500
 			return c.String(http.StatusInternalServerError, "server error")
@@ -306,16 +306,19 @@ func main() {
 
 		values := url.Values{}
 		values.Add("token", tokenResponse.AccessToken)
-		return c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"/callback/github?"+values.Encode())
+		return c.Redirect(
+			http.StatusTemporaryRedirect,
+			os.Getenv("FRONTEND_URL")+"/callback/github?"+values.Encode(),
+		)
 	})
-	for k := range oauthServices {
-		e.GET("/login/"+k, func(c echo.Context) error {
-			u, err := authorizeUrl(k)
+	for service := range oauthServices {
+		e.GET("/login/"+service, func(c echo.Context) error {
+			url, err := authorizeURL(service)
 			if err != nil {
 				log.Println(err)
 				return c.String(http.StatusInternalServerError, "server error")
 			}
-			return c.Redirect(http.StatusTemporaryRedirect, u)
+			return c.Redirect(http.StatusTemporaryRedirect, url)
 		})
 	}
 
