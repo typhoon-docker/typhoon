@@ -1,0 +1,28 @@
+.input {
+  opacity: 0;
+  overflow: hidden;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+.label {
+  padding: 1em;
+  border-radius: 0.5em;
+  font-weight: 400;
+
+  color: rgb(var(--text));
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(var(--primary), 0.1);
+  }
+}
+
+.input:focus + .label {
+  background: rgba(var(--primary), 0.2);
+}
+
+.input:checked + .label {
+  background: rgba(var(--primary), 0.3);
+}

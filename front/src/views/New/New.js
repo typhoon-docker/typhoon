@@ -13,12 +13,16 @@ import { checkProject } from '/utils/typhoonAPI';
 const New = () => {
   const [step, setStep] = useState(0);
   const [error, setError] = useState(null);
+  const [repo, setRepo] = useState(null);
   // const previousStep = () => setStep(step - 1);
   const nextStep = () => setStep(step + 1);
 
   const onSubmit = verifies => event => {
     event.preventDefault();
     const newDataArray = formDataToArray(new FormData(event.target));
+    if (Object.keys(verifies).length !== newDataArray.length) {
+      return;
+    }
     Promise.all(newDataArray.map(([key, value]) => verifies[key](value)))
       .then(array => {
         const falseIndex = array.findIndex(e => e === false);
@@ -39,7 +43,20 @@ const New = () => {
 
   return (
     <Steps step={step}>
-      <Box>
+      <Box
+        as="form"
+        onSubmit={onSubmit({
+          repo: value => {
+            try {
+              const repository = JSON.parse(value);
+              setRepo(repository);
+              return true;
+            } catch (e) {
+              return false;
+            }
+          },
+        })}
+      >
         <Repositories />
       </Box>
       <Box
@@ -53,6 +70,7 @@ const New = () => {
           name="name"
           error={error === 'name'}
           errorMessage="Ce projet existe déjà, trouvez un autre nom"
+          defaultValue={repo ? repo.full_name : ''}
           required
         />
         <ArrowButton type="submit">Next</ArrowButton>
