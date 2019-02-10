@@ -30,7 +30,7 @@ export const hasToken = () => {
 
 export const isConnected = (token = getToken()) => {
   try {
-    if (token.exp < Date.now() / 1000 || !token.exp) {
+    if (!token.exp || token.exp < Date.now() / 1000) {
       throw new Error('');
     }
     return true;
@@ -39,17 +39,32 @@ export const isConnected = (token = getToken()) => {
   }
 };
 
-export const useIsConnected = () => {
-  const [connected, setConnected] = useState(isConnected());
+export const isAdmin = (token = getToken()) => {
+  try {
+    if (!token.user.scope.includes('admin')) {
+      throw new Error('');
+    }
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+// React Hooks
+const hook = fn => () => {
+  const [value, setValue] = useState(fn());
   useEffect(() => {
-    setConnected(isConnected());
     const listener = tokenCup.on(token => {
-      setConnected(isConnected(decode(token)));
+      setValue(fn(decode(token)));
     });
+    setValue(fn());
     return listener;
   }, []);
-  return connected;
+  return value;
 };
+
+export const useIsConnected = hook(isConnected);
+export const useIsAdmin = hook(isAdmin);
 
 if (shouldMock) {
   import('./mock/user.json').then(mockUser => {
