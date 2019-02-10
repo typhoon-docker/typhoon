@@ -7,7 +7,6 @@ WORKDIR /typhoon
 ENV PATH /typhoon/node_modules/.bin:$PATH
 
 # Package requirements
-COPY empty-package /typhoon/empty-package/
 COPY package.json /typhoon/package.json
 COPY yarn.lock /typhoon/yarn.lock
 
