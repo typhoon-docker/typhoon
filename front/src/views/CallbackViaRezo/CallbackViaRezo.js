@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect } from '@reach/router';
 import { saveToken } from '/utils/connect';
 
-const Callback = () => {
+const CallbackViaRezo = () => {
   const qs = new URLSearchParams(window.location.search);
   const token = qs.get('token');
   if (token !== null) {
@@ -11,4 +11,4 @@ const Callback = () => {
   return <Redirect to="/" noThrow />;
 };
 
-export default Callback;
+export default CallbackViaRezo;

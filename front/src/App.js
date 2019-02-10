@@ -4,7 +4,7 @@ import { Router } from '@reach/router';
 import Home from '/views/Home';
 import Admin from '/views/Admin';
 import Login from '/views/Login/';
-import Callback from '/views/Callback/';
+import CallbackViaRezo from '/views/CallbackViaRezo/';
 import AOA from '/views/404/';
 
 import { useIsConnected } from '/utils/connect';
@@ -15,7 +15,7 @@ const App = () => {
   const isConnected = useIsConnected();
   return (
     <Router>
-      <Callback path="/callback/viarezo" />
+      <CallbackViaRezo path="/callback/viarezo" />
       {isConnected ? (
         <Fragment default>
           <Home path="/" />
