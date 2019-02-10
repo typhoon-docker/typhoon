@@ -10,11 +10,11 @@ import { isConnected } from '/utils/connect';
 
 import '/App.css';
 
-const App = (
+const App = () => (
   <Router>
     <Callback path="/callback/viarezo" />
     {isConnected() ? (
-      <Fragment>
+      <Fragment default>
         <Home path="/" />
         <AOA default />
       </Fragment>
