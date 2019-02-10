@@ -117,7 +117,9 @@ func (m *TyphoonDAO) FindUserByLogin(login string) (ProjectUser, error) {
 
 // Insert a user in the database
 func (m *TyphoonDAO) InsertUser(user ProjectUser) (ProjectUser, error) {
-	user.Id = bson.NewObjectId()
+	if user.Id.Hex() == "" {
+		user.Id = bson.NewObjectId()
+	}
 	err := db.C("users").Insert(&user)
 	return user, err
 }
