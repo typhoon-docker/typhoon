@@ -4,7 +4,7 @@ import Steps from '/components/Steps/';
 import Box from '/components/Box/';
 import Input from '/components/Input/';
 import ArrowButton from '/components/ArrowButton/';
-import Repositories from '/components/Repositories/';
+import Repositories from '/containers/Repositories/';
 
 import { newProjectCup } from '/utils/project';
 import { formDataToArray, arrayToJSON } from '/utils/formData';
@@ -14,7 +14,7 @@ const New = () => {
   const [step, setStep] = useState(0);
   const [error, setError] = useState(null);
   const [repo, setRepo] = useState(null);
-  // const previousStep = () => setStep(step - 1);
+
   const nextStep = () => setStep(step + 1);
 
   const onSubmit = verifies => event => {
@@ -46,18 +46,10 @@ const New = () => {
       <Box
         as="form"
         onSubmit={onSubmit({
-          repo: value => {
-            try {
-              const repository = JSON.parse(value);
-              setRepo(repository);
-              return true;
-            } catch (e) {
-              return false;
-            }
-          },
+          repository_url: Boolean,
         })}
       >
-        <Repositories />
+        <Repositories onSelect={repository => setRepo(repository)} />
       </Box>
       <Box
         as="form"
