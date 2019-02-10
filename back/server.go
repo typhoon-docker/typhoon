@@ -77,7 +77,7 @@ var (
 			Authorize: "https://github.com/login/oauth/authorize",
 			Token:     "https://github.com/login/oauth/access_token",
 			Parameters: map[string]string{
-				"scope": "repo admin:org_hook",
+				"scope": "admin:org_hook,repo",
 			},
 		},
 	}
@@ -299,7 +299,7 @@ func main() {
 			return c.String(http.StatusInternalServerError, "server error")
 		}
 		if tokenResponse.Scope != oauthServices["GITHUB"].Parameters["scope"] {
-			log.Println("user didn't authorize the repo scope")
+			log.Println("user didn't authorize the repo or the admin scope ")
 			log.Println(tokenResponse.Scope + "  " + oauthServices["GITHUB"].Parameters["scope"])
 			// TODO prompt the user to authorize again instead of throwing 500
 			return c.String(http.StatusInternalServerError, "server error")
