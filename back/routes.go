@@ -330,6 +330,34 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		return c.String(http.StatusOK, "OK")
 	})
 
+	// Get deployment status
+	d.GET("/status/:id", func(c echo.Context) error {
+		id := c.Param("id")
+
+		// Parse the JWT
+		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
+
+		// Get the project from database
+		project, err := dao.FindProjectById(id)
+		if err != nil {
+			return c.String(http.StatusBadRequest, "Invalid Project ID: "+err.Error())
+		}
+
+		// Only give project if it belongs to the user that requested the info (JWT)
+		if "admin" != claims.Scope && project.BelongsToId != claims.TyphoonId {
+			return c.String(http.StatusUnauthorized, "The project does not belong to you")
+		}
+
+		// Docker-compose ps
+		out, err := DockerStatus(&project)
+		if err != nil {
+			return c.String(http.StatusInternalServerError, "Could not check status: "+err.Error())
+		}
+
+		// Return output
+		return c.String(http.StatusOK, out)
+	})
+
 	/////////////////
 	// MORE TEMP ? //
 	sm := e.Group("/showme")

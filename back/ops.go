@@ -129,3 +129,21 @@ func DockerDown(p *Project) error {
 	}
 	return nil
 }
+
+// From a project, will run docker-compose ps
+func DockerStatus(p *Project) (string, error) {
+	dockerComposeFileDir, dockerComposeFilePath, here := p.DockerComposePaths()
+	if !here {
+		return "", errors.New("docker-compose.yml file not found in: " + dockerComposeFilePath)
+	}
+
+	// Run command to down
+	log.Println("Will try to get status from " + dockerComposeFilePath + "...")
+	cmd := exec.Command("docker-compose", "ps")
+	cmd.Dir = dockerComposeFileDir
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", errors.New("Could run docker-compose ps: " + err.Error())
+	}
+	return string(out), nil
+}
