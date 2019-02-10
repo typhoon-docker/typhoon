@@ -41,7 +41,7 @@ export const isConnected = (token = getToken()) => {
 
 export const isAdmin = (token = getToken()) => {
   try {
-    if (!token.user.scope.includes('admin')) {
+    if (!token.scope.includes('admin')) {
       throw new Error('');
     }
     return true;
