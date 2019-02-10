@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { getProjects, getAllProjects } from '/utils/axios';
 
 import Box from '/components/Box/';
+import ArrowButton from '/components/ArrowButton/';
 import Button from '/components/Button/';
 import Steps from '/components/Steps/';
 import Project from '/components/Project/';
 import EmptyProject from '/components/EmptyProject/';
 
-import { title, button, git_wrapper } from './Projects.css';
+import { title, git_wrapper } from './Projects.css';
 
 const Projects = ({ all = false }) => {
   const [projects, setProjects] = useState(null);
@@ -31,9 +32,9 @@ const Projects = ({ all = false }) => {
       <Box>
         <h1 className={title}>
           {all ? 'Tous les projets' : 'Mes projets'}
-          <button className={button} type="button" onClick={() => setStep(1)}>
+          <ArrowButton type="button" onClick={() => setStep(1)}>
             Nouveau projet
-          </button>
+          </ArrowButton>
         </h1>
         {projects &&
           (projects.length > 0 ? (
