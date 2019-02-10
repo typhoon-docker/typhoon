@@ -8,8 +8,17 @@
 .hidden_right {
   position: absolute;
   top: 0;
-  transition: transform 0.7s cubic-bezier(0.66, 0, 0.34, 1);
+  transition: transform 0.7s cubic-bezier(0.66, 0, 0.34, 1), opacity 0.001ms;
   width: 100%;
+  opacity: 1;
+}
+
+.hidden_left,
+.hidden_right {
+  opacity: 0;
+  &:focus-within {
+    opacity: 0.01;
+  }
 }
 
 .hidden_left {

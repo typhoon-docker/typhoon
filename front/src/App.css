@@ -18,6 +18,7 @@ body {
   font-size: 16px;
   font-family: "Roboto", sans-serif;
   max-width: 700px;
+  overflow: hidden;
   margin: 2em auto;
   padding: 1em;
   color: rgb(var(--text));
