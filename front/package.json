@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "rm -rf dist && parcel build src/index.html --experimental-scope-hoisting"
+    "build": "rm -rf dist && parcel build src/index.html"
   },
   "dependencies": {
     "@emotion/hash": "^0.7.1",
