@@ -196,7 +196,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		}
 
 		// TODO process the project request, extract the repository url, add a hook using addHook
-		// addHook(user, repo)
+		// addHook(project)
 		return c.JSON(http.StatusCreated, project)
 	})
 
