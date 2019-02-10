@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 
 	"github.com/globalsign/mgo"
@@ -30,9 +31,6 @@ func (m *TyphoonDAO) FindAllProjects() ([]Project, error) {
 	err := db.C("projects").Find(bson.M{}).All(&projects)
 	for i := range projects {
 		userId := projects[i].BelongsToId
-		if userId == "" {
-			continue
-		}
 		user, _ := m.FindUserById(userId)
 		projects[i].BelongsTo = &user
 	}
@@ -57,10 +55,7 @@ func (m *TyphoonDAO) FindProjectById(id string) (Project, error) {
 	if err1 != nil {
 		return project, err1
 	}
-	user, err2 := m.FindUserById(project.BelongsToId)
-	if err2 != nil {
-		return project, err2
-	}
+	user, _ := m.FindUserById(project.BelongsToId)
 	project.BelongsTo = &user
 	return project, nil
 }
@@ -72,10 +67,7 @@ func (m *TyphoonDAO) FindProjectByName(name string) (Project, error) {
 	if err1 != nil {
 		return project, err1
 	}
-	user, err2 := m.FindUserById(project.BelongsToId)
-	if err2 != nil {
-		return project, err2
-	}
+	user, _ := m.FindUserById(project.BelongsToId)
 	project.BelongsTo = &user
 	return project, nil
 }
@@ -101,6 +93,9 @@ func (m *TyphoonDAO) UpdateProject(project Project) error {
 // Find a user by its id
 func (m *TyphoonDAO) FindUserById(id string) (ProjectUser, error) {
 	var user ProjectUser
+	if id == "" {
+		return user, errors.New("Trying to find user by id with empty id!")
+	}
 	err := db.C("users").FindId(bson.ObjectIdHex(id)).One(&user)
 	return user, err
 }
