@@ -12,6 +12,21 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
+// Get project with given id,
+func getProjectIfAuthorized(c echo.Context, project_id string, claims *JwtCustomClaims) (Project, error) {
+	// Get the project from database
+	project, err := dao.FindProjectById(project_id)
+	if err != nil {
+		return project, c.String(http.StatusBadRequest, "Invalid Project ID: "+err.Error())
+	}
+	// Only give project if it belongs to the user that requested the info (JWT)
+	if "admin" != claims.Scope && project.BelongsToId != claims.TyphoonId {
+		return project, c.String(http.StatusUnauthorized, "The project does not belong to you")
+	}
+	// Return ok
+	return project, nil
+}
+
 // Defines somes routes for the echo server
 func Routes(e *echo.Echo, dao TyphoonDAO) {
 
@@ -145,9 +160,8 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 
 	// Return the project with the specified id
 	p.GET("/:id", func(c echo.Context) error {
+		// Parse id and JWT
 		id := c.Param("id")
-
-		// Parse the JWT
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
 
 		// Get the project from database
@@ -202,9 +216,8 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 
 	// Update project in db (no need to add hook again)
 	p.PUT("/:id", func(c echo.Context) error {
+		// Parse id and JWT
 		id := c.Param("id")
-
-		// Parse the JWT
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
 
 		// Parse the body to find the new project info
@@ -234,20 +247,16 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 
 	// Delete the project in db
 	p.DELETE("/:id", func(c echo.Context) error {
+		// Parse id and JWT
 		id := c.Param("id")
-
-		// Parse the JWT
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
 
-		// Get the project in database
-		project, err := dao.FindProjectById(id)
+		// Get project if authorized
+		project, err := getProjectIfAuthorized(c, id, claims)
 		if err != nil {
-			return c.String(http.StatusBadRequest, "Invalid Project ID: "+err.Error())
+			return err
 		}
-		// Only continue if project belongs to the user that requested the info (JWT)
-		if "admin" != claims.Scope && project.BelongsToId != claims.TyphoonId {
-			return c.String(http.StatusUnauthorized, "The project does not belong to you")
-		}
+
 		// Delete project in database
 		if err := dao.DeleteProject(id); err != nil {
 			return c.String(http.StatusInternalServerError, err.Error())
@@ -262,20 +271,14 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 
 	// Clone and apply templates for given project id
 	d.POST("/apply/:id", func(c echo.Context) error {
+		// Parse id and JWT
 		id := c.Param("id")
-
-		// Parse the JWT
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
 
-		// Get the project from database
-		project, err := dao.FindProjectById(id)
+		// Get project if authorized
+		project, err := getProjectIfAuthorized(c, id, claims)
 		if err != nil {
-			return c.String(http.StatusBadRequest, "Invalid Project ID: "+err.Error())
-		}
-
-		// Only give project if it belongs to the user that requested the info (JWT)
-		if "admin" != claims.Scope && project.BelongsToId != claims.TyphoonId {
-			return c.String(http.StatusUnauthorized, "The project does not belong to you")
+			return err
 		}
 
 		// Clone the source code
@@ -303,22 +306,37 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		return c.JSON(http.StatusOK, res)
 	})
 
-	// Down the deployment
-	d.POST("/down/:id", func(c echo.Context) error {
+	// Up the deployment
+	d.POST("/up/:id", func(c echo.Context) error {
+		// Parse id and JWT
 		id := c.Param("id")
-
-		// Parse the JWT
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
 
-		// Get the project from database
-		project, err := dao.FindProjectById(id)
+		// Get project if authorized
+		project, err := getProjectIfAuthorized(c, id, claims)
 		if err != nil {
-			return c.String(http.StatusBadRequest, "Invalid Project ID: "+err.Error())
+			return err
 		}
 
-		// Only give project if it belongs to the user that requested the info (JWT)
-		if "admin" != claims.Scope && project.BelongsToId != claims.TyphoonId {
-			return c.String(http.StatusUnauthorized, "The project does not belong to you")
+		// Docker-compose up
+		if err := DockerUp(&project); err != nil {
+			return c.String(http.StatusInternalServerError, "Could not up: "+err.Error())
+		}
+
+		// Return ok
+		return c.String(http.StatusOK, "OK")
+	})
+
+	// Down the deployment
+	d.POST("/down/:id", func(c echo.Context) error {
+		// Parse id and JWT
+		id := c.Param("id")
+		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
+
+		// Get project if authorized
+		project, err := getProjectIfAuthorized(c, id, claims)
+		if err != nil {
+			return err
 		}
 
 		// Docker-compose down
@@ -332,20 +350,14 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 
 	// Get deployment status
 	d.GET("/status/:id", func(c echo.Context) error {
+		// Parse id and JWT
 		id := c.Param("id")
-
-		// Parse the JWT
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
 
-		// Get the project from database
-		project, err := dao.FindProjectById(id)
+		// Get project if authorized
+		project, err := getProjectIfAuthorized(c, id, claims)
 		if err != nil {
-			return c.String(http.StatusBadRequest, "Invalid Project ID: "+err.Error())
-		}
-
-		// Only give project if it belongs to the user that requested the info (JWT)
-		if "admin" != claims.Scope && project.BelongsToId != claims.TyphoonId {
-			return c.String(http.StatusUnauthorized, "The project does not belong to you")
+			return err
 		}
 
 		// Docker-compose ps
