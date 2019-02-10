@@ -1,35 +1,57 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 
 import Steps from '/components/Steps/';
 import Box from '/components/Box/';
+import Input from '/components/Input/';
+import ArrowButton from '/components/ArrowButton/';
 
 import { newProjectCup } from '/utils/project';
-import formDataToJSON from '/utils/formDataToJSON';
-import { checkProject } from '/utils/axios';
+import { formDataToArray, arrayToJSON } from '/utils/formData';
+import { checkProject } from '/utils/typhoonAPI';
 
 const New = () => {
   const [step, setStep] = useState(0);
+  const [error, setError] = useState(null);
   // const previousStep = () => setStep(step - 1);
   const nextStep = () => setStep(step + 1);
 
-  const nameRef = useRef(null);
-  const onSubmit = event => {
+  const onSubmit = verifies => event => {
     event.preventDefault();
-    newProjectCup(project => ({ ...project, ...formDataToJSON(new FormData(event.target)) }));
-    nextStep();
+    const newDataArray = formDataToArray(new FormData(event.target));
+    Promise.all(newDataArray.map(([key, value]) => verifies[key](value)))
+      .then(array => {
+        const falseIndex = array.findIndex(e => e === false);
+        if (falseIndex >= 0) {
+          setError(newDataArray[falseIndex][0]);
+          throw new Error(`Error in ${newDataArray[falseIndex]}`);
+        }
+        return array;
+      })
+      .then(array => array.reduce((acc, isValid, index) => (isValid ? [...acc, newDataArray[index]] : acc), []))
+      .then(array => {
+        const newData = arrayToJSON(array);
+        newProjectCup(project => ({ ...project, ...newData }));
+        nextStep();
+      })
+      .catch(console.warn);
   };
 
   return (
     <Steps step={step}>
-      <Box as="form" onSubmit={onSubmit}>
-        <input
-          type="text"
+      <Box
+        as="form"
+        onSubmit={onSubmit({
+          name: name => checkProject(name).then(({ data }) => data === false),
+        })}
+      >
+        <Input
+          title="Nom du projet"
           name="name"
+          error={error === 'name'}
+          errorMessage="Ce projet existe déjà, trouvez un autre nom"
           required
-          ref={nameRef}
-          verify={name => checkProject(name).then(data => data === 'true')}
         />
-        <button type="submit">Next</button>
+        <ArrowButton type="submit">Next</ArrowButton>
       </Box>
       <Box as="form">test</Box>
     </Steps>
