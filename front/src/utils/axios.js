@@ -1,13 +1,18 @@
 import axios from 'axios';
 
-import { getRawToken } from './connect';
+import { getRawToken, tokenCup } from './connect';
 
-const config = {
-  baseURL: process.env.BACKEND_URL,
-  headers: { Authorization: `Bearer ${getRawToken()}` },
+let client;
+
+const updateClient = token => {
+  const config = {
+    baseURL: process.env.BACKEND_URL,
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  client = axios.create(config);
 };
-
-const client = axios.create(config);
+tokenCup.on(token => updateClient(token));
+updateClient(getRawToken());
 
 export const importMocks = async () => {
   const MockAdapter = await import('axios-mock-adapter');

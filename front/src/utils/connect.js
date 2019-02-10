@@ -6,7 +6,9 @@ import { shouldMock } from './env';
 
 const TOKEN_KEY = 'token-hjqbgk-oiqjwe-1-4.0';
 const storage = sessionStorage;
-const tokenCup = createCup(null);
+
+export const tokenCup = createCup(null);
+
 tokenCup.on(token => storage.setItem(TOKEN_KEY, token));
 
 export const saveToken = token => tokenCup(token);
