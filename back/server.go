@@ -77,7 +77,7 @@ var (
 			Authorize: "https://github.com/login/oauth/authorize",
 			Token:     "https://github.com/login/oauth/access_token",
 			Parameters: map[string]string{
-				"scope": "repo",
+				"scope": "repo admin:org_hook",
 			},
 		},
 	}
