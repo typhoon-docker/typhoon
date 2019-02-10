@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { getProjects, getAllProjects } from '/utils/axios';
+import { getProjects, getAllProjects } from '/utils/typhoonAPI';
 
 import Box from '/components/Box/';
 import ArrowButton from '/components/ArrowButton/';

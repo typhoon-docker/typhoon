@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { shouldMock } from '/utils/env';
-import { importMocks } from '/utils/axios';
+import { importMocks } from '/utils/typhoonAPI';
 
 import App from './App';
 
