@@ -4,6 +4,7 @@ import { Router } from '@reach/router';
 import Home from '/views/Home';
 import Admin from '/views/Admin';
 import Login from '/views/Login/';
+import New from '/views/New/';
 import CallbackViaRezo from '/views/CallbackViaRezo/';
 import CallbackGitHub from '/views/CallbackGitHub/';
 import AOA from '/views/404/';
@@ -21,6 +22,7 @@ const App = () => {
         <Fragment default>
           <Home path="/" />
           <Admin path="/admin" />
+          <New path="/new" />
           <CallbackGitHub path="/callback/github" />
           <AOA default />
         </Fragment>
