@@ -94,9 +94,9 @@ var templateIdToFiles = map[string]DockerData{
 		},
 		DockerCompose: "docker_composes/standard.gotmpl",
 	},
-	"react": DockerData{
+	"create-react-app": DockerData{
 		Dockerfiles: []DockerfileData{
-			DockerfileData{TemplateFile: "dockerfiles/react.gotmpl", ImageSuffix: "-react"},
+			DockerfileData{TemplateFile: "dockerfiles/create-react-app.gotmpl", ImageSuffix: "-cra"},
 		},
 		DockerCompose: "docker_composes/standalone.gotmpl",
 	},
