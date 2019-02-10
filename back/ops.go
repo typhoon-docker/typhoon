@@ -39,8 +39,17 @@ func FindContainerID(containerImage string) (string, error) {
 	return "", errors.New("Could not find container")
 }
 
-func ShowLogsByName(p *Project) (string, error) {
-	log.Println("Listing and Logging...")
+func GetLogsByName(p *Project, lines int) (string, error) {
+
+	// get the last timestamp
+	timestamp := readLastLineTimestamp(p.LogPath())
+
+	logs_file, err := os.OpenFile(p.LogPath(), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+	defer logs_file.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	containerID, err := FindContainerID(p.Name)
 	if err != nil {
 		log.Println(err)
@@ -50,7 +59,7 @@ func ShowLogsByName(p *Project) (string, error) {
 	defer cancel()
 
 	client, _ := client.NewClientWithOpts(client.WithVersion("1.39"))
-	reader, err := client.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Details: false})
+	reader, err := client.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Timestamps: true, Since: timestamp})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +68,11 @@ func ShowLogsByName(p *Project) (string, error) {
 
 	stdcopy.StdCopy(stdout, stdout, reader)
 
-	return stdout.String(), nil
+	if _, err = logs_file.WriteString(stdout.String()); err != nil {
+		panic(err)
+	}
+
+	return ReadLastLines(p.LogPath(), lines), nil
 
 }
 

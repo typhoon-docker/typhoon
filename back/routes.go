@@ -293,8 +293,8 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 			return err
 		}
 
-		// Docker-compose ps
-		stdout, err := ShowLogsByName(&project)
+		// Get Logs
+		stdout, err := GetLogsByName(&project, 3)
 		if err != nil {
 			return c.String(http.StatusInternalServerError, "Could not check status: "+err.Error())
 		}
