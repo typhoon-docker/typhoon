@@ -175,7 +175,7 @@ func main() {
 	// CORS restricted
 	// Allows requests from those origins with GET, PUT, POST or DELETE method
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"https://typhoon.viarezo.fr", "http://typhoon-dev.viarezo.fr:1234/"},
+		AllowOrigins: []string{os.Getenv("FRONTEND_URL")},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
