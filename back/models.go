@@ -40,18 +40,11 @@ type ProjectDatabase struct {
 type ProjectUser struct {
 	Id        bson.ObjectId `bson:"_id,omitempty" json:"id"`
 	OauthId   int           `bson:"oauth_id" json:"oauth_id"`
-	Login     string        `json:"login"`
-	FirstName string        `json:"first_name"`
-	LastName  string        `json:"last_name"`
-	Email     string        `json:"email"`
-	Scope     string        `json:"scope"`
-}
-
-type ProjectFiles struct {
-	Id            string            `json:"id"`
-	ProjectId     string            `json:"project_id"`
-	Dockerfiles   map[string]string `json:"dockerfiles"`
-	DockerCompose string            `json:"docker_compose"`
+	Login     string        `bson:"login" json:"login"`
+	FirstName string        `bson:"first_name" json:"first_name"`
+	LastName  string        `bson:"last_name" json:"last_name"`
+	Email     string        `bson:"email" json:"email"`
+	Scope     string        `bson:"scope" json:"scope"`
 }
 
 // JwtCustomClaims are custom claims extending default ones.

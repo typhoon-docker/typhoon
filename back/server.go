@@ -395,9 +395,8 @@ func main() {
 		return c.String(http.StatusOK, "")
 	})
 
+	// Register other routes
 	Routes(e, dao)
-	// test()
-	// TemplateTest()
 
 	e.Logger.Fatal(e.Start(":80"))
 }
