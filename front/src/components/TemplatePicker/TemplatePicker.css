@@ -1,0 +1,43 @@
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.img {
+  position: absolute;
+  max-width: 4em;
+  max-height: 4em;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.input {
+  opacity: 0;
+  overflow: hidden;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+.label {
+  padding: 1em;
+  border-radius: 0.5em;
+  width: 4em;
+  height: 4em;
+  display: inline-block;
+  position: relative;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(var(--text), 0.1);
+  }
+}
+
+.input:focus + .label {
+  background: rgba(var(--text), 0.2);
+}
+
+.input:checked + .label {
+  background: rgba(var(--text), 0.3);
+}
