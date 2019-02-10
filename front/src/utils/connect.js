@@ -40,6 +40,7 @@ export const isConnected = (token = getToken()) => {
 export const useIsConnected = () => {
   const [connected, setConnected] = useState(isConnected());
   useEffect(() => {
+    setConnected(isConnected());
     const listener = tokenCup.on(token => {
       setConnected(isConnected(decode(token)));
     });
