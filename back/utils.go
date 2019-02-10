@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 )
 
 // will return the last timestamp of the file if it exists
@@ -45,8 +46,21 @@ func readLastLineTimestamp(fname string) string {
 			break
 		}
 	}
-	return line[:30]
 
+	return increaseTimestamp(line[:30])
+
+}
+
+func increaseTimestamp(timestamp string) string {
+	layout := "2006-01-02T15:04:05.000Z"
+	t, err := time.Parse(layout, timestamp)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	t.Add(time.Millisecond * 1)
+	return t.Format(layout)
 }
 
 func ReadLastLines(fname string, lines_number int) string {

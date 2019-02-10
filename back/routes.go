@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/globalsign/mgo"
@@ -283,6 +284,13 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 
 	// Get logs
 	d.GET("/logs/:id", func(c echo.Context) error {
+		lines_ := c.QueryParam("lines")
+
+		lines, err := strconv.Atoi(lines_)
+		if err != nil {
+			lines = 30
+		}
+
 		// Parse id and JWT
 		id := c.Param("id")
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
@@ -294,9 +302,9 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		}
 
 		// Get Logs
-		stdout, err := GetLogsByName(&project, 30)
+		stdout, err := GetLogsByName(&project, lines)
 		if err != nil {
-			return c.String(http.StatusInternalServerError, "Could not check status: "+err.Error())
+			return c.String(http.StatusInternalServerError, "Could not check logs: "+err.Error())
 		}
 
 		// Return output
