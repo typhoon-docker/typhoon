@@ -52,7 +52,7 @@ export const isAdmin = (token = getToken()) => {
 
 // React Hooks
 const hook = fn => () => {
-  const [value, setValue] = useState(fn());
+  const [value, setValue] = useState(true);
   useEffect(() => {
     const listener = tokenCup.on(token => {
       setValue(fn(decode(token)));
