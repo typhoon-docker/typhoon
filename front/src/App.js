@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
 import { Router } from '@reach/router';
 
-import Home from '/views/Home/';
+import Home from '/views/Home';
+import Admin from '/views/Admin';
 import Login from '/views/Login/';
 import Callback from '/views/Callback/';
 import AOA from '/views/404/';
@@ -18,6 +19,7 @@ const App = () => {
       {isConnected ? (
         <Fragment default>
           <Home path="/" />
+          <Admin path="/admin" />
           <AOA default />
         </Fragment>
       ) : (

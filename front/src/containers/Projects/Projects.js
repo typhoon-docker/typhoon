@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 
-import { getProjects } from '/utils/axios';
+import { getProjects, getAllProjects } from '/utils/axios';
 
 import Box from '/components/Box/';
 import Steps from '/components/Steps/';
 import Project from '/components/Project/';
 import EmptyProject from '/components/EmptyProject/';
 
-import { title, button } from './Home.css';
+import { title, button } from './Projects.css';
 
-const Home = () => {
+const Projects = ({ all = false }) => {
   const [projects, setProjects] = useState(null);
   const [selectedProjects, selectProject] = useState({});
   const [step, setStep] = useState(0);
 
+  const fetchFn = all ? getAllProjects : getProjects;
+
   useEffect(() => {
-    getProjects().then(({ data }) => setProjects(data));
+    fetchFn().then(({ data }) => setProjects(data));
   }, []);
 
   const onSelect = id => event => {
@@ -27,7 +29,7 @@ const Home = () => {
     <Steps step={step}>
       <Box>
         <h1 className={title}>
-          Mes projets
+          {all ? 'Tous les projets' : 'Mes projets'}
           <button className={button} type="button" onClick={() => setStep(1)}>
             Nouveau projet
           </button>
@@ -50,4 +52,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Projects;
