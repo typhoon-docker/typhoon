@@ -8,6 +8,7 @@
 .hidden_right {
   position: absolute;
   top: 0;
+  margin-bottom: 2em;
   transition: transform 0.7s cubic-bezier(0.66, 0, 0.34, 1), opacity 0.5s;
   width: 100%;
   opacity: 1;
