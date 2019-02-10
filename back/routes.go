@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/globalsign/mgo"
@@ -120,8 +119,9 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		// Parse the JWT
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
 
-		if strings.ToLower(c.QueryParam("all")) == "true" {
-			// User asks for all projects
+		// User asks for all projects ?
+		qpa, ok := c.QueryParams()["all"]
+		if ok && (qpa[0] == "" || qpa[0] == "true") {
 			// Check if admin (JWT)
 			if "admin" != claims.Scope {
 				return c.String(http.StatusUnauthorized, "You are not admin")
