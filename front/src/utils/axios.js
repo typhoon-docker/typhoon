@@ -37,15 +37,15 @@ export const importMocks = async () => {
   });
 
   // getProject
-  mock.onGet(/\/projects\/\d+/).reply(({ url }) => {
-    const projectID = parseInt(url.substring(10), 10);
+  mock.onGet(/\/projects\/\d+/).reply(({ url, baseURL }) => {
+    const projectID = parseInt(url.substring(baseURL.length + 10), 10);
     const foundProject = mockProjects.find(project => project.id === projectID) || null;
     return [200, foundProject];
   });
 
   // putProject
-  mock.onPut(/\/projects\/\d+/).reply(({ data, url }) => {
-    const projectID = parseInt(url.substring(10), 10);
+  mock.onPut(/\/projects\/\d+/).reply(({ data, url, baseURL }) => {
+    const projectID = parseInt(url.substring(baseURL.length + 10), 10);
     const { project } = JSON.parse(data);
     if (projectID === project.id && mockProjects.map(({ id }) => id).includes(projectID)) {
       const projectIndex = mockProjects.findIndex(p => p.id === projectID);
@@ -55,13 +55,13 @@ export const importMocks = async () => {
   });
 
   // deleteProject
-  mock.onPut(/\/projects\/\d+/).reply(({ url }) => {
-    const projectID = parseInt(url.substring(10), 10);
+  mock.onPut(/\/projects\/\d+/).reply(({ url, baseURL }) => {
+    const projectID = parseInt(url.substring(baseURL.length + 10), 10);
     return [200, mockProjects.filter(project => project.id !== projectID)];
   });
 
-  mock.onGet(/\/checkProject\?name=\w(\w|-)*/).reply(({ url }) => {
-    const name = url.substring(19);
+  mock.onGet(/\/checkProject\?name=\w(\w|-)*/).reply(({ url, baseURL }) => {
+    const name = url.substring(baseURL.length + 19);
     if (mockProjects.find(p => p.name === name)) {
       return [200, 'true'];
     }
