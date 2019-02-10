@@ -1,11 +1,15 @@
+import { useEffect, useState } from 'react';
 import { decode, sign } from 'jsonwebtoken';
+import { createCup } from 'manatea';
+
 import { shouldMock } from './env';
 
-const storage = sessionStorage;
-
 const TOKEN_KEY = 'token-hjqbgk-oiqjwe-1-4.0';
+const storage = sessionStorage;
+const tokenCup = createCup(null);
+tokenCup.on(token => storage.setItem(TOKEN_KEY, token));
 
-export const saveToken = token => storage.setItem(TOKEN_KEY, token);
+export const saveToken = token => tokenCup(token);
 
 export const removeToken = () => storage.removeItem(TOKEN_KEY);
 
@@ -22,9 +26,8 @@ export const hasToken = () => {
   }
 };
 
-export const isConnected = () => {
+export const isConnected = (token = getToken()) => {
   try {
-    const token = getToken();
     if (token.exp < Date.now() / 1000 || !token.exp) {
       throw new Error('');
     }
@@ -32,6 +35,17 @@ export const isConnected = () => {
   } catch (error) {
     return false;
   }
+};
+
+export const useIsConnected = () => {
+  const [connected, setConnected] = useState(isConnected());
+  useEffect(() => {
+    const listener = tokenCup.on(token => {
+      setConnected(isConnected(token));
+    });
+    return listener;
+  }, []);
+  return connected;
 };
 
 if (shouldMock) {

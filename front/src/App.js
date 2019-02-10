@@ -6,22 +6,25 @@ import Login from '/views/Login/';
 import Callback from '/views/Callback/';
 import AOA from '/views/404/';
 
-import { isConnected } from '/utils/connect';
+import { useIsConnected } from '/utils/connect';
 
 import '/App.css';
 
-const App = () => (
-  <Router>
-    <Callback path="/callback/viarezo" />
-    {isConnected() ? (
-      <Fragment default>
-        <Home path="/" />
-        <AOA default />
-      </Fragment>
-    ) : (
-      <Login default />
-    )}
-  </Router>
-);
+const App = () => {
+  const isConnected = useIsConnected();
+  return (
+    <Router>
+      <Callback path="/callback/viarezo" />
+      {isConnected ? (
+        <Fragment default>
+          <Home path="/" />
+          <AOA default />
+        </Fragment>
+      ) : (
+        <Login default />
+      )}
+    </Router>
+  );
+};
 
 export default App;

@@ -3650,6 +3650,11 @@ magic-string@^0.22.4:
   dependencies:
     vlq "^0.2.2"
 
+manatea@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/manatea/-/manatea-0.3.0.tgz#d5d8a822f787d95a2e1746c384ef1273b625260a"
+  integrity sha1-1dioIveH2VouF0bDhO8Sc7YlJgo=
+
 map-cache@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/map-cache/-/map-cache-0.2.2.tgz#c32abd0bd6525d9b051645bb4f26ac5dc98a0dbf"
