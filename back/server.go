@@ -211,7 +211,7 @@ func main() {
 		var viarezoToken viarezoTokenResponse
 		err = res.ToJSON(&viarezoToken)
 		if err != nil {
-			log.Println("Failed to get token")
+			log.Println("Failed to parse token")
 			log.Println(res)
 
 			log.Println(err)
@@ -221,6 +221,7 @@ func main() {
 		res, err = req.Get("https://auth.viarezo.fr/api/user/show/me", req.Header{"Authorization": "Bearer " + viarezoToken.AccessToken})
 		if err != nil {
 			log.Println("Failed to get my infos")
+
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
@@ -229,6 +230,7 @@ func main() {
 		if err != nil {
 			log.Println("Failed to parse my infos")
 			log.Println(res)
+
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
@@ -286,17 +288,23 @@ func main() {
 			req.Header{"Accept": "application/json"},
 		)
 		if err != nil {
+			log.Println("Failed to get token")
+			log.Println(body)
+
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
 		var tokenResponse githubTokenResponse
 		err = res.ToJSON(&tokenResponse)
 		if err != nil {
+			log.Println("Failed to parse token")
+			log.Println(res)
+
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
 		if tokenResponse.Scope != oauthServices["GITHUB"].Parameters["scope"] {
-			// user didn't authorize the repo scope
+			log.Println("user didn't authorize the repo scope")
 			// TODO prompt the user to authorize again instead of throwing 500
 			return c.String(http.StatusInternalServerError, "server error")
 		}
@@ -305,12 +313,17 @@ func main() {
 			req.Header{"Authorization": tokenResponse.AccessToken},
 		)
 		if err != nil {
+			log.Println("Failed to get my infos")
+
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
 		var userReponse githubUserResponse
 		err = res.ToJSON(&userReponse)
 		if err != nil {
+			log.Println("Failed to parse my infos")
+			log.Println(res)
+
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "server error")
 		}
