@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 )
 
 // will return the last timestamp of the file if it exists
@@ -59,7 +60,7 @@ func ReadLastLines(fname string, lines_number int) string {
 	}
 	defer fileHandle.Close()
 
-	line := ""
+	var sb strings.Builder
 	var cursor int64 = 0
 	stat, _ := fileHandle.Stat()
 	filesize := stat.Size()
@@ -80,11 +81,19 @@ func ReadLastLines(fname string, lines_number int) string {
 			}
 		}
 
-		line = fmt.Sprintf("%s%s", string(char), line)
+		sb.WriteString(string(char))
 		if cursor == -filesize { // stop if we are at the begining
 			break
 		}
 	}
-	return line
+	return Reverse(sb.String())
 
+}
+
+func Reverse(s string) string {
+	runes := []rune(s)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+	return string(runes)
 }

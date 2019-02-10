@@ -294,7 +294,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		}
 
 		// Get Logs
-		stdout, err := GetLogsByName(&project, 3)
+		stdout, err := GetLogsByName(&project, 30)
 		if err != nil {
 			return c.String(http.StatusInternalServerError, "Could not check status: "+err.Error())
 		}
