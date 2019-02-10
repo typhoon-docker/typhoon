@@ -59,6 +59,14 @@ export const importMocks = async () => {
     const projectID = parseInt(url.substring(10), 10);
     return [200, mockProjects.filter(project => project.id !== projectID)];
   });
+
+  mock.onGet(/\/checkProject\?name=\w(\w|-)*/).reply(({ url }) => {
+    const name = url.substring(19);
+    if (mockProjects.find(p => p.name === name)) {
+      return [200, 'true'];
+    }
+    return [200, 'false'];
+  });
 };
 
 export const getProjects = () => client.get('/projects');
@@ -67,3 +75,4 @@ export const postProject = project => client.post('/projects', { project });
 export const getProject = projectID => client.get(`/projects/${projectID}`);
 export const putProject = project => client.put(`/projects/${project.id}`, { project });
 export const deleteProject = project => client.delete(`/projects/${project.id}`);
+export const checkProject = name => client.get(`/checkProject?name=${name}`);
