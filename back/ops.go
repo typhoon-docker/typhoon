@@ -26,7 +26,7 @@ func GetSourceCode(p *Project) error {
 	os.MkdirAll(clonePath, os.ModePerm)
 
 	// Run the clone command
-	cmdGit := exec.Command("git", "clone", "-q", "--depth", "1", "--", p.RepositoryUrl, clonePath)
+	cmdGit := exec.Command("git", "clone", "-q", "--depth", "1", "--", p.RepositoryUrl+".git", clonePath)
 	cmdGit.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
 	if err := cmdGit.Run(); err != nil {
 		log.Println("Could not clone: " + err.Error())

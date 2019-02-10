@@ -124,16 +124,11 @@ func authorizeURL(rawOauth string) (string, error) {
 	return req.URL.String(), nil
 }
 
-func getToken(user string) string {
-	// TODO load from database
-	return "###tokentodo###"
-}
-
 func setToken(user string, token string) {
 	// TODO store into database
 }
 
-func addHook(user string, repo string) error {
+func addHook(p *Project) error {
 	buf, err := json.Marshal(githubHookCreate{
 		Name: "url",
 		Config: githubHookCreateConfig{
@@ -144,11 +139,11 @@ func addHook(user string, repo string) error {
 	if err != nil {
 		return err
 	}
-	r, err := http.NewRequest(http.MethodPost, "https://api.github.com/repos/"+user+"/"+repo+"/hooks", bytes.NewBuffer(buf))
+	r, err := http.NewRequest(http.MethodPost, p.RepositoryUrl+"/hooks", bytes.NewBuffer(buf))
 	if err != nil {
 		return err
 	}
-	r.Header.Add("Authorization", "token "+getToken(user))
+	r.Header.Add("Authorization", "token "+p.RepositoryToken)
 	res, err := http.DefaultClient.Do(r)
 	if err != nil {
 		return err
