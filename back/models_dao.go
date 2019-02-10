@@ -64,7 +64,7 @@ func (m *TyphoonDAO) FindProjectById(id string) (Project, error) {
 	return project, nil
 }
 
-// Find a project by its id
+// Find a project by its name
 func (m *TyphoonDAO) FindProjectByName(name string) (Project, error) {
 	var project Project
 	err1 := db.C("projects").Find(bson.M{"name": name}).One(&project)
