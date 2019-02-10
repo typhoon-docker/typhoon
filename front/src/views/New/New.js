@@ -1,27 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Steps from '/components/Steps/';
 import Box from '/components/Box/';
-import Input from '/components/Input/';
+import { Text, Select } from '/components/Input/';
 import ArrowButton from '/components/ArrowButton/';
 import Repositories from '/containers/Repositories/';
 
 import { newProjectCup } from '/utils/project';
 import { formDataToArray, arrayToJSON } from '/utils/formData';
 import { checkProject } from '/utils/typhoonAPI';
+import { getBranches } from '/utils/githubAPI';
 
 const New = () => {
   const [step, setStep] = useState(0);
   const [error, setError] = useState(null);
   const [repo, setRepo] = useState(null);
+  const [branches, setBranches] = useState([]);
+
+  useEffect(() => {
+    if (repo) {
+      getBranches(repo)
+        .then(({ data }) => {
+          setBranches(data);
+        })
+        .catch(console.warn);
+    }
+  }, [repo]);
 
   const nextStep = () => setStep(step + 1);
 
   const onSubmit = verifies => event => {
     event.preventDefault();
     const newDataArray = formDataToArray(new FormData(event.target));
-    if (Object.keys(verifies).length !== newDataArray.length) {
+    if (Object.keys(verifies).length > newDataArray.length) {
       return;
+    }
+    if (Object.keys(verifies).length < newDataArray.length) {
+      console.warn("Many fields aren't verified");
     }
     Promise.all(newDataArray.map(([key, value]) => verifies[key](value)))
       .then(array => {
@@ -55,15 +70,23 @@ const New = () => {
         as="form"
         onSubmit={onSubmit({
           name: name => checkProject(name).then(({ data }) => data === false),
+          branch: Boolean,
         })}
       >
-        <Input
+        <Text
           title="Nom du projet"
           name="name"
           error={error === 'name'}
-          errorMessage="Ce projet existe déjà, trouvez un autre nom"
+          errorMessage="Ce projet existe déjà, trouve un autre nom 😉"
           defaultValue={repo ? repo.full_name : ''}
           required
+        />
+        <Select
+          title="Sur quelle branche veux-tu que ton projet soit déployé ?"
+          name="branch"
+          error={error === 'branch'}
+          required
+          data={branches.map(({ name }) => ({ value: name }))}
         />
         <ArrowButton type="submit">Next</ArrowButton>
       </Box>
