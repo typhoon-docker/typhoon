@@ -52,7 +52,7 @@ export const isAdmin = (token = getToken()) => {
 
 // React Hooks
 const hook = fn => () => {
-  const [value, setValue] = useState(true);
+  const [value, setValue] = useState(fn());
   useEffect(() => {
     const listener = tokenCup.on(token => {
       setValue(fn(decode(token)));
@@ -73,7 +73,7 @@ if (shouldMock) {
     saveToken(
       sign(
         {
-          user: mockUser,
+          ...mockUser,
           exp,
         },
         'secret',
