@@ -4,6 +4,7 @@ import Steps from '/components/Steps/';
 import Box from '/components/Box/';
 import Input from '/components/Input/';
 import ArrowButton from '/components/ArrowButton/';
+import Repositories from '/components/Repositories/';
 
 import { newProjectCup } from '/utils/project';
 import { formDataToArray, arrayToJSON } from '/utils/formData';
@@ -38,6 +39,9 @@ const New = () => {
 
   return (
     <Steps step={step}>
+      <Box>
+        <Repositories />
+      </Box>
       <Box
         as="form"
         onSubmit={onSubmit({
