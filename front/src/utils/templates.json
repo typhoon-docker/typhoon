@@ -25,7 +25,7 @@
     }
   },
   "create-react-app": {
-    "template_id": "react",
+    "template_id": "create-react-app",
     "use_https": true,
     "exposed_port": null,
     "dependency_files": ["package.json"],
