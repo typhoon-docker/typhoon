@@ -10,7 +10,7 @@ const Button = ({ color, className: cn, style: s, ...props }) => {
   if (cn) {
     className.push(cn);
   }
-  return <button {...props} className={className.join(' ')} style={style} type="button" />;
+  return <button type="button" {...props} className={className.join(' ')} style={style} />;
 };
 
 export default Button;

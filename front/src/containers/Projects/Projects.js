@@ -3,11 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { getProjects, getAllProjects } from '/utils/axios';
 
 import Box from '/components/Box/';
+import Button from '/components/Button/';
 import Steps from '/components/Steps/';
 import Project from '/components/Project/';
 import EmptyProject from '/components/EmptyProject/';
 
-import { title, button } from './Projects.css';
+import { title, button, git_wrapper } from './Projects.css';
 
 const Projects = ({ all = false }) => {
   const [projects, setProjects] = useState(null);
@@ -47,6 +48,19 @@ const Projects = ({ all = false }) => {
           ) : (
             <EmptyProject />
           ))}
+      </Box>
+      <Box>
+        <h2 className={title}>Quel est votre gestionnaire de Code ?</h2>
+        <div className={git_wrapper}>
+          <Button
+            color="github"
+            onClick={() => {
+              window.location.href = `${process.env.BACKEND_URL}/login/github`;
+            }}
+          >
+            GitHub
+          </Button>
+        </div>
       </Box>
     </Steps>
   );
