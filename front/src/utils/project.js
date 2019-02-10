@@ -1,5 +1,9 @@
 import { createCup } from 'manatea';
 
+export const systemEnvVars = {
+  TYPHOON_PERSISTENT_DIR: '/persistent',
+};
+
 export const newProjectCup = createCup({
   name: null,
   repository_url: null,

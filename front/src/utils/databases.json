@@ -1,0 +1,5 @@
+[
+  { "type": "mysql", "env_db": "REQUIRED", "env_user": "REQUIRED", "env_password": "REQUIRED", "version": "5.7" },
+  { "type": "postgres", "env_db": "REQUIRED", "env_user": "REQUIRED", "env_password": "REQUIRED", "version": "11.1" },
+  { "type": "mongo", "env_db": "REQUIRED", "env_user": "REQUIRED", "env_password": "REQUIRED", "version": "4.0.4" }
+]

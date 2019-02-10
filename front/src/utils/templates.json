@@ -1,0 +1,42 @@
+{
+  "node": {
+    "template_id": "node",
+    "use_https": true,
+    "exposed_port": 80,
+    "dependency_files": ["package.json"],
+    "install_script": "npm install",
+    "build_script": "npm build",
+    "start_script": "npm start"
+  },
+  "php": {
+    "template_id": "php",
+    "use_https": true,
+    "exposed_port": 80,
+    "dependency_files": []
+  },
+  "python3": {
+    "template_id": "python3",
+    "use_https": true,
+    "exposed_port": 80,
+    "dependency_files": ["requirements.txt"],
+    "install_script": "pip install -r requirements.txt",
+    "env": {
+      "PYTHONPATH": "/typhoon"
+    }
+  },
+  "create-react-app": {
+    "template_id": "react",
+    "use_https": true,
+    "exposed_port": null,
+    "dependency_files": ["package.json"],
+    "install_script": "npm install",
+    "build_script": "npm build",
+    "static_folder": "build"
+  },
+  "static": {
+    "template_id": "static",
+    "use_https": true,
+    "exposed_port": null,
+    "dependency_files": []
+  }
+}
