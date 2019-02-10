@@ -17,8 +17,7 @@ func GetSourceCode(p *Project) error {
 		return errors.New("RepositoryUrl not specified")
 	}
 	// Where to clone the code
-	baseDir := "/typhoon_sites"
-	clonePath := filepath.Join(baseDir, p.Id.Hex())
+	clonePath := p.ClonePath()
 
 	log.Println("Will try to clone " + p.RepositoryUrl + " in " + clonePath + "...")
 
@@ -47,16 +46,15 @@ func WriteFromTemplates(p *Project) (map[string]string, error) {
 		return nil, errors.New("Unknown template: " + p.TemplateId)
 	}
 
-	outputDirectory := ""
-
-	// results will hold template results, errors, and the project JSON itself
+	// Results will hold template results, errors, and the project JSON itself
 	ps, err := json.Marshal(p)
 	results := map[string]string{"project": string(ps)}
 
 	// Dockerfiles
-	for i, dfd := range dd.Dockerfiles {
-		outputDirectory = filepath.Join("/typhoon_dockerfile", p.Id.Hex()+dfd.ImageName)
-		res, err := MakeStringAndFile(p, dfd.TemplateFile, outputDirectory, "Dockerfile")
+	dockerfileDataA, _ := p.DockerfilePaths()
+
+	for i, dfd := range dockerfileDataA {
+		res, err := MakeStringAndFile(p, dfd.TemplateFile, dfd.DockerfilePath)
 		results[fmt.Sprintf("dockerfile_%d", i)] = res
 		if err != nil {
 			results[fmt.Sprintf("error_dockerfile_%d", i)] = err.Error()
@@ -64,8 +62,8 @@ func WriteFromTemplates(p *Project) (map[string]string, error) {
 	}
 
 	// docker-compose file
-	outputDirectory = filepath.Join("/typhoon_docker_compose", p.Id.Hex())
-	res, err := MakeStringAndFile(p, dd.DockerCompose, outputDirectory, "docker-compose.yml")
+	_, outputFile, _ := p.DockerComposePaths()
+	res, err := MakeStringAndFile(p, dd.DockerCompose, outputFile)
 	results["docker_compose"] = res
 	if err != nil {
 		log.Println("Could not create from template: " + err.Error())
@@ -77,23 +75,19 @@ func WriteFromTemplates(p *Project) (map[string]string, error) {
 
 // From a project, will write all the templates in files
 func BuildImages(p *Project) error {
-	dd, ok := templateIdToFiles[p.TemplateId]
-	if !ok {
-		return errors.New("Unknown template: " + p.TemplateId)
+	dockerfileDataA, err := p.DockerfilePaths()
+	if err != nil {
+		return err
 	}
 
 	// Build from Dockerfiles
-	for _, dfd := range dd.Dockerfiles {
-		// Location of the Dockerfile to build
-		dockerfileDirectory := filepath.Join("/typhoon_dockerfile", p.Id.Hex()+dfd.ImageName)
-		fileName := filepath.Join(dockerfileDirectory, "Dockerfile")
-
+	for _, dfd := range dockerfileDataA {
 		// Location of the code, from where the Dockerfile is based
-		context := filepath.Join("/typhoon_sites", p.Id.Hex(), p.RootFolder)
+		context := filepath.Join(p.ClonePath(), p.RootFolder)
 
 		// Run command to build. Uses the host's /var/run/docker.sock to build image into host
-		log.Println("Will try to build " + p.Name + " from " + fileName + "...")
-		cmd := exec.Command("docker", "build", "-t", p.Name, "-f", fileName, context)
+		log.Println("Will try to build " + p.Name + " from " + dfd.DockerfilePath + "...")
+		cmd := exec.Command("docker", "build", "-t", p.Name, "-f", dfd.DockerfilePath, context)
 		if err := cmd.Run(); err != nil {
 			log.Println("Could build image: " + err.Error())
 			return err
@@ -102,12 +96,11 @@ func BuildImages(p *Project) error {
 	return nil
 }
 
-// From a project, will write all the templates in files
+// From a project, will run docker-compose up
 func DockerUp(p *Project) error {
-	dockerComposeFileDir := filepath.Join("/typhoon_docker_compose", p.Id.Hex())
-	dockerComposeFilePath := filepath.Join(dockerComposeFileDir, "docker-compose.yml")
-	if _, err := os.Stat(dockerComposeFilePath); os.IsNotExist(err) {
-		return errors.New("docker-composse.yml file not found in: " + dockerComposeFilePath)
+	dockerComposeFileDir, dockerComposeFilePath, here := p.DockerComposePaths()
+	if !here {
+		return errors.New("docker-compose.yml file not found in: " + dockerComposeFilePath)
 	}
 
 	// Run command to up
@@ -120,12 +113,11 @@ func DockerUp(p *Project) error {
 	return nil
 }
 
-// From a project, will write all the templates in files
+// From a project, will run docker-compose down
 func DockerDown(p *Project) error {
-	dockerComposeFileDir := filepath.Join("/typhoon_docker_compose", p.Id.Hex())
-	dockerComposeFilePath := filepath.Join(dockerComposeFileDir, "docker-compose.yml")
-	if _, err := os.Stat(dockerComposeFilePath); os.IsNotExist(err) {
-		return errors.New("docker-composse.yml file not found in: " + dockerComposeFilePath)
+	dockerComposeFileDir, dockerComposeFilePath, here := p.DockerComposePaths()
+	if !here {
+		return errors.New("docker-compose.yml file not found in: " + dockerComposeFilePath)
 	}
 
 	// Run command to down
