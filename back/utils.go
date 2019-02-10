@@ -9,9 +9,8 @@ import (
 	"time"
 )
 
-// will return the last timestamp of the file if it exists
-// else ""
-// if the file exists and is empty it hangs (should look into this)
+// Will return the last timestamp of the file if it exists, else ""
+// If the file exists and is empty it hangs (TODO should look into this)
 func readLastLineTimestamp(fname string) string {
 	fileHandle, err := os.OpenFile(fname, os.O_APPEND|os.O_RDONLY, 0644)
 
@@ -48,9 +47,9 @@ func readLastLineTimestamp(fname string) string {
 	}
 
 	return increaseTimestamp(line[:30])
-
 }
 
+// Add 1 millisecond to the given timestamp
 func increaseTimestamp(timestamp string) string {
 	layout := "2006-01-02T15:04:05.000Z"
 	t, err := time.Parse(layout, timestamp)
@@ -63,6 +62,7 @@ func increaseTimestamp(timestamp string) string {
 	return t.Format(layout)
 }
 
+// Read the last lines of the file
 func ReadLastLines(fname string, lines_number int) string {
 	fileHandle, err := os.OpenFile(fname, os.O_APPEND|os.O_RDONLY, 0644)
 
@@ -101,9 +101,9 @@ func ReadLastLines(fname string, lines_number int) string {
 		}
 	}
 	return Reverse(sb.String())
-
 }
 
+// Reverse the string
 func Reverse(s string) string {
 	runes := []rune(s)
 	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {

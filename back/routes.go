@@ -284,15 +284,13 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 
 	// Get logs
 	d.GET("/logs/:id", func(c echo.Context) error {
+		// Parse id, query params, and JWT
+		id := c.Param("id")
 		lines_ := c.QueryParam("lines")
-
 		lines, err := strconv.Atoi(lines_)
 		if err != nil {
 			lines = 30
 		}
-
-		// Parse id and JWT
-		id := c.Param("id")
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
 
 		// Get project if authorized
@@ -314,11 +312,6 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	// Activate the other routes
 	RoutesAdmin(e, dao)
 	RoutesMisc(e, dao)
-
-	/////////////////
-	// MORE TEMP ? //
-	sm := e.Group("/showme")
-	sm.Use(middleware.JWTWithConfig(jwtConfig))
 
 	////////////////////////////  // TEMP Make JWTs for tests, and allow routes to list and delete users
 	/////////// TEMP ///////////  // Those routes are open for everyone, should not be accessible as is in prod

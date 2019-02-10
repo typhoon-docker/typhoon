@@ -34,14 +34,13 @@ func FindContainerID(containerImage string) (string, error) {
 		if containerImage == container.Image {
 			return container.ID, nil
 		}
-
 	}
 	return "", errors.New("Could not find container")
 }
 
+// Get the logs of the project
 func GetLogsByName(p *Project, lines int) (string, error) {
-
-	// get the last timestamp
+	// Get the last timestamp
 	timestamp := readLastLineTimestamp(p.LogPath())
 
 	logs_file, err := os.OpenFile(p.LogPath(), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
@@ -73,7 +72,6 @@ func GetLogsByName(p *Project, lines int) (string, error) {
 	}
 
 	return ReadLastLines(p.LogPath(), lines), nil
-
 }
 
 // From a project, will clone or pull the source
