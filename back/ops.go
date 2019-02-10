@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -10,13 +11,15 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	"github.com/docker/docker/pkg/stdcopy"
 )
 
-func ListContainers() {
-	cli, err := client.NewClientWithOpts(client.FromEnv)
+func FindContainerID(containerImage string) (string, error) {
+	cli, err := client.NewClientWithOpts(client.WithVersion("1.39"))
 	if err != nil {
 		panic(err)
 	}
@@ -27,8 +30,37 @@ func ListContainers() {
 	}
 
 	for _, container := range containers {
-		fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+		// fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+		if containerImage == container.Image {
+			return container.ID, nil
+		}
+
 	}
+	return "", errors.New("Could not find container")
+}
+
+func ShowLogsByName(p *Project) (string, error) {
+	log.Println("Listing and Logging...")
+	containerID, err := FindContainerID(p.Name)
+	if err != nil {
+		log.Println(err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	client, _ := client.NewClientWithOpts(client.WithVersion("1.39"))
+	reader, err := client.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Details: false})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	stdout := bytes.NewBuffer(make([]byte, 0))
+
+	stdcopy.StdCopy(stdout, stdout, reader)
+
+	return stdout.String(), nil
+
 }
 
 // From a project, will clone or pull the source

@@ -281,9 +281,36 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		return c.String(http.StatusOK, out)
 	})
 
+	// Get logs
+	d.GET("/logs/:id", func(c echo.Context) error {
+		// Parse id and JWT
+		id := c.Param("id")
+		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
+
+		// Get project if authorized
+		project, err := getProjectIfAuthorized(c, id, claims)
+		if err != nil {
+			return err
+		}
+
+		// Docker-compose ps
+		stdout, err := ShowLogsByName(&project)
+		if err != nil {
+			return c.String(http.StatusInternalServerError, "Could not check status: "+err.Error())
+		}
+
+		// Return output
+		return c.String(http.StatusOK, stdout)
+	})
+
 	// Activate the other routes
 	RoutesAdmin(e, dao)
 	RoutesMisc(e, dao)
+
+	/////////////////
+	// MORE TEMP ? //
+	sm := e.Group("/showme")
+	sm.Use(middleware.JWTWithConfig(jwtConfig))
 
 	////////////////////////////  // TEMP Make JWTs for tests, and allow routes to list and delete users
 	/////////// TEMP ///////////  // Those routes are open for everyone, should not be accessible as is in prod
