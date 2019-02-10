@@ -25,3 +25,108 @@ Notably:
 Oauths:
 - [GitHub](https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/)
 - [ViaRezo](https://auth.viarezo.fr/docs)
+
+# API specification
+
+## Projects management
+
+#### Get my projects, or get all projects if I am admin
+
+`/projects(?all)` - **GET**
+- headers : `{ "Authorization: "Bearer <token>" }`
+- return: `[Project]`
+
+#### Get details by project id
+
+`/projects/:id` - **GET**
+- headers : `{ "Authorization: "Bearer <token>" }`
+- return: `Project`
+
+#### Update project with new info (full override, id in url and body must match)
+
+`/projects/:id` - **PUT**
+- headers : `{ "Authorization: "Bearer <token>", "Content-Type": "application/json" }`
+- body: { project: Project }
+- return: `[Project]`
+
+#### Post a new project (will be added to database but not built)
+
+`/projects` - **POST**
+- headers : `{ "Authorization: "Bearer <token>", "Content-Type": "application/json" }`
+- body: { project: Project }
+- return: `[Project]`
+
+### Remove a project by id
+
+`/projects/:id` - **DELETE**
+- headers : `{ "Authorization: "Bearer <token>" }`
+- return: `[Project]`
+
+## Docker management
+
+#### Build and run project
+
+`/docker/apply/:id` - **POST**
+- headers : `{ "Authorization: "Bearer <token>" }`
+- return: `{ "project": <project structure>, "dockerfile_1": <dockerfile>, "docker_compose": <docker_compose>}`
+
+#### Run project
+
+`/docker/up/:id` - **POST**
+- headers : `{ "Authorization: "Bearer <token>" }`
+- return: `"OK" || <error>`
+
+#### Undeploy project
+
+`/docker/down/:id` - **POST**
+- headers : `{ "Authorization: "Bearer <token>" }`
+- return: `"OK" || <error>`
+
+#### Get project status
+
+`/docker/status/:id` - **GET**
+- headers : `{ "Authorization: "Bearer <token>" }`
+- return: `raw $(docker-compose ps) output`
+
+## User and Admin management
+
+#### List all users, or all admins
+
+`/admin/list(?admin)` - **GET**
+- headers : `{ "Authorization: "Bearer <token>" }`
+- return: `[User]`
+
+#### Change user scope
+
+`/admin/scope/:id?scope=<scope>` - **PUT**
+- headers : `{ "Authorization: "Bearer <token>" }`
+- return: `"OK" || <error>`
+
+#### Edit user
+
+`/admin/user/:id` - **PUT**
+- body: { user: User }
+- return: `User`
+
+#### Delete user
+
+`/admin/user/:id` - **DELETE**
+- return: `user_id`
+
+## Misc.
+
+### Check if the server is up
+
+`/healthCheck` - **GET**
+- return: `"OK"`
+
+### Check if a project has the given name
+
+`/checkProject?name=<name>` - **GET**
+- return: `true` if project with that name exists, else `false`
+
+### See my token info
+
+`/showme` - **GET**
+- headers : `{ "Authorization: "Bearer <token>" }`
+- return: `<JWT info>`

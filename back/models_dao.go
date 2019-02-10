@@ -22,8 +22,12 @@ func (d *TyphoonDAO) Connect() {
 		log.Fatal(err)
 	}
 	db = session.DB(d.Database)
-	log.Println("DAO: db connected")
+	log.Println("DAO: mongo db connected")
 }
+
+//////////////////////////////
+////////// PROJECTS //////////
+//////////////////////////////
 
 // Find list of project
 func (m *TyphoonDAO) FindAllProjects() ([]Project, error) {
@@ -90,6 +94,10 @@ func (m *TyphoonDAO) UpdateProject(project Project) error {
 	return err
 }
 
+///////////////////////////
+////////// USERS //////////
+///////////////////////////
+
 // Find a user by its id
 func (m *TyphoonDAO) FindUserById(id string) (ProjectUser, error) {
 	var user ProjectUser
@@ -114,11 +122,17 @@ func (m *TyphoonDAO) InsertUser(user ProjectUser) (ProjectUser, error) {
 	return user, err
 }
 
-/////// TEMP ? ///////
 // Find list of users
 func (m *TyphoonDAO) FindAllUsers() ([]ProjectUser, error) {
 	users := make([]ProjectUser, 0)
 	err := db.C("users").Find(bson.M{}).All(&users)
+	return users, err
+}
+
+// Find list of admin users
+func (m *TyphoonDAO) FindAllAdminUsers() ([]ProjectUser, error) {
+	users := make([]ProjectUser, 0)
+	err := db.C("users").Find(bson.M{"scope": "admin"}).All(&users)
 	return users, err
 }
 

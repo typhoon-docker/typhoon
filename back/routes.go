@@ -30,95 +30,6 @@ func getProjectIfAuthorized(c echo.Context, project_id string, claims *JwtCustom
 // Defines somes routes for the echo server
 func Routes(e *echo.Echo, dao TyphoonDAO) {
 
-	// Just return "OK", showing that the server is up
-	e.GET("/healthCheck", func(c echo.Context) error {
-		return c.String(http.StatusOK, "OK")
-	})
-
-	// Check if a project with this name exists
-	e.GET("/checkProject", func(c echo.Context) error {
-		name := c.QueryParam("name")
-		_, err := dao.FindProjectByName(name)
-		if err != nil {
-			return c.String(http.StatusOK, "false")
-		}
-		return c.String(http.StatusOK, "true")
-	})
-
-	////////////////////////////  // TEMP Make JWTs for tests, and allow routes to list and delete users
-	/////////// TEMP ///////////  // Those routes are open for everyone, should not be accessible as is in prod
-	e.GET("/token/:login", func(c echo.Context) error {
-		userLoginToTest := c.Param("login")
-		scope := c.QueryParam("scope")
-		if scope == "" {
-			scope = "user"
-		}
-		// Get user from mongoDB, create the entry in db if not found. Get its Id and Scope.
-		pUser, err := dao.FindUserByLogin(userLoginToTest)
-		if err == mgo.ErrNotFound {
-			tUser := ProjectUser{Login: userLoginToTest, FirstName: "foo", LastName: "bar", Email: "nope@nope.fr", Scope: scope}
-			nUser, nErr := dao.InsertUser(tUser)
-			if nErr != nil {
-				log.Println("InsertUser error: " + nErr.Error())
-			}
-			pUser = nUser
-		} else if err != nil {
-			log.Println("FindUserByLogin error for " + userLoginToTest + ": " + err.Error())
-		}
-		// Now user Id and Scope should have the right value
-
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, JwtCustomClaims{
-			pUser.OauthId, pUser.Login, pUser.FirstName, pUser.LastName,
-			pUser.Email, pUser.Id.Hex(), pUser.Scope, jwt.StandardClaims{},
-		})
-		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
-		if err != nil {
-			log.Println("Could not make JWT: " + err.Error())
-		}
-		log.Println("Made JWT for " + pUser.Login + ": " + tokenString)
-		return c.String(http.StatusOK, tokenString)
-	})
-
-	// List users
-	e.GET("/users", func(c echo.Context) error {
-		users, err := dao.FindAllUsers()
-		if err != nil {
-			return c.String(http.StatusInternalServerError, err.Error())
-		}
-		return c.JSON(http.StatusOK, users)
-	})
-
-	// Update user
-	e.PUT("/users/:id", func(c echo.Context) error {
-		id := c.Param("id")
-
-		// Parse the body to find the new user info
-		user := new(ProjectUser)
-		if err := c.Bind(user); err != nil {
-			return c.String(http.StatusBadRequest, "Invalid user info: "+err.Error())
-		}
-		// Check if the id given in url is the same as id in the body
-		if id != user.Id.Hex() {
-			return c.String(http.StatusBadRequest, "Users id mismatch")
-		}
-		// Update user in database
-		if err := dao.UpdateUser(*user); err != nil {
-			return c.String(http.StatusInternalServerError, err.Error())
-		}
-		return c.JSON(http.StatusOK, user)
-	})
-
-	// Delete user
-	e.DELETE("/users/:id", func(c echo.Context) error {
-		id := c.Param("id")
-		if err := dao.DeleteUser(id); err != nil {
-			return c.String(http.StatusInternalServerError, err.Error())
-		}
-		return c.JSON(http.StatusOK, id)
-	})
-	/////////// /TEMP ///////////
-	/////////////////////////////
-
 	// Configure middleware with the custom claims type for JWT
 	jwtConfig := middleware.JWTConfig{
 		Claims:     &JwtCustomClaims{},
@@ -370,14 +281,43 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		return c.String(http.StatusOK, out)
 	})
 
-	/////////////////
-	// MORE TEMP ? //
-	sm := e.Group("/showme")
-	sm.Use(middleware.JWTWithConfig(jwtConfig))
+	// Activate the other routes
+	RoutesAdmin(e, dao)
+	RoutesMisc(e, dao)
 
-	// Get my token info
-	sm.GET("", func(c echo.Context) error {
-		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
-		return c.JSON(http.StatusOK, claims)
+	////////////////////////////  // TEMP Make JWTs for tests, and allow routes to list and delete users
+	/////////// TEMP ///////////  // Those routes are open for everyone, should not be accessible as is in prod
+	e.GET("/token/:login", func(c echo.Context) error {
+		userLoginToTest := c.Param("login")
+		scope := c.QueryParam("scope")
+		if scope == "" {
+			scope = "user"
+		}
+		// Get user from mongoDB, create the entry in db if not found. Get its Id and Scope.
+		pUser, err := dao.FindUserByLogin(userLoginToTest)
+		if err == mgo.ErrNotFound {
+			tUser := ProjectUser{Login: userLoginToTest, FirstName: "foo", LastName: "bar", Email: "nope@nope.fr", Scope: scope}
+			nUser, nErr := dao.InsertUser(tUser)
+			if nErr != nil {
+				log.Println("InsertUser error: " + nErr.Error())
+			}
+			pUser = nUser
+		} else if err != nil {
+			log.Println("FindUserByLogin error for " + userLoginToTest + ": " + err.Error())
+		}
+		// Now user Id and Scope should have the right value
+
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, JwtCustomClaims{
+			pUser.OauthId, pUser.Login, pUser.FirstName, pUser.LastName,
+			pUser.Email, pUser.Id.Hex(), pUser.Scope, jwt.StandardClaims{},
+		})
+		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+		if err != nil {
+			log.Println("Could not make JWT: " + err.Error())
+		}
+		log.Println("Made JWT for " + pUser.Login + ": " + tokenString)
+		return c.String(http.StatusOK, tokenString)
 	})
+	/////////// /TEMP ///////////
+	/////////////////////////////
 }
