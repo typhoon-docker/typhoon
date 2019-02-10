@@ -88,6 +88,15 @@ Oauths:
 - headers : `{ "Authorization: "Bearer <token>" }`
 - return: `raw $(docker-compose ps) output`
 
+#### Get logs
+
+`/docker/logs/:id?lines=<lines>` - **GET**
+
+- headers : `{ "Authorization: "Bearer <token>" }`
+- return: `raw logs`
+
+Paramater lines is optional. Default is 30.
+
 ## User and Admin management
 
 #### List all users, or all admins
