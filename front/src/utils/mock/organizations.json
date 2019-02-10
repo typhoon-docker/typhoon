@@ -1,0 +1,16 @@
+[
+  {
+    "login": "orga",
+    "id": 1337,
+    "node_id": "node_id=",
+    "url": "https://api.github.com/orgs/orga",
+    "repos_url": "https://api.github.com/orgs/orga/repos",
+    "events_url": "https://api.github.com/orgs/orga/events",
+    "hooks_url": "https://api.github.com/orgs/orga/hooks",
+    "issues_url": "https://api.github.com/orgs/orga/issues",
+    "members_url": "https://api.github.com/orgs/orga/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/orga/public_members{/member}",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "description": "A great organization"
+  }
+]
