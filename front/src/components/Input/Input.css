@@ -1,6 +1,20 @@
+.label {
+  font-size: 0.8em;
+  font-weight: 600;
+  margin-left: 1.25em;
+  margin-bottom: 0.5em;
+}
+
+.input {
+  border: none;
+  padding: 1em;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 .error {

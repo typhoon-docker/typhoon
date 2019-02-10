@@ -1,15 +1,17 @@
 import React from 'react';
 import murmur from '@emotion/hash';
 
-import { wrapper } from './Input.css';
+import { wrapper, label, input, error as errorCN } from './Input.css';
 
 const Input = ({ title, error, errorMessage, ...props }) => {
   const id = murmur(`${Date.now()}_${title}`);
   return (
     <div className={wrapper}>
-      <label htmlFor={id}>{title}</label>
-      <input type="text" id={id} {...props} />
-      {error && <span>{errorMessage}</span>}
+      <label htmlFor={id} className={label}>
+        {title}
+      </label>
+      <input type="text" id={id} {...props} className={input} />
+      {error && <span className={errorCN}>{errorMessage}</span>}
     </div>
   );
 };
