@@ -26,15 +26,15 @@ type Project struct {
 	Databases           []*ProjectDatabase `bson:"databases" json:"databases"`
 	Env                 map[string]string  `bson:"env" json:"env"`
 	BelongsToId         string             `bson:"belongs_to" json:"-"`
-	BelongsTo           ProjectUser        `bson:"-" json:"belongs_to"`
+	BelongsTo           *ProjectUser       `bson:"-" json:"belongs_to"`
 }
 
 type ProjectDatabase struct {
-	Type          string `bson:"type" json:"type"`
-	Version       string `bson:"version" json:"version"`
-	EnvDatabase   string `bson:"env_db" json:"env_db"`
-	EnvUsername   string `bson:"env_user" json:"env_user"`
-	EnvPassword   string `bson:"env_password" json:"env_password"`
+	Type        string `bson:"type" json:"type"`
+	Version     string `bson:"version" json:"version"`
+	EnvDatabase string `bson:"env_db" json:"env_db"`
+	EnvUsername string `bson:"env_user" json:"env_user"`
+	EnvPassword string `bson:"env_password" json:"env_password"`
 }
 
 type ProjectUser struct {

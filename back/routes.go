@@ -188,7 +188,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		// The project is attributed to the user that requested it
 		project.Id = bson.NewObjectId()
 		project.BelongsToId = claims.TyphoonId
-		project.BelongsTo = user
+		project.BelongsTo = &user
 
 		// Insert the project into the database
 		if err := dao.InsertProject(*project); err != nil {

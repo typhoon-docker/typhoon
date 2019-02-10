@@ -28,6 +28,14 @@ func (d *TyphoonDAO) Connect() {
 func (m *TyphoonDAO) FindAllProjects() ([]Project, error) {
 	projects := make([]Project, 0)
 	err := db.C("projects").Find(bson.M{}).All(&projects)
+	for i := range projects {
+		userId := projects[i].BelongsToId
+		if userId == "" {
+			continue
+		}
+		user, _ := m.FindUserById(userId)
+		projects[i].BelongsTo = &user
+	}
 	return projects, err
 }
 
@@ -35,21 +43,41 @@ func (m *TyphoonDAO) FindAllProjects() ([]Project, error) {
 func (m *TyphoonDAO) FindProjectsOfUser(uMongoId string) ([]Project, error) {
 	projects := make([]Project, 0)
 	err := db.C("projects").Find(bson.M{"belongs_to": uMongoId}).All(&projects)
+	user, _ := m.FindUserById(uMongoId)
+	for i := range projects {
+		projects[i].BelongsTo = &user
+	}
 	return projects, err
 }
 
 // Find a project by its id
 func (m *TyphoonDAO) FindProjectById(id string) (Project, error) {
 	var project Project
-	err := db.C("projects").FindId(bson.ObjectIdHex(id)).One(&project)
-	return project, err
+	err1 := db.C("projects").FindId(bson.ObjectIdHex(id)).One(&project)
+	if err1 != nil {
+		return project, err1
+	}
+	user, err2 := m.FindUserById(project.BelongsToId)
+	if err2 != nil {
+		return project, err2
+	}
+	project.BelongsTo = &user
+	return project, nil
 }
 
 // Find a project by its id
 func (m *TyphoonDAO) FindProjectByName(name string) (Project, error) {
 	var project Project
-	err := db.C("projects").Find(bson.M{"name": name}).One(&project)
-	return project, err
+	err1 := db.C("projects").Find(bson.M{"name": name}).One(&project)
+	if err1 != nil {
+		return project, err1
+	}
+	user, err2 := m.FindUserById(project.BelongsToId)
+	if err2 != nil {
+		return project, err2
+	}
+	project.BelongsTo = &user
+	return project, nil
 }
 
 // Insert a project into database
