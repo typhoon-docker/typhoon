@@ -44,6 +44,24 @@ services:
       - /typhoon_volumes:/typhoon_volumes
       - /typhoon_logs:/typhoon_logs
 
+  tests:
+    # once the deployment is running, run `docker-compose start tests` to rerun the tests
+    image: typhoon-back-go
+    container_name: typhoon_back_go_tests
+    restart: "no"
+    depends_on:
+      - mongo
+    stdin_open: true
+    tty: true
+    command: go test
+    volumes:
+      - .:/typhoon
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /typhoon_sites:/typhoon_sites
+      - /typhoon_dockerfile:/typhoon_dockerfile
+      - /typhoon_docker_compose:/typhoon_docker_compose
+      - /typhoon_volumes:/typhoon_volumes
+
 networks:
   default:
     external:
