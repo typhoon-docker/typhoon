@@ -5,17 +5,17 @@ import ArrowButton from '/components/ArrowButton/';
 
 import { input, label } from './Repository.css';
 
-const Repository = ({ repo, onSelect }) => (
+const Repository = ({ id, repo, onSelect }) => (
   <Fragment>
     <input
       type="radio"
-      id={repo.id}
+      id={id}
       className={input}
       name="repository_url"
       value={repo.url}
       onChange={() => onSelect(repo)}
     />
-    <label htmlFor={repo.id} className={label}>
+    <label htmlFor={id} className={label}>
       {repo.name}
     </label>
   </Fragment>
@@ -36,7 +36,7 @@ const Repositories = ({ onSelect }) => {
         <Fragment key={org}>
           <h2>{org}</h2>
           {repos.map(repo => (
-            <Repository key={repo.id} repo={repo} onSelect={onSelect} />
+            <Repository key={`${org}_${repo.id}`} id={`${org}_${repo.id}`} repo={repo} onSelect={onSelect} />
           ))}
         </Fragment>
       ))}
