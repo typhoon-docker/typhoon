@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 
 import { getFullRepos } from '/utils/githubAPI';
-import ArrowButton from '/components/ArrowButton/';
 
 import { input, label } from './Repository.css';
 
@@ -30,21 +29,14 @@ const Repositories = ({ onSelect }) => {
       .catch(console.warn);
   }, []);
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      {Object.entries(repositories).map(([org, repos]) => (
-        <Fragment key={org}>
-          <h2>{org}</h2>
-          {repos.map(repo => (
-            <Repository key={`${org}_${repo.id}`} id={`${org}_${repo.id}`} repo={repo} onSelect={onSelect} />
-          ))}
-        </Fragment>
+  return Object.entries(repositories).map(([org, repos]) => (
+    <Fragment key={org}>
+      <h2>{org}</h2>
+      {repos.map(repo => (
+        <Repository key={`${org}_${repo.id}`} id={`${org}_${repo.id}`} repo={repo} onSelect={onSelect} />
       ))}
-      <div style={{ marginTop: '0.5em', fontSize: '1.3em', alignSelf: 'flex-end' }}>
-        <ArrowButton type="submit">Continuer</ArrowButton>
-      </div>
-    </div>
-  );
+    </Fragment>
+  ));
 };
 
 export default Repositories;

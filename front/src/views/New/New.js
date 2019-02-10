@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
+import Repositories from '/containers/Repositories/';
+
 import Steps from '/components/Steps/';
 import Box from '/components/Box/';
 import { Text, Select } from '/components/Input/';
 import ArrowButton from '/components/ArrowButton/';
-import Repositories from '/containers/Repositories/';
+import TemplatePicker from '/components/TemplatePicker/';
 
 import { newProjectCup } from '/utils/project';
 import { formDataToArray, arrayToJSON } from '/utils/formData';
 import { checkProject } from '/utils/typhoonAPI';
 import { getBranches } from '/utils/githubAPI';
+
+import { block, next } from './New.css';
 
 const New = () => {
   const [step, setStep] = useState(0);
@@ -60,14 +64,19 @@ const New = () => {
     <Steps step={step}>
       <Box
         as="form"
+        className={block}
         onSubmit={onSubmit({
           repository_url: Boolean,
         })}
       >
         <Repositories onSelect={repository => setRepo(repository)} />
+        <div className={next}>
+          <ArrowButton type="submit">Continuer</ArrowButton>
+        </div>
       </Box>
       <Box
         as="form"
+        className={block}
         onSubmit={onSubmit({
           name: name => checkProject(name).then(({ data }) => data === false),
           branch: Boolean,
@@ -88,9 +97,16 @@ const New = () => {
           required
           data={branches.map(({ name }) => ({ value: name }))}
         />
-        <ArrowButton type="submit">Next</ArrowButton>
+        <div className={next}>
+          <ArrowButton type="submit">Continuer</ArrowButton>
+        </div>
       </Box>
-      <Box as="form">test</Box>
+      <Box as="form" className={block}>
+        <TemplatePicker />
+        <div className={next}>
+          <ArrowButton type="submit">Continuer</ArrowButton>
+        </div>
+      </Box>
     </Steps>
   );
 };

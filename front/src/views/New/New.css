@@ -1,0 +1,10 @@
+.block {
+  display: flex;
+  flex-direction: column;
+}
+
+.next {
+  margin-top: 0.5em;
+  font-size: 1.3em;
+  align-self: flex-end;
+}
