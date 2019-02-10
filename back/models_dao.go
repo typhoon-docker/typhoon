@@ -26,14 +26,14 @@ func (d *TyphoonDAO) Connect() {
 
 // Find list of project
 func (m *TyphoonDAO) FindAllProjects() ([]Project, error) {
-	var projects []Project
+	projects := make([]Project, 0)
 	err := db.C("projects").Find(bson.M{}).All(&projects)
 	return projects, err
 }
 
 // Find list of project for given user id
 func (m *TyphoonDAO) FindProjectsOfUser(uMongoId string) ([]Project, error) {
-	var projects []Project
+	projects := make([]Project, 0)
 	err := db.C("projects").Find(bson.M{"belongs_to": uMongoId}).All(&projects)
 	return projects, err
 }
@@ -94,7 +94,7 @@ func (m *TyphoonDAO) InsertUser(user ProjectUser) (ProjectUser, error) {
 /////// TEMP ? ///////
 // Find list of users
 func (m *TyphoonDAO) FindAllUsers() ([]ProjectUser, error) {
-	var users []ProjectUser
+	users := make([]ProjectUser, 0)
 	err := db.C("users").Find(bson.M{}).All(&users)
 	return users, err
 }
