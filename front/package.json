@@ -20,7 +20,6 @@
     "@babel/plugin-transform-runtime": "^7.2.0",
     "@babel/preset-react": "^7.0.0",
     "axios-mock-adapter": "^1.16.0",
-    "crypto-browserify": "file:./empty-package/",
     "eslint-config-linkcs-react": "^0.3.1",
     "eslint-import-resolver-parcel": "^1.7.0",
     "parcel-bundler": "^1.11.0",
