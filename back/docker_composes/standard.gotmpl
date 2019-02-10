@@ -25,18 +25,13 @@ services:
 {{- if eq .Type "mysql"}}
   mysql:
     image: mysql{{if .Version}}:{{.Version}}{{end}}
-    container_name: {{$.Name}}_mysql
+    container_name: cn_{{$.Name}}_mysql
     restart: always
     environment:
-    {{- if .EnvDatabase}}
-      - MYSQL_DATABASE={{.EnvDatabase}}
-    {{- end}}
-    {{- if .EnvUsername}}
-      - MYSQL_USER={{.EnvUsername}}
-    {{- end}}
-    {{- if .EnvPassword}}
-      - MYSQL_PASSWORD={{.EnvPassword}}
-    {{- end}}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+{{if .EnvDatabase}}      - MYSQL_DATABASE={{.EnvDatabase}}{{end}}
+{{if .EnvUsername}}      - MYSQL_USER={{.EnvUsername}}{{end}}
+{{if .EnvPassword}}      - MYSQL_PASSWORD={{.EnvPassword}}{{end}}
     volumes:
       - /typhoon_volumes/{{$.Name}}/mysql:/var/lib/mysql
 {{- end}}
@@ -44,18 +39,12 @@ services:
 {{- if eq .Type "postgres"}}
   postgres:
     image: postgres{{if .Version}}:{{.Version}}{{end}}
-    container_name: {{$.Name}}_postgres
+    container_name: cn_{{$.Name}}_postgres
     restart: always
     environment:
-    {{- if .EnvDatabase}}
-      - POSTGRES_DB={{.EnvDatabase}}
-    {{- end}}
-    {{- if .EnvUsername}}
-      - POSTGRES_USER={{.EnvUsername}}
-    {{- end}}
-    {{- if .EnvPassword}}
-      - POSTGRES_PASSWORD={{.EnvPassword}}
-    {{- end}}
+{{if .EnvDatabase}}      - POSTGRES_DB={{.EnvDatabase}}{{end}}
+{{if .EnvUsername}}      - POSTGRES_USER={{.EnvUsername}}{{end}}
+{{if .EnvPassword}}      - POSTGRES_PASSWORD={{.EnvPassword}}{{end}}
     volumes:
       - /typhoon_volumes/{{$.Name}}/postgres:/var/lib/postgresql/data
 {{- end}}
@@ -63,18 +52,12 @@ services:
 {{- if eq .Type "mongo"}}
   mongo:
     image: mongo{{if .Version}}:{{.Version}}{{end}}
-    container_name: {{$.Name}}_mongo
+    container_name: cn_{{$.Name}}_mongo
     restart: always
     environment:
-    {{- if .EnvDatabase}}
-      - MONGO_INITDB_DATABASE={{.EnvDatabase}}
-    {{- end}}
-    {{- if .EnvUsername}}
-      - MONGO_INITDB_ROOT_USERNAME={{.EnvUsername}}
-    {{- end}}
-    {{- if .EnvPassword}}
-      - MONGO_INITDB_ROOT_PASSWORD={{.EnvPassword}}
-    {{- end}}
+{{if .EnvDatabase}}      - MONGO_INITDB_DATABASE={{.EnvDatabase}}{{end}}
+{{if .EnvUsername}}      - MONGO_INITDB_ROOT_USERNAME={{.EnvUsername}}{{end}}
+{{if .EnvPassword}}      - MONGO_INITDB_ROOT_PASSWORD={{.EnvPassword}}{{end}}
     volumes:
       - /typhoon_volumes/{{$.Name}}/mongo:/data/db
 {{- end}}
