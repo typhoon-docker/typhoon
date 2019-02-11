@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import Repositories from '/containers/Repositories/';
 import Variables from '/containers/Variables/';
+import Database from '/containers/Database/';
 
 import Steps from '/components/Steps/';
 import Box from '/components/Box/';
@@ -132,6 +133,20 @@ const New = () => {
             Langage
           </ArrowButton>
           <ArrowButton type="submit">Bdd</ArrowButton>
+        </div>
+      </Box>
+      <Box
+        as="form"
+        onSubmit={onSubmit({}, () => {
+          setProject(p => ({ ...p, databases: Array.isArray(p.databases) ? [] : Object.values(p.databases) }));
+        })}
+      >
+        <Database />
+        <div className={direction}>
+          <ArrowButton type="button" onClick={previousStep} direction="previous">
+            Url
+          </ArrowButton>
+          <ArrowButton type="submit">Variables</ArrowButton>
         </div>
       </Box>
     </Steps>
