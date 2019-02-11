@@ -158,9 +158,11 @@ const New = () => {
       </Box>
       <Box
         as="form"
-        onSubmit={onSubmit({}, () => postProject(project))
-          .then(({ id }) => activateProject(id))
-          .then(() => setLoading(false))}
+        onSubmit={onSubmit({}, () =>
+          postProject(project)
+            .then(({ id }) => activateProject(id))
+            .then(() => setLoading(false)),
+        )}
       >
         <Envs />
         <div className={direction}>
