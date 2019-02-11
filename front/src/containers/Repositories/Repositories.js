@@ -1,42 +1,45 @@
 import React, { Fragment, useState, useEffect } from 'react';
 
-import { getFullRepos } from '/utils/githubAPI';
+import { getRepos } from '/utils/githubAPI';
 
 import { input, label } from './Repository.css';
 
-const Repository = ({ id, repo, onSelect }) => (
+const Repository = ({ repo, onSelect }) => (
   <Fragment>
     <input
       type="radio"
-      id={id}
+      id={repo.id}
       className={input}
       name="repository_url"
-      value={repo.url}
+      value={repo.clone_url}
       onChange={() => onSelect(repo)}
     />
-    <label htmlFor={id} className={label}>
-      {repo.name}
+    <label htmlFor={repo.id} className={label}>
+      {repo.full_name}
     </label>
   </Fragment>
 );
 
 const Repositories = ({ onSelect }) => {
-  const [repositories, setRepos] = useState({});
+  const [repositories, setRepos] = useState([]);
 
   useEffect(() => {
-    getFullRepos()
-      .then(({ data }) => setRepos(data))
-      .catch(console.warn);
+    const fetchRepos = page =>
+      getRepos(page)
+        .then(({ data, headers }) => {
+          setRepos(r => [...r, ...data]);
+          if (headers.link && headers.link.includes(';')) {
+            const nextPage = Number(headers.link.split('>; rel="next"')[0].replace(/.*\?page=/, ''));
+            if (!Number.isNaN(nextPage)) {
+              fetchRepos(nextPage);
+            }
+          }
+        })
+        .catch(console.warn);
+    fetchRepos();
   }, []);
 
-  return Object.entries(repositories).map(([org, repos]) => (
-    <Fragment key={org}>
-      <h2>{org}</h2>
-      {repos.map(repo => (
-        <Repository key={`${org}_${repo.id}`} id={`${org}_${repo.id}`} repo={repo} onSelect={onSelect} />
-      ))}
-    </Fragment>
-  ));
+  return repositories.map(repo => <Repository key={repo.id} repo={repo} onSelect={onSelect} />);
 };
 
 export default Repositories;

@@ -46,14 +46,14 @@ Oauths:
 
 `/projects/:id` - **PUT**
 - headers : `{ "Authorization: "Bearer <token>", "Content-Type": "application/json" }`
-- body: { project: Project }
+- body: Project
 - return: `[Project]`
 
 #### Post a new project (will be added to database but not built)
 
 `/projects` - **POST**
 - headers : `{ "Authorization: "Bearer <token>", "Content-Type": "application/json" }`
-- body: { project: Project }
+- body: Project
 - return: `[Project]`
 
 ### Remove a project by id
@@ -114,7 +114,7 @@ Parameter lines is optional. Default is 30.
 #### Edit user
 
 `/admin/user/:id` - **PUT**
-- body: { user: User }
+- body: User
 - return: `User`
 
 #### Delete user

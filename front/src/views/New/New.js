@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import Repositories from '/containers/Repositories/';
 import Variables from '/containers/Variables/';
+import Database from '/containers/Database/';
+import Envs from '/containers/Envs/';
 
 import Steps from '/components/Steps/';
 import Box from '/components/Box/';
@@ -11,7 +13,7 @@ import TemplatePicker from '/components/TemplatePicker/';
 
 import { useProject } from '/utils/project';
 import { formDataToArray, arrayToJSON } from '/utils/formData';
-import { checkProject } from '/utils/typhoonAPI';
+import { checkProject, postProject, activateProject } from '/utils/typhoonAPI';
 import { getBranches } from '/utils/githubAPI';
 
 import { block, direction } from './New.css';
@@ -20,6 +22,7 @@ const New = () => {
   const [step, setStep] = useState(0);
   const [error, setError] = useState(null);
   const [repo, setRepo] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [template, setTemplate] = useState({});
   const [branches, setBranches] = useState([]);
   const [project, setProject] = useProject();
@@ -121,9 +124,14 @@ const New = () => {
         className={block}
         onSubmit={onSubmit(
           {
-            exposed_port: value => !value || !Number.isNaN(parseInt(value, 10)),
+            exposed_port: value => !value || !Number.isNaN(Number(value)),
           },
-          () => setProject(({ use_https, ...p }) => ({ ...p, use_https: use_https === 'https' })),
+          () =>
+            setProject(({ use_https, exposed_port, ...p }) => ({
+              ...p,
+              use_https: use_https === 'https',
+              exposed_port: exposed_port || null,
+            })),
         )}
       >
         <Variables project={project} />
@@ -134,6 +142,37 @@ const New = () => {
           <ArrowButton type="submit">Bdd</ArrowButton>
         </div>
       </Box>
+      <Box
+        as="form"
+        onSubmit={onSubmit({}, () => {
+          setProject(p => ({ ...p, databases: Array.isArray(p.databases) ? [] : Object.values(p.databases) }));
+        })}
+      >
+        <Database />
+        <div className={direction}>
+          <ArrowButton type="button" onClick={previousStep} direction="previous">
+            Url
+          </ArrowButton>
+          <ArrowButton type="submit">Variables</ArrowButton>
+        </div>
+      </Box>
+      <Box
+        as="form"
+        onSubmit={onSubmit({}, () =>
+          postProject(project)
+            .then(({ data: { id } }) => activateProject(id))
+            .then(() => setLoading(false)),
+        )}
+      >
+        <Envs />
+        <div className={direction}>
+          <ArrowButton type="button" onClick={previousStep} direction="previous">
+            Db
+          </ArrowButton>
+          <ArrowButton type="submit">Valider</ArrowButton>
+        </div>
+      </Box>
+      <Box>{loading ? 'Ton site va être déployé. Vérifie dans quelques instants' : 'Ton site est déployé'}</Box>
     </Steps>
   );
 };
