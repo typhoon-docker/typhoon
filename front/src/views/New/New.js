@@ -160,7 +160,7 @@ const New = () => {
         as="form"
         onSubmit={onSubmit({}, () =>
           postProject(project)
-            .then(({ id }) => activateProject(id))
+            .then(({ data: { id } }) => activateProject(id))
             .then(() => setLoading(false)),
         )}
       >
