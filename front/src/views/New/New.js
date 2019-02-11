@@ -36,7 +36,7 @@ const New = () => {
 
   const nextStep = () => setStep(step + 1);
 
-  const onSubmit = (verifies, cb = () => {}) => event => {
+  const onSubmit = (verifies = {}, cb = () => {}) => event => {
     event.preventDefault();
     const newDataArray = formDataToArray(new FormData(event.target));
     if (Object.keys(verifies).length > newDataArray.length) {
@@ -45,7 +45,7 @@ const New = () => {
     if (Object.keys(verifies).length < newDataArray.length) {
       console.warn("Many fields aren't verified");
     }
-    Promise.all(newDataArray.map(([key, value]) => verifies[key](value)))
+    Promise.all(newDataArray.map(([key, value]) => (verifies[key] ? verifies[key](value) : true)))
       .then(array => {
         const falseIndex = array.findIndex(e => e === false);
         if (falseIndex >= 0) {
@@ -111,7 +111,13 @@ const New = () => {
           <ArrowButton type="submit">Continuer</ArrowButton>
         </div>
       </Box>
-      <Box as="form" className={block}>
+      <Box
+        as="form"
+        className={block}
+        onSubmit={onSubmit({
+          exposed_port: value => !Number.isNaN(parseInt(value, 10)),
+        })}
+      >
         <Variables project={project} />
         <div className={next}>
           <ArrowButton type="submit">Continuer</ArrowButton>
