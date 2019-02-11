@@ -3,14 +3,24 @@ import React, { useState } from 'react';
 import { Checkbox, Input } from '/components/Input';
 import list from '/utils/databases.json';
 
-const Db = ({ title, update }) => (
+const Db = ({ db, update }) => (
   <>
-    {title}
-    <input type="hidden" name={`databases.${title}.tile`} value={title} placeholder="database" />
-    <Input name={`databases.${title}.env_db`} required title="database" {...update('env_db')} placeholder="user" />
-    <Input name={`databases.${title}.env_user`} required title="user" {...update('env_user')} />
+    {db.type}
+    {Object.entries(db)
+      .filter(entries => entries[1] !== '')
+      .map(([key, value]) => (
+        <input type="hidden" key={key} name={`databases.${db.type}.${key}`} value={value} />
+      ))}
     <Input
-      name={`databases.${title}.env_password`}
+      name={`databases.${db.type}.env_db`}
+      required
+      title="database"
+      {...update('env_db')}
+      placeholder="database"
+    />
+    <Input name={`databases.${db.type}.env_user`} required title="user" {...update('env_user')} placeholder="user" />
+    <Input
+      name={`databases.${db.type}.env_password`}
       required
       title="password"
       {...update('env_password')}
@@ -38,7 +48,7 @@ const Database = () => {
       {databases.map((db, index) => (
         <Checkbox
           key={db.type}
-          title={activeDb[index] ? <Db title={databases[index].type} update={update(index)} /> : databases[index].type}
+          title={activeDb[index] ? <Db db={db} update={update(index)} /> : db.type}
           checked={activeDb[index]}
           onChange={event => {
             const dump = [...activeDb];
