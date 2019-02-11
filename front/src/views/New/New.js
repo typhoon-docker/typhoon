@@ -13,7 +13,7 @@ import TemplatePicker from '/components/TemplatePicker/';
 
 import { useProject } from '/utils/project';
 import { formDataToArray, arrayToJSON } from '/utils/formData';
-import { checkProject } from '/utils/typhoonAPI';
+import { checkProject, postProject } from '/utils/typhoonAPI';
 import { getBranches } from '/utils/githubAPI';
 
 import { block, direction } from './New.css';
@@ -150,7 +150,7 @@ const New = () => {
           <ArrowButton type="submit">Variables</ArrowButton>
         </div>
       </Box>
-      <Box as="form" onSubmit={onSubmit({})}>
+      <Box as="form" onSubmit={onSubmit({}, () => postProject(project))}>
         <Envs />
         <div className={direction}>
           <ArrowButton type="button" onClick={previousStep} direction="previous">
@@ -159,6 +159,7 @@ const New = () => {
           <ArrowButton type="submit">Valider</ArrowButton>
         </div>
       </Box>
+      <Box>Ton site va être déployé. Vérifie dans quelques instants</Box>
     </Steps>
   );
 };
