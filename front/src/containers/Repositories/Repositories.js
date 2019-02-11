@@ -33,7 +33,7 @@ const Repositories = ({ onSelect }) => {
               headers.link
                 .split(';')[0]
                 .replace(/[<>]/g, '')
-                .split('?')[1],
+                .split('?page=')[1],
               10,
             ),
           );
