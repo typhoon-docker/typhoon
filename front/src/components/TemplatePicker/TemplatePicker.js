@@ -8,7 +8,7 @@ import python3 from './python3.svg';
 import raw from './static.svg';
 import cra from './create-react-app.svg';
 
-import { img, input, label, wrapper } from './TemplatePicker.css';
+import { img, input, label, wrapper, name } from './TemplatePicker.css';
 
 const images = {
   node,
@@ -34,7 +34,13 @@ const TemplatePicker = ({ onSelect }) => {
               onChange={() => onSelect(template)}
             />
             <label htmlFor={template.template_id} className={label}>
-              <img src={images[template.template_id]} alt={template.template_id} className={img} />
+              <img
+                src={images[template.template_id]}
+                alt={template.template_id}
+                className={img}
+                title={template.template_id}
+              />
+              <span className={name}>{template.template_id}</span>
             </label>
           </Fragment>
         ))}

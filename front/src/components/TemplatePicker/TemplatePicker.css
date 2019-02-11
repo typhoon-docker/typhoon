@@ -1,6 +1,7 @@
 .wrapper {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 1.5em;
 }
 
 .img {
@@ -40,4 +41,17 @@
 
 .input:checked + .label {
   background: rgba(var(--text), 0.3);
+}
+
+.name {
+  position: absolute;
+  font-size: 0.9em;
+  text-align: center;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  left: 50%;
+  bottom: -1.4em;
+  line-height: 1.4em;
+  font-weight: 400;
+  color: rgba(var(--text), 0.8);
 }
