@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { createCup } from 'manatea';
 
 export const systemEnvVars = {
@@ -24,6 +25,16 @@ export const newProjectCup = createCup({
   databases: [],
   env: {},
 });
+
+export const useProject = () => {
+  const [project, setProject] = useState(newProjectCup());
+  useEffect(() => {
+    const listener = newProjectCup.on(p => setProject(p));
+    setProject(newProjectCup());
+    return listener;
+  }, []);
+  return [project, p => newProjectCup(p)];
+};
 
 export const isProjectFilled = () => {
   const project = newProjectCup();
