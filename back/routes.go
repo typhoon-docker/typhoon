@@ -96,10 +96,13 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 
 		// Parse the body to find the new project info
 		project := new(Project)
+		log.Println(project)
 		if err := c.Bind(project); err != nil {
 			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
 		}
-		// project.Sanitize()
+		log.Println(project)
+		project.Sanitize()
+		log.Println(project)
 
 		// Check if the requested name is available
 		if _, err := dao.FindProjectByName(project.Name); err == nil {
