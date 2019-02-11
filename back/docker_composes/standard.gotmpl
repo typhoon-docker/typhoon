@@ -32,6 +32,7 @@ services:
 {{if .EnvDatabase}}      - MYSQL_DATABASE={{.EnvDatabase}}{{end}}
 {{if .EnvUsername}}      - MYSQL_USER={{.EnvUsername}}{{end}}
 {{if .EnvPassword}}      - MYSQL_PASSWORD={{.EnvPassword}}{{end}}
+{{if .EnvPassword}}      - MYSQL_ROOT_PASSWORD={{.EnvPassword}}{{end}}
     volumes:
       - /typhoon_volumes/{{$.Name}}/mysql:/var/lib/mysql
 {{- end}}
