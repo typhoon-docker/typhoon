@@ -21,5 +21,6 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4 // indirect
 	golang.org/x/crypto v0.0.0-20190208162236-193df9c0f06f // indirect
-	golang.org/x/net v0.0.0-20190206173232-65e2d4e15006 // indirect
+	golang.org/x/net v0.0.0-20190206173232-65e2d4e15006
+	golang.org/x/tools v0.0.0-20190208222737-3744606dbb67
 )
