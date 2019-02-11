@@ -114,9 +114,12 @@ const New = () => {
       <Box
         as="form"
         className={block}
-        onSubmit={onSubmit({
-          exposed_port: value => !Number.isNaN(parseInt(value, 10)),
-        })}
+        onSubmit={onSubmit(
+          {
+            exposed_port: value => !Number.isNaN(parseInt(value, 10)),
+          },
+          () => setProject(({ use_https, ...p }) => ({ ...p, use_https: use_https === 'https' })),
+        )}
       >
         <Variables project={project} />
         <div className={next}>

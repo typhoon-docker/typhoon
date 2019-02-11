@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Input } from '/components/Input';
+import { Input, Checkbox } from '/components/Input';
 
 // external_domain_names: [],
 // system_dependencies: [],
@@ -42,7 +42,7 @@ const Variables = ({ project }) => {
         max={65535}
       />
 
-      <Input type="checkbox" title="HTTPS" name="use_https" defaultValue={project ? project.use_https : ''} />
+      <Checkbox title="HTTPS" name="use_https" defaultChecked={project ? project.use_https : false} value="https" />
     </>
   );
 };
