@@ -1,6 +1,7 @@
 module github.com/typhoon-docker/typhoon/back
 
 require (
+	github.com/Machiel/slugify v1.0.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/docker/distribution v2.7.1+incompatible // indirect
 	github.com/docker/docker v0.7.3-0.20190208221036-832ce62cb26d

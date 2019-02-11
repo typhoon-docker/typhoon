@@ -99,6 +99,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		if err := c.Bind(project); err != nil {
 			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
 		}
+		project.Sanitize()
 
 		// Check if the requested name is available
 		if _, err := dao.FindProjectByName(project.Name); err == nil {
@@ -137,6 +138,8 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		if err := c.Bind(project); err != nil {
 			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
 		}
+		project.Sanitize()
+
 		// Check if the id given in url is the same as id in the body
 		if id != project.Id.Hex() {
 			return c.String(http.StatusBadRequest, "Projects id mismatch")

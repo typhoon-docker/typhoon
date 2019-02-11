@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/Machiel/slugify"
 )
 
 // Will return the last timestamp of the file if it exists, else ""
@@ -110,4 +112,9 @@ func Reverse(s string) string {
 		runes[i], runes[j] = runes[j], runes[i]
 	}
 	return string(runes)
+}
+
+// Sanitize the project inputs that could affect functionality
+func (p *Project) Sanitize() {
+	p.Name = slugify.Slugify(p.Name)
 }
