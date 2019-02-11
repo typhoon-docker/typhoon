@@ -17,8 +17,11 @@ const Project = ({ project, onSelect, selected }) => {
       </summary>
       <div className={content} ref={el}>
         Projet en {template_id}, accessible via{' '}
+        <a href={`https://${name}.typhoon.viarezo.fr/`} target="_blank" rel="noopener noreferrer">
+          {`https://${name}.typhoon.viarezo.fr/`}
+        </a>{' '}
         <a href={repository_url} target="_blank" rel="noopener noreferrer">
-          {repository_url}
+          (source code)
         </a>
       </div>
     </details>
