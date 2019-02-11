@@ -93,7 +93,7 @@ const New = () => {
           name="name"
           error={error === 'name'}
           errorMessage="Ce projet existe déjà, trouve un autre nom 😉"
-          defaultValue={repo ? repo.full_name : ''}
+          defaultValue={repo ? repo.name : ''}
           required
         />
         <Select
