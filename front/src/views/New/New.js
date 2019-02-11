@@ -130,7 +130,7 @@ const New = () => {
             setProject(({ use_https, exposed_port, ...p }) => ({
               ...p,
               use_https: use_https === 'https',
-              exposed_port: exposed_port || null,
+              exposed_port: Number(exposed_port) || null,
             })),
         )}
       >
