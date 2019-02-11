@@ -19,6 +19,7 @@ const New = () => {
   const [step, setStep] = useState(0);
   const [error, setError] = useState(null);
   const [repo, setRepo] = useState(null);
+  const [template, setTemplate] = useState({});
   const [branches, setBranches] = useState([]);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const New = () => {
 
   const nextStep = () => setStep(step + 1);
 
-  const onSubmit = verifies => event => {
+  const onSubmit = (verifies, cb = () => {}) => event => {
     event.preventDefault();
     const newDataArray = formDataToArray(new FormData(event.target));
     if (Object.keys(verifies).length > newDataArray.length) {
@@ -57,6 +58,7 @@ const New = () => {
         newProjectCup(project => ({ ...project, ...newData }));
         nextStep();
       })
+      .then(cb)
       .catch(console.warn);
   };
 
@@ -77,10 +79,14 @@ const New = () => {
       <Box
         as="form"
         className={block}
-        onSubmit={onSubmit({
-          name: name => checkProject(name).then(({ data }) => data === false),
-          branch: Boolean,
-        })}
+        onSubmit={onSubmit(
+          {
+            name: name => checkProject(name).then(({ data }) => data === false),
+            branch: Boolean,
+            template_id: Boolean,
+          },
+          () => newProjectCup(project => ({ ...project, ...template })),
+        )}
       >
         <Text
           title="Nom du projet"
@@ -97,12 +103,13 @@ const New = () => {
           required
           data={branches.map(({ name }) => ({ value: name }))}
         />
+        <TemplatePicker onSelect={setTemplate} />
+
         <div className={next}>
           <ArrowButton type="submit">Continuer</ArrowButton>
         </div>
       </Box>
       <Box as="form" className={block}>
-        <TemplatePicker />
         <div className={next}>
           <ArrowButton type="submit">Continuer</ArrowButton>
         </div>

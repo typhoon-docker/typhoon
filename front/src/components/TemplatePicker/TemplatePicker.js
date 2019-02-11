@@ -18,7 +18,7 @@ const images = {
   'create-react-app': cra,
 };
 
-const TemplatePicker = () => {
+const TemplatePicker = ({ onSelect }) => {
   return (
     <>
       <h2>En quoi as-tu codé ton projet ?</h2>
@@ -31,6 +31,7 @@ const TemplatePicker = () => {
               name="template_id"
               value={template.template_id}
               className={input}
+              onChange={() => onSelect(template)}
             />
             <label htmlFor={template.template_id} className={label}>
               <img src={images[template.template_id]} alt={template.template_id} className={img} />
