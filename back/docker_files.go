@@ -101,10 +101,8 @@ var templateIdToFiles = map[string]DockerData{
 		DockerCompose: "docker_composes/standalone.gotmpl",
 	},
 	"static": DockerData{
-		Dockerfiles: []DockerfileData{
-			DockerfileData{TemplateFile: "dockerfiles/static.gotmpl", ImageSuffix: "-static"},
-		},
-		DockerCompose: "docker_composes/standard.gotmpl",
+		Dockerfiles:   []DockerfileData{},
+		DockerCompose: "docker_composes/static.gotmpl",
 	},
 }
 
