@@ -11,7 +11,7 @@ const Repository = ({ repo, onSelect }) => (
       id={repo.id}
       className={input}
       name="repository_url"
-      value={repo.url}
+      value={repo.clone_url}
       onChange={() => onSelect(repo)}
     />
     <label htmlFor={repo.id} className={label}>
