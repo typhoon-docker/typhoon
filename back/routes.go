@@ -169,6 +169,9 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 			return err
 		}
 
+		// Docker-compose down (in case the project is still running)
+		DockerDown(&project)
+
 		// Delete project in database
 		if err := dao.DeleteProject(id); err != nil {
 			return c.String(http.StatusInternalServerError, err.Error())
