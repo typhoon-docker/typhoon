@@ -76,3 +76,7 @@ export const getProject = projectID => client.get(`/projects/${projectID}`);
 export const putProject = project => client.put(`/projects/${project.id}`, project);
 export const deleteProject = project => client.delete(`/projects/${project.id}`);
 export const checkProject = name => client.get(`/checkProject?name=${name}`);
+export const activateProject = projectID => client.get(`/docker/apply/${projectID}`);
+export const startProject = projectID => client.get(`/docker/up/${projectID}`);
+export const stopProject = projectID => client.get(`/docker/down/${projectID}`);
+export const statusProject = projectID => client.get(`/docker/status/${projectID}`);

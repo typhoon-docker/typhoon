@@ -13,7 +13,7 @@ import TemplatePicker from '/components/TemplatePicker/';
 
 import { useProject } from '/utils/project';
 import { formDataToArray, arrayToJSON } from '/utils/formData';
-import { checkProject, postProject } from '/utils/typhoonAPI';
+import { checkProject, postProject, activateProject } from '/utils/typhoonAPI';
 import { getBranches } from '/utils/githubAPI';
 
 import { block, direction } from './New.css';
@@ -22,6 +22,7 @@ const New = () => {
   const [step, setStep] = useState(0);
   const [error, setError] = useState(null);
   const [repo, setRepo] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [template, setTemplate] = useState({});
   const [branches, setBranches] = useState([]);
   const [project, setProject] = useProject();
@@ -155,7 +156,12 @@ const New = () => {
           <ArrowButton type="submit">Variables</ArrowButton>
         </div>
       </Box>
-      <Box as="form" onSubmit={onSubmit({}, () => postProject(project))}>
+      <Box
+        as="form"
+        onSubmit={onSubmit({}, () => postProject(project))
+          .then(({ id }) => activateProject(id))
+          .then(() => setLoading(false))}
+      >
         <Envs />
         <div className={direction}>
           <ArrowButton type="button" onClick={previousStep} direction="previous">
@@ -164,7 +170,7 @@ const New = () => {
           <ArrowButton type="submit">Valider</ArrowButton>
         </div>
       </Box>
-      <Box>Ton site va être déployé. Vérifie dans quelques instants</Box>
+      <Box>{loading ? 'Ton site va être déployé. Vérifie dans quelques instants' : 'Ton site est déployé'}</Box>
     </Steps>
   );
 };
