@@ -123,9 +123,14 @@ const New = () => {
         className={block}
         onSubmit={onSubmit(
           {
-            exposed_port: value => !value || !Number.isNaN(parseInt(value, 10)),
+            exposed_port: value => !value || !Number.isNaN(Number(value)),
           },
-          () => setProject(({ use_https, ...p }) => ({ ...p, use_https: use_https === 'https' })),
+          () =>
+            setProject(({ use_https, exposed_port, ...p }) => ({
+              ...p,
+              use_https: use_https === 'https',
+              exposed_port: exposed_port || null,
+            })),
         )}
       >
         <Variables project={project} />
