@@ -71,8 +71,8 @@ export const importMocks = async () => {
 
 export const getProjects = () => client.get('/projects');
 export const getAllProjects = () => client.get('/projects?all');
-export const postProject = project => client.post('/projects', { project });
+export const postProject = project => client.post('/projects', project);
 export const getProject = projectID => client.get(`/projects/${projectID}`);
-export const putProject = project => client.put(`/projects/${project.id}`, { project });
+export const putProject = project => client.put(`/projects/${project.id}`, project);
 export const deleteProject = project => client.delete(`/projects/${project.id}`);
 export const checkProject = name => client.get(`/checkProject?name=${name}`);
