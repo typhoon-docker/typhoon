@@ -10,7 +10,7 @@ const Input = ({ title, error, errorMessage, ...props }) => {
       <label htmlFor={id} className={label}>
         {title}
       </label>
-      <input type="text" id={id} {...props} className={input} />
+      <input type="text" {...props} id={id} className={input} />
       {error && <span className={errorCN}>{errorMessage}</span>}
     </div>
   );
