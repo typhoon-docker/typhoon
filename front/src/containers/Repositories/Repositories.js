@@ -30,7 +30,7 @@ const Repositories = ({ onSelect }) => {
         if (headers.link && headers.link.includes(';')) {
           const nextPage = parseInt(headers.link.split('>; rel="next"')[0].split('?page=')[1], 10);
           if (!Number.isNaN(nextPage)) {
-            fetchRepos();
+            fetchRepos(nextPage);
           }
         }
       })
