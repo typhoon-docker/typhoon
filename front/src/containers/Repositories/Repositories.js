@@ -23,13 +23,26 @@ const Repository = ({ repo, onSelect }) => (
 const Repositories = ({ onSelect }) => {
   const [repositories, setRepos] = useState([]);
 
-  const fetchRepos = () =>
-    getRepos()
-      .then(({ data, headers }) => (console.dir(headers), setRepos([...repositories, ...data])))
+  const fetchRepos = page =>
+    getRepos(page)
+      .then(({ data, headers }) => {
+        setRepos(r => [...r, ...data]);
+        if (headers.link && headers.link.includes(';')) {
+          fetchRepos(
+            parseInt(
+              headers.link
+                .split(';')[0]
+                .replace(/[<>]/g, '')
+                .split('?')[1],
+              10,
+            ),
+          );
+        }
+      })
       .catch(console.warn);
 
   useEffect(() => {
-    fetchRepos();
+    fetchRepos(0);
   }, []);
 
   return repositories.map(repo => <Repository key={repo.id} repo={repo} onSelect={onSelect} />);

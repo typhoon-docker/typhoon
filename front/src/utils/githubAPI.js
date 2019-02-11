@@ -36,7 +36,7 @@ export const importMocks = async () => {
   mock.onGet('/orgs/orga/repos').reply(200, mockRepos);
 };
 
-export const getRepos = () => client.get('/user/repos');
+export const getRepos = (page = 0) => client.get(`/user/repos?page=${page}`);
 export const getBranches = project => client.get(`/repos/${project.full_name}/branches`);
 export const getOrgs = () => client.get('/user/orgs');
 export const getOrgRepos = () =>
