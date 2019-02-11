@@ -36,7 +36,6 @@ const Repositories = ({ onSelect }) => {
           }
         })
         .catch(console.warn);
-    console.log('effect');
     fetchRepos();
   }, []);
 
