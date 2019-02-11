@@ -10,10 +10,10 @@ import (
 var u0 = ProjectUser{
 	// Id not set
 	OauthId:   0,
-	Login:     "2015bernarda",
-	FirstName: "Aymeric",
-	LastName:  "Bernard",
-	Email:     "nope@nope.fr",
+	Login:     "2019test",
+	FirstName: "Testy",
+	LastName:  "McTestface",
+	Email:     "test@example.com",
 	Scope:     "admin",
 }
 
@@ -84,21 +84,6 @@ func (td *TyphoonDAO) clearDatabase() {
 	db.C("projects").RemoveAll(bson.M{})
 	db.C("users").RemoveAll(bson.M{})
 }
-
-// func (m *TyphoonDAO) FindAllProjects() ([]Project, error)
-// func (m *TyphoonDAO) FindProjectsOfUser(uMongoId string) ([]Project, error)
-// func (m *TyphoonDAO) FindProjectById(id string) (Project, error)
-// func (m *TyphoonDAO) FindProjectByName(name string) (Project, error)
-// func (m *TyphoonDAO) InsertProject(project Project) error
-// func (m *TyphoonDAO) DeleteProject(id string) error
-// func (m *TyphoonDAO) UpdateProject(project Project) error
-// func (m *TyphoonDAO) FindUserById(id string) (ProjectUser, error)
-// func (m *TyphoonDAO) FindUserByLogin(login string) (ProjectUser, error)
-// func (m *TyphoonDAO) InsertUser(user ProjectUser) (ProjectUser, error)
-// func (m *TyphoonDAO) FindAllUsers() ([]ProjectUser, error)
-// func (m *TyphoonDAO) FindAllAdminUsers() ([]ProjectUser, error)
-// func (m *TyphoonDAO) UpdateUser(user ProjectUser) error
-// func (m *TyphoonDAO) DeleteUser(id string) error
 
 // Tests on the functions using the projects collection
 func TestProjectActions(t *testing.T) {
@@ -227,5 +212,132 @@ func TestProjectActions(t *testing.T) {
 		t.Log("Deletion of p1 seems sussessful")
 	} else {
 		t.Errorf("Error when checking for project p1 absence: %s", err.Error())
+	}
+}
+
+// Tests on the functions using the users collection
+func TestUserActions(t *testing.T) {
+	daoTest.connectIfNeeded()
+	daoTest.clearDatabase()
+
+	// var project Project
+	// var projects []Project
+	var user ProjectUser
+	var users []ProjectUser
+	var err error
+	var found bool
+	p1 := getProject()
+	var u1 ProjectUser
+
+	// Inserting user u1
+	u1, err = daoTest.InsertUser(*(p1.BelongsTo))
+	if err != nil {
+		t.Errorf("Error while inserting user: %s", err.Error())
+	} else {
+		t.Log("User inserted without error")
+	}
+
+	// Inserting project p1
+	err = daoTest.InsertProject(p1)
+	if err != nil {
+		t.Errorf("Error while inserting project: %s", err.Error())
+	} else {
+		t.Log("Project inserted without error")
+	}
+
+	// Get u1 back by id
+	user, err = daoTest.FindUserById(u1.Id.Hex())
+	if err != nil {
+		t.Errorf("Error while searching for user by id: %s", err.Error())
+	}
+	if user.Id != u1.Id {
+		t.Errorf("User Id mismatch!: %s != %s", user.Id, u1.Id)
+	}
+	if user.Login != u1.Login {
+		t.Errorf("User Login mismatch!: %s != %s", user.Login, u1.Login)
+	}
+	t.Log("User u1 retrieved by id without fatal errors")
+
+	// Get u1 back by login
+	user, err = daoTest.FindUserByLogin(u1.Login)
+	if err != nil {
+		t.Errorf("Error while searching for user by login: %s", err.Error())
+	}
+	if user.Id != u1.Id {
+		t.Errorf("User Id mismatch!: %s != %s", user.Id, u1.Id)
+	}
+	if user.Login != u1.Login {
+		t.Errorf("User Login mismatch!: %s != %s", user.Login, u1.Login)
+	}
+	t.Log("User u1 retrieved by login without fatal errors")
+
+	// Check if u1 is in the list of all users
+	users, err = daoTest.FindAllUsers()
+	if err != nil {
+		t.Errorf("Error while listing users: %s", err.Error())
+	}
+	found = false
+	for _, user := range users {
+		if user.Id == u1.Id {
+			t.Log("Found u1 among list of users")
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Error("u1 not found in list of users")
+	}
+
+	// Check if u1 is in the list of all admin users
+	users, err = daoTest.FindAllAdminUsers()
+	if err != nil {
+		t.Errorf("Error while listing users: %s", err.Error())
+	}
+	found = false
+	for _, user := range users {
+		if user.Id == u1.Id {
+			t.Log("Found u1 among list of admin users")
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Error("u1 not found in list of admin users")
+	}
+
+	// Update u1 in database
+	u1.FirstName = "Testy_2"
+	err = daoTest.UpdateUser(u1)
+	if err != nil {
+		t.Errorf("Error while updating user u1: %s", err.Error())
+	} else {
+		t.Log("Updated u1 without errors")
+	}
+
+	// Get u1 back
+	user, err = daoTest.FindUserById(u1.Id.Hex())
+	if err != nil {
+		t.Errorf("Error while searching for project by id: %s", err.Error())
+	}
+	if user.FirstName != "Testy_2" {
+		t.Errorf("Error: user.FirstName did not update? Value: %s", user.FirstName)
+	}
+
+	// Delete u1 in database
+	err = daoTest.DeleteUser(u1.Id.Hex())
+	if err != nil {
+		t.Errorf("Error while deleting user u1: %s", err.Error())
+	} else {
+		t.Log("Deleted u1 without errors")
+	}
+
+	// Get u1 back
+	user, err = daoTest.FindUserById(u1.Id.Hex())
+	if err == nil {
+		t.Error("Error: u1 is still in db?")
+	} else if err == mgo.ErrNotFound {
+		t.Log("Deletion of u1 seems sussessful")
+	} else {
+		t.Errorf("Error when checking for project u1 absence: %s", err.Error())
 	}
 }
