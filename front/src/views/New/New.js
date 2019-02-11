@@ -14,7 +14,7 @@ import { formDataToArray, arrayToJSON } from '/utils/formData';
 import { checkProject } from '/utils/typhoonAPI';
 import { getBranches } from '/utils/githubAPI';
 
-import { block, next } from './New.css';
+import { block, direction } from './New.css';
 
 const New = () => {
   const [step, setStep] = useState(0);
@@ -35,6 +35,7 @@ const New = () => {
   }, [repo]);
 
   const nextStep = () => setStep(step + 1);
+  const previousStep = () => setStep(step - 1);
 
   const onSubmit = (verifies = {}, cb = () => {}) => event => {
     event.preventDefault();
@@ -74,8 +75,9 @@ const New = () => {
         })}
       >
         <Repositories onSelect={repository => setRepo(repository)} />
-        <div className={next}>
-          <ArrowButton type="submit">Continuer</ArrowButton>
+        <div className={direction}>
+          <div />
+          <ArrowButton type="submit">Langage</ArrowButton>
         </div>
       </Box>
       <Box
@@ -107,8 +109,11 @@ const New = () => {
         />
         <TemplatePicker onSelect={setTemplate} />
 
-        <div className={next}>
-          <ArrowButton type="submit">Continuer</ArrowButton>
+        <div className={direction}>
+          <ArrowButton type="button" onClick={previousStep} direction="previous">
+            Url
+          </ArrowButton>
+          <ArrowButton type="submit">Variables</ArrowButton>
         </div>
       </Box>
       <Box
@@ -122,8 +127,11 @@ const New = () => {
         )}
       >
         <Variables project={project} />
-        <div className={next}>
-          <ArrowButton type="submit">Continuer</ArrowButton>
+        <div className={direction}>
+          <ArrowButton type="button" onClick={previousStep} direction="previous">
+            Langage
+          </ArrowButton>
+          <ArrowButton type="submit">Bdd</ArrowButton>
         </div>
       </Box>
     </Steps>

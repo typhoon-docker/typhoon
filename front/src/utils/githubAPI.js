@@ -33,7 +33,7 @@ export const importMocks = async () => {
   mock.onGet('/user/orgs').reply(200, mockOrgs);
 
   // getOrgRepos
-  mock.onGet('https://api.github.com/orgs/orga/repos').reply(200, mockRepos);
+  mock.onGet('/orgs/orga/repos').reply(200, mockRepos);
 };
 
 export const getRepos = () => client.get('/user/repos');

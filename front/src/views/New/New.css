@@ -3,8 +3,9 @@
   flex-direction: column;
 }
 
-.next {
+.direction {
   margin-top: 0.5em;
   font-size: 1.3em;
-  align-self: flex-end;
+  display: flex;
+  justify-content: space-between;
 }

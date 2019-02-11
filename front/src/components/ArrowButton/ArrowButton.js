@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { button } from './ArrowButton.css';
+import { button, next, previous } from './ArrowButton.css';
 
-const ArrowButton = ({ className: cn, ...props }) => {
-  const className = [button];
+const ArrowButton = ({ direction = 'next', className: cn, ...props }) => {
+  const className = [button, direction === 'previous' ? previous : next];
   if (cn) {
     className.push(cn);
   }
