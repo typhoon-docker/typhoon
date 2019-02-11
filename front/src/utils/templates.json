@@ -1,6 +1,7 @@
 {
   "node": {
     "template_id": "node",
+    "docker_image_version": "10.15.1",
     "use_https": true,
     "exposed_port": 80,
     "dependency_files": ["package.json"],
@@ -10,33 +11,46 @@
   },
   "php": {
     "template_id": "php",
+    "docker_image_version": "7.3.2",
     "use_https": true,
     "exposed_port": 80,
-    "dependency_files": []
+    "dependency_files": [],
+    "install_script": null,
+    "build_script": null,
+    "start_script": null
   },
   "python3": {
     "template_id": "python3",
+    "docker_image_version": "3.7.2",
     "use_https": true,
     "exposed_port": 80,
     "dependency_files": ["requirements.txt"],
     "install_script": "pip install -r requirements.txt",
+    "build_script": null,
+    "start_script": null,
     "env": {
       "PYTHONPATH": "/typhoon"
     }
   },
   "create-react-app": {
     "template_id": "create-react-app",
+    "docker_image_version": "10.15.1",
     "use_https": true,
     "exposed_port": null,
     "dependency_files": ["package.json"],
     "install_script": "npm install",
     "build_script": "npm build",
-    "static_folder": "build"
+    "static_folder": "build",
+    "start_script": null
   },
   "static": {
     "template_id": "static",
+    "docker_image_version": "1.15.8",
     "use_https": true,
     "exposed_port": null,
-    "dependency_files": []
+    "dependency_files": [],
+    "install_script": null,
+    "build_script": null,
+    "start_script": null
   }
 }
