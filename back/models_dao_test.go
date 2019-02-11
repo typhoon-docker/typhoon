@@ -3,6 +3,7 @@ package main
 import (
 	"testing"
 
+	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
 )
 
@@ -99,6 +100,7 @@ func (td *TyphoonDAO) clearDatabase() {
 // func (m *TyphoonDAO) UpdateUser(user ProjectUser) error
 // func (m *TyphoonDAO) DeleteUser(id string) error
 
+// Tests on the functions using the projects collection
 func TestProjectActions(t *testing.T) {
 	daoTest.connectIfNeeded()
 	daoTest.clearDatabase()
@@ -171,7 +173,7 @@ func TestProjectActions(t *testing.T) {
 		}
 	}
 	if !found {
-		t.Errorf("p1 not found in list of projects")
+		t.Error("p1 not found in list of projects")
 	}
 
 	// Check if p1 is in the list of projects of u1
@@ -188,6 +190,42 @@ func TestProjectActions(t *testing.T) {
 		}
 	}
 	if !found {
-		t.Errorf("p1 not found in list of projects of u1")
+		t.Error("p1 not found in list of projects of u1")
+	}
+
+	// Update p1 in database
+	p1.Name = "unittestproject_2"
+	err = daoTest.UpdateProject(p1)
+	if err != nil {
+		t.Errorf("Error while updating project p1: %s", err.Error())
+	} else {
+		t.Log("Updated p1 without errors")
+	}
+
+	// Get p1 back
+	project, err = daoTest.FindProjectById(p1.Id.Hex())
+	if err != nil {
+		t.Errorf("Error while searching for project by id: %s", err.Error())
+	}
+	if project.Name != "unittestproject_2" {
+		t.Errorf("Error: project.Name did not update? Value: %s", project.Name)
+	}
+
+	// Delete p1 in database
+	err = daoTest.DeleteProject(p1.Id.Hex())
+	if err != nil {
+		t.Errorf("Error while deleting project p1: %s", err.Error())
+	} else {
+		t.Log("Deleted p1 without errors")
+	}
+
+	// Get p1 back
+	project, err = daoTest.FindProjectById(p1.Id.Hex())
+	if err == nil {
+		t.Error("Error: p1 is still in db?")
+	} else if err == mgo.ErrNotFound {
+		t.Log("Deletion of p1 seems sussessful")
+	} else {
+		t.Errorf("Error when checking for project p1 absence: %s", err.Error())
 	}
 }

@@ -32,6 +32,8 @@ services:
       - "3000"
     depends_on:
       - mongo
+    environment:
+      - GO_ENV=development
     stdin_open: true
     tty: true
     command: watcher server.go
@@ -51,6 +53,8 @@ services:
     restart: "no"
     depends_on:
       - mongo
+    environment:
+      - GO_ENV=test
     stdin_open: true
     tty: true
     command: go test
