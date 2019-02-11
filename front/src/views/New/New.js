@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Repositories from '/containers/Repositories/';
 import Variables from '/containers/Variables/';
 import Database from '/containers/Database/';
+import Envs from '/containers/Envs/';
 
 import Steps from '/components/Steps/';
 import Box from '/components/Box/';
@@ -147,6 +148,15 @@ const New = () => {
             Url
           </ArrowButton>
           <ArrowButton type="submit">Variables</ArrowButton>
+        </div>
+      </Box>
+      <Box as="form" onSubmit={onSubmit({})}>
+        <Envs />
+        <div className={direction}>
+          <ArrowButton type="button" onClick={previousStep} direction="previous">
+            Db
+          </ArrowButton>
+          <ArrowButton type="submit">Valider</ArrowButton>
         </div>
       </Box>
     </Steps>
