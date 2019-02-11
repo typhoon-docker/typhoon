@@ -21,7 +21,7 @@ const Variables = ({ project }) => {
       <Input
         title="Dossier contenant le code (monorepo)"
         name="root_folder"
-        placeholder="Exemple /back"
+        placeholder="Exemple back"
         defaultValue={project ? project.root_folder : ''}
       />
       <Input title="Script d'installation" name="install_script" defaultValue={project ? project.install_script : ''} />
@@ -29,7 +29,7 @@ const Variables = ({ project }) => {
       <Input title="Script de run" name="start_script" defaultValue={project ? project.start_script : ''} />
       <Input
         title="Dossier statique"
-        placeholder="Exemple /images"
+        placeholder="Exemple images"
         name="static_folder"
         defaultValue={project ? project.static_folder : ''}
       />

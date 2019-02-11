@@ -6,9 +6,17 @@ import list from '/utils/databases.json';
 const Db = ({ title, update }) => (
   <>
     {title}
-    <Input name={`databases.${title}.env_db`} required title="database" {...update('env_db')} />
+    <input type="hidden" name={`databases.${title}.tile`} value={title} placeholder="database" />
+    <Input name={`databases.${title}.env_db`} required title="database" {...update('env_db')} placeholder="user" />
     <Input name={`databases.${title}.env_user`} required title="user" {...update('env_user')} />
-    <Input name={`databases.${title}.env_password`} required title="password" {...update('env_password')} />
+    <Input
+      name={`databases.${title}.env_password`}
+      required
+      title="password"
+      {...update('env_password')}
+      type="password"
+      placeholder="password"
+    />
   </>
 );
 
