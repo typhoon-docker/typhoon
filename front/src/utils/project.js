@@ -26,6 +26,8 @@ export const newProjectCup = createCup({
   env: {},
 });
 
+newProjectCup.on(console.log);
+
 export const useProject = () => {
   const [project, setProject] = useState(newProjectCup());
   useEffect(() => {
