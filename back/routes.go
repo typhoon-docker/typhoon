@@ -99,7 +99,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		if err := c.Bind(project); err != nil {
 			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
 		}
-		project.Sanitize()
+		// project.Sanitize()
 
 		// Check if the requested name is available
 		if _, err := dao.FindProjectByName(project.Name); err == nil {
