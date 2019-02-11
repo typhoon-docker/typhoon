@@ -23,20 +23,19 @@ const Repository = ({ repo, onSelect }) => (
 const Repositories = ({ onSelect }) => {
   const [repositories, setRepos] = useState([]);
 
-  const fetchRepos = page =>
-    getRepos(page)
-      .then(({ data, headers }) => {
-        setRepos(r => [...r, ...data]);
-        if (headers.link && headers.link.includes(';')) {
-          const nextPage = parseInt(headers.link.split('>; rel="next"')[0].replace(/.*\?page=/, ''), 10);
-          if (!Number.isNaN(nextPage)) {
-            fetchRepos(nextPage);
-          }
-        }
-      })
-      .catch(console.warn);
-
   useEffect(() => {
+    const fetchRepos = page =>
+      getRepos(page)
+        .then(({ data, headers }) => {
+          setRepos(r => [...r, ...data]);
+          if (headers.link && headers.link.includes(';')) {
+            const nextPage = parseInt(headers.link.split('>; rel="next"')[0].replace(/.*\?page=/, ''), 10);
+            if (!Number.isNaN(nextPage)) {
+              fetchRepos(nextPage);
+            }
+          }
+        })
+        .catch(console.warn);
     fetchRepos();
   }, []);
 
