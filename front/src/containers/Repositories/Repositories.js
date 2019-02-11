@@ -29,6 +29,8 @@ const Repositories = ({ onSelect }) => {
         .then(({ data, headers }) => {
           setRepos(r => [...r, ...data]);
           if (headers.link && headers.link.includes(';')) {
+            console.log(headers.link.split('>; rel="next"')[0]);
+            console.log(headers.link.split('>; rel="next"')[0].replace(/.*\?page=/, ''));
             const nextPage = parseInt(headers.link.split('>; rel="next"')[0].replace(/.*\?page=/, ''), 10);
             if (!Number.isNaN(nextPage)) {
               fetchRepos(nextPage);
@@ -36,6 +38,7 @@ const Repositories = ({ onSelect }) => {
           }
         })
         .catch(console.warn);
+    console.log('effect');
     fetchRepos();
   }, []);
 
