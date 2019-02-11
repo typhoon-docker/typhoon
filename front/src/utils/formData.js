@@ -1,6 +1,6 @@
 export const formDataToArray = formData => Array.from(formData.entries());
 
-const regex = /\[\w+\]/g;
+const regex = /\./g;
 
 const apply = (obj, key, value) => {
   if (!key.match(regex)) {
@@ -8,7 +8,7 @@ const apply = (obj, key, value) => {
   }
 
   let mem = obj;
-  const path = key.match(regex).map(s => s.replace(/(\[|\])/g, ''));
+  const path = key.split('.');
   const [lastKey] = path.splice(path.length - 1);
   path.forEach(p => {
     if (!(p in mem)) {
