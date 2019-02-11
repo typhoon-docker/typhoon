@@ -28,21 +28,16 @@ const Repositories = ({ onSelect }) => {
       .then(({ data, headers }) => {
         setRepos(r => [...r, ...data]);
         if (headers.link && headers.link.includes(';')) {
-          fetchRepos(
-            parseInt(
-              headers.link
-                .split(';')[0]
-                .replace(/[<>]/g, '')
-                .split('?page=')[1],
-              10,
-            ),
-          );
+          const nextPage = parseInt(headers.link.split('>; rel="next"')[0].split('?page=')[1], 10);
+          if (!Number.isNaN(nextPage)) {
+            fetchRepos();
+          }
         }
       })
       .catch(console.warn);
 
   useEffect(() => {
-    fetchRepos(0);
+    fetchRepos();
   }, []);
 
   return repositories.map(repo => <Repository key={repo.id} repo={repo} onSelect={onSelect} />);
