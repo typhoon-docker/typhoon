@@ -97,18 +97,21 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		// Parse the body to find the new project info
 		project := new(Project)
 		if err := c.Bind(project); err != nil {
+			log.Println("Invalid Project info: " + err.Error())
 			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
 		}
 		project.Sanitize()
 
 		// Check if the requested name is available
 		if _, err := dao.FindProjectByName(project.Name); err == nil {
+			log.Println("This project name seems to already exist")
 			return c.String(http.StatusConflict, "This project name seems to already exist")
 		}
 
 		// Get user info (with its id found in JWT)
 		user, err := dao.FindUserById(claims.TyphoonId)
 		if err != nil {
+			log.Println("Could not find you in the user database: " + err.Error())
 			return c.String(http.StatusInternalServerError, "Could not find you in the user database: "+err.Error())
 		}
 
@@ -119,7 +122,8 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 
 		// Insert the project into the database
 		if err := dao.InsertProject(*project); err != nil {
-			return c.String(http.StatusInternalServerError, err.Error())
+			log.Println("Could not insert project in database: " + err.Error())
+			return c.String(http.StatusInternalServerError, "Could not insert project in database: "+err.Error())
 		}
 
 		// TODO process the project request, extract the repository url, add a hook using addHook
@@ -136,26 +140,31 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		// Parse the body to find the new project info
 		project := new(Project)
 		if err := c.Bind(project); err != nil {
+			log.Println("Invalid Project info: " + err.Error())
 			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
 		}
 		project.Sanitize()
 
 		// Check if the id given in url is the same as id in the body
 		if id != project.Id.Hex() {
+			log.Println("Projects id mismatch")
 			return c.String(http.StatusBadRequest, "Projects id mismatch")
 		}
 		// Only continue if project belongs to the user that requested the info (JWT)
 		if "admin" != claims.Scope && project.BelongsToId != claims.TyphoonId {
+			log.Println("The project does not belong to you")
 			return c.String(http.StatusUnauthorized, "The project does not belong to you")
 		}
 		// Check if the requested name is available
 		if curProject, err := dao.FindProjectByName(project.Name); curProject.Id.Hex() != id && err == nil {
+			log.Println("This project name seems to already exist")
 			return c.String(http.StatusConflict, "This project name seems to already exist")
 		}
 		// TODO: Not sure of about the belongs_to behaviour
 		// Update project in database
 		if err := dao.UpdateProject(*project); err != nil {
-			return c.String(http.StatusInternalServerError, err.Error())
+			log.Println("Error while updating project: " + err.Error())
+			return c.String(http.StatusInternalServerError, "Error while updating project: "+err.Error())
 		}
 		return c.JSON(http.StatusOK, project)
 	})
