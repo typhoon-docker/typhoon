@@ -18,7 +18,7 @@
 
 Notably:
 * `GO_ENV` defaults to `development`, can be `development`, `test`, `production`
-* `.env.local` and `.env.test.local` aren't loaded when `GO_ENV=test` since tests should produce the same results for everyone
+* `.env.local` and `.env.test.local` are not loaded when `GO_ENV=test` since tests should produce the same results for everyone
 
 # Doc
 
@@ -95,7 +95,7 @@ Oauths:
 - headers : `{ "Authorization: "Bearer <token>" }`
 - return: `raw logs`
 
-Paramater lines is optional. Default is 30.
+Parameter lines is optional. Default is 30.
 
 ## User and Admin management
 
