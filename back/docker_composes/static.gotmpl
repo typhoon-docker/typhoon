@@ -12,7 +12,7 @@ services:
       - LETSENCRYPT_EMAIL={{.BelongsTo.Email}}
 {{- end}}
     volumes:
-      - /typhoon_sites/{{.Id.Hex}}/{{if .RootFolder}}{{.RootFolder}}/{{end}}:/usr/share/nginx/html
+      - /typhoon_sites/{{.Id.Hex}}{{if .RootFolder}}/{{.RootFolder}}{{end}}:/usr/share/nginx/html
 
 networks:
   default:
