@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
 import Repositories from '/containers/Repositories/';
+import Variables from '/containers/Variables/';
 
 import Steps from '/components/Steps/';
 import Box from '/components/Box/';
-import { Text, Select } from '/components/Input/';
+import { Input, Select } from '/components/Input/';
 import ArrowButton from '/components/ArrowButton/';
 import TemplatePicker from '/components/TemplatePicker/';
 
-import { newProjectCup } from '/utils/project';
+import { useProject } from '/utils/project';
 import { formDataToArray, arrayToJSON } from '/utils/formData';
 import { checkProject } from '/utils/typhoonAPI';
 import { getBranches } from '/utils/githubAPI';
@@ -21,6 +22,7 @@ const New = () => {
   const [repo, setRepo] = useState(null);
   const [template, setTemplate] = useState({});
   const [branches, setBranches] = useState([]);
+  const [project, setProject] = useProject();
 
   useEffect(() => {
     if (repo) {
@@ -55,7 +57,7 @@ const New = () => {
       .then(array => array.reduce((acc, isValid, index) => (isValid ? [...acc, newDataArray[index]] : acc), []))
       .then(array => {
         const newData = arrayToJSON(array);
-        newProjectCup(project => ({ ...project, ...newData }));
+        setProject(p => ({ ...p, ...newData }));
         nextStep();
       })
       .then(cb)
@@ -85,10 +87,10 @@ const New = () => {
             branch: Boolean,
             template_id: Boolean,
           },
-          () => newProjectCup(project => ({ ...project, ...template })),
+          () => setProject(p => ({ ...p, ...template })),
         )}
       >
-        <Text
+        <Input
           title="Nom du projet"
           name="name"
           error={error === 'name'}
@@ -110,6 +112,7 @@ const New = () => {
         </div>
       </Box>
       <Box as="form" className={block}>
+        <Variables project={project} />
         <div className={next}>
           <ArrowButton type="submit">Continuer</ArrowButton>
         </div>
