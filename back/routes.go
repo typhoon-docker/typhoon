@@ -144,6 +144,7 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 			return c.String(http.StatusBadRequest, "Invalid Project info: "+err.Error())
 		}
 		project.Sanitize()
+		project.BelongsToId = project.BelongsTo.Id.Hex()
 
 		// Check if the id given in url is the same as id in the body
 		if id != project.Id.Hex() {
@@ -156,11 +157,28 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 			return c.String(http.StatusUnauthorized, "The project does not belong to you")
 		}
 		// Check if the requested name is available
-		if curProject, err := dao.FindProjectByName(project.Name); curProject.Id.Hex() != id && err == nil {
-			log.Println("This project name seems to already exist")
-			return c.String(http.StatusConflict, "This project name seems to already exist")
+		curProject, err := dao.FindProjectByName(project.Name)
+		if curProject.Id.Hex() != id {
+			if err == nil {
+				return c.String(http.StatusConflict, "This project name seems to already exist")
+			} else if err != mgo.ErrNotFound {
+				return c.String(http.StatusBadRequest, "Error when using FindProjectByName: "+err.Error())
+			}
 		}
-		// TODO: Not sure of about the belongs_to behaviour
+
+		// Take care of BelongsTo
+		if project.BelongsToId == curProject.BelongsToId {
+			project.BelongsTo = curProject.BelongsTo
+		} else {
+			// Get user info (with its id found in the given BelongsTo data) to assign the project to him
+			user, err := dao.FindUserById(project.BelongsTo.Id.Hex())
+			if err != nil {
+				log.Println("Could not find the user in the database: " + err.Error())
+				return c.String(http.StatusInternalServerError, "Could not find the user in the database: "+err.Error())
+			}
+			project.BelongsTo = &user
+		}
+
 		// Update project in database
 		if err := dao.UpdateProject(*project); err != nil {
 			log.Println("Error while updating project: " + err.Error())
@@ -191,8 +209,6 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		return c.JSON(http.StatusOK, project)
 	})
 
-	/////////////////////////////
-	/////////// TEMP? ///////////
 	d := e.Group("/docker")
 	d.Use(middleware.JWTWithConfig(jwtConfig))
 
