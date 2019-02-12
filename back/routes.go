@@ -214,6 +214,33 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	d.Use(middleware.JWTWithConfig(jwtConfig))
 
 	// Clone and apply templates for given project id
+	d.POST("/templates/:id", func(c echo.Context) error {
+		// Parse id and JWT
+		id := c.Param("id")
+		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
+
+		// Get project if authorized
+		project, err := getProjectIfAuthorized(c, id, claims)
+		if err != nil {
+			return err
+		}
+
+		// Clone the source code
+		if err := GetSourceCode(&project); err != nil {
+			return c.String(http.StatusInternalServerError, "Could not clone: "+err.Error())
+		}
+
+		// Write the templates
+		res, err := WriteFromTemplates(&project)
+		if err != nil {
+			return c.String(http.StatusInternalServerError, "Could not write from templates: "+err.Error())
+		}
+
+		// Return ok
+		return c.JSON(http.StatusOK, res)
+	})
+
+	// Clone and apply templates for given project id
 	d.POST("/apply/:id", func(c echo.Context) error {
 		// Parse id and JWT
 		id := c.Param("id")
@@ -348,6 +375,10 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	////////////////////////////  // TEMP Make JWTs for tests, and allow routes to list and delete users
 	/////////// TEMP ///////////  // Those routes are open for everyone, should not be accessible as is in prod
 	e.GET("/token/:login", func(c echo.Context) error {
+		if os.Getenv("GO_ENV") == "production" {
+			return c.String(http.StatusUnauthorized, "You cannot do that. At least not in production.")
+		}
+
 		userLoginToTest := c.Param("login")
 		scope := c.QueryParam("scope")
 		if scope == "" {
