@@ -36,10 +36,11 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		Claims:     &JwtCustomClaims{},
 		SigningKey: []byte(os.Getenv("JWT_SECRET")),
 	}
+	m := middleware.JWTWithConfig(jwtConfig)
 	log.Println("JWT_SECRET is: '" + os.Getenv("JWT_SECRET") + "'")
 
 	p := e.Group("/projects")
-	p.Use(middleware.JWTWithConfig(jwtConfig))
+	p.Use(m)
 
 	// List projects
 	p.GET("", func(c echo.Context) error {
@@ -341,8 +342,8 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	})
 
 	// Activate the other routes
-	RoutesAdmin(e, dao)
-	RoutesMisc(e, dao)
+	RoutesAdmin(e, m, dao)
+	RoutesMisc(e, m, dao)
 
 	////////////////////////////  // TEMP Make JWTs for tests, and allow routes to list and delete users
 	/////////// TEMP ///////////  // Those routes are open for everyone, should not be accessible as is in prod

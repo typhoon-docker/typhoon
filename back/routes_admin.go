@@ -2,24 +2,17 @@ package main
 
 import (
 	"net/http"
-	"os"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
 )
 
 // Defines somes admin routes for the echo server
-func RoutesAdmin(e *echo.Echo, dao TyphoonDAO) {
+func RoutesAdmin(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 
-	// Configure middleware with the custom claims type for JWT
-	jwtConfig := middleware.JWTConfig{
-		Claims:     &JwtCustomClaims{},
-		SigningKey: []byte(os.Getenv("JWT_SECRET")),
-	}
-
+	// Use the given middleware (JWT)
 	a := e.Group("/admin")
-	a.Use(middleware.JWTWithConfig(jwtConfig))
+	a.Use(m)
 
 	// List users or admins
 	a.GET("/list", func(c echo.Context) error {

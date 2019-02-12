@@ -2,15 +2,13 @@ package main
 
 import (
 	"net/http"
-	"os"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
 )
 
 // Defines somes routes for the echo server
-func RoutesMisc(e *echo.Echo, dao TyphoonDAO) {
+func RoutesMisc(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 
 	// Just return "OK", showing that the server is up
 	e.GET("/healthCheck", func(c echo.Context) error {
@@ -27,14 +25,9 @@ func RoutesMisc(e *echo.Echo, dao TyphoonDAO) {
 		return c.String(http.StatusOK, "true")
 	})
 
-	// Configure middleware with the custom claims type for JWT
-	jwtConfig := middleware.JWTConfig{
-		Claims:     &JwtCustomClaims{},
-		SigningKey: []byte(os.Getenv("JWT_SECRET")),
-	}
-
+	// Use the given middleware (JWT)
 	sm := e.Group("/showme")
-	sm.Use(middleware.JWTWithConfig(jwtConfig))
+	sm.Use(m)
 
 	// Get my token info
 	sm.GET("", func(c echo.Context) error {
