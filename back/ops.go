@@ -21,12 +21,14 @@ import (
 func FindContainerID(containerImage string) (string, error) {
 	cli, err := client.NewClientWithOpts(client.WithVersion("1.39"))
 	if err != nil {
-		panic(err)
+		log.Println("FindContainerID NewClientWithOpts error: " + err.Error())
+		return "", errors.New("FindContainerID NewClientWithOpts error: " + err.Error())
 	}
 
 	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
 	if err != nil {
-		panic(err)
+		log.Println("FindContainerID ContainerList error: " + err.Error())
+		return "", errors.New("FindContainerID ContainerList error: " + err.Error())
 	}
 
 	for _, container := range containers {
@@ -46,12 +48,14 @@ func GetLogsByName(p *Project, lines int) (string, error) {
 	logs_file, err := os.OpenFile(p.LogPath(), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	defer logs_file.Close()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("GetLogsByName OpenFile: " + err.Error())
+		return "", errors.New("GetLogsByName OpenFile: " + err.Error())
 	}
 
 	containerID, err := FindContainerID(p.Name)
 	if err != nil {
-		log.Println(err)
+		log.Println("GetLogsByName FindContainerID:" + err.Error())
+		return "", errors.New("GetLogsByName FindContainerID: " + err.Error())
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -60,15 +64,16 @@ func GetLogsByName(p *Project, lines int) (string, error) {
 	client, _ := client.NewClientWithOpts(client.WithVersion("1.39"))
 	reader, err := client.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Timestamps: true, Since: timestamp})
 	if err != nil {
-		log.Fatal(err)
+		log.Println("GetLogsByName ContainerLogs: " + err.Error())
+		return "", errors.New("GetLogsByName ContainerLogs: " + err.Error())
 	}
 
 	stdout := bytes.NewBuffer(make([]byte, 0))
-
 	stdcopy.StdCopy(stdout, stdout, reader)
 
 	if _, err = logs_file.WriteString(stdout.String()); err != nil {
-		panic(err)
+		log.Println("GetLogsByName WriteString: " + err.Error())
+		return "", errors.New("GetLogsByName WriteString: " + err.Error())
 	}
 
 	return ReadLastLines(p.LogPath(), lines), nil
