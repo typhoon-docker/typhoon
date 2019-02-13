@@ -64,11 +64,31 @@ Oauths:
 
 ## Docker management
 
-#### Build and run project
+#### Return docker files of project (doesn't write them)
+
+`/docker/files/:id` - **GET**
+- headers : `{ "Authorization: "Bearer <token>" }`
+- return:
+
+```
+{ "project": <project structure>,
+  "dockerfile_0": <dockerfile> || "error_dockerfile_0": <error>,
+  "docker_compose": <docker_compose> || "error_docker_compose": <error>
+}
+```
+
+#### Clone, build and run project
 
 `/docker/apply/:id` - **POST**
 - headers : `{ "Authorization: "Bearer <token>" }`
-- return: `{ "project": <project structure>, "dockerfile_1": <dockerfile>, "docker_compose": <docker_compose>}`
+- return:
+
+```
+{ "project": <project structure>,
+  "dockerfile_0": <dockerfile> || "error_dockerfile_0": <error>,
+  "docker_compose": <docker_compose> || "error_docker_compose": <error>
+}
+```
 
 #### Run project
 

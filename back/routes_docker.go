@@ -16,7 +16,7 @@ func RoutesDocker(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 	d.Use(m)
 
 	// Clone and apply templates for given project id
-	d.POST("/templates/:id", func(c echo.Context) error {
+	d.GET("/files/:id", func(c echo.Context) error {
 		// Parse id and JWT
 		id := c.Param("id")
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
@@ -27,13 +27,8 @@ func RoutesDocker(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 			return err
 		}
 
-		// Clone the source code
-		if err := GetSourceCode(&project); err != nil {
-			return c.String(http.StatusInternalServerError, "Could not clone: "+err.Error())
-		}
-
-		// Write the templates
-		res, err := WriteFromTemplates(&project)
+		// Get files from the templates, without actually writing them
+		res, err := FillTemplates(&project, false)
 		if err != nil {
 			return c.String(http.StatusInternalServerError, "Could not write from templates: "+err.Error())
 		}
@@ -60,7 +55,7 @@ func RoutesDocker(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 		}
 
 		// Write the templates
-		res, err := WriteFromTemplates(&project)
+		res, err := FillTemplates(&project, true)
 		if err != nil {
 			return c.String(http.StatusInternalServerError, "Could not write from templates: "+err.Error())
 		}

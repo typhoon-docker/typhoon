@@ -113,7 +113,7 @@ func GetSourceCode(p *Project) error {
 }
 
 // From a project, will write all the templates in files
-func WriteFromTemplates(p *Project) (map[string]string, error) {
+func FillTemplates(p *Project, write bool) (map[string]string, error) {
 	dd, ok := templateIdToFiles[p.TemplateId]
 	if !ok {
 		return nil, errors.New("Unknown template: " + p.TemplateId)
@@ -122,12 +122,16 @@ func WriteFromTemplates(p *Project) (map[string]string, error) {
 	// Results will hold template results, errors, and the project JSON itself
 	ps, err := json.Marshal(p)
 	results := map[string]string{"project": string(ps)}
+	outputFile := ""
 
 	// Dockerfiles
 	dockerfileDataA, _ := p.DockerfilePaths()
 
 	for i, dfd := range dockerfileDataA {
-		res, err := MakeStringAndFile(p, dfd.TemplateFile, dfd.DockerfilePath)
+		if write {
+			outputFile = dfd.DockerfilePath
+		}
+		res, err := MakeStringAndFile(p, dfd.TemplateFile, outputFile)
 		results[fmt.Sprintf("dockerfile_%d", i)] = res
 		if err != nil {
 			results[fmt.Sprintf("error_dockerfile_%d", i)] = err.Error()
@@ -135,7 +139,9 @@ func WriteFromTemplates(p *Project) (map[string]string, error) {
 	}
 
 	// docker-compose file
-	_, outputFile, _ := p.DockerComposePaths()
+	if write {
+		_, outputFile, _ = p.DockerComposePaths()
+	}
 	res, err := MakeStringAndFile(p, dd.DockerCompose, outputFile)
 	results["docker_compose"] = res
 	if err != nil {
