@@ -9,59 +9,6 @@ import (
 	"text/template"
 )
 
-// // TEMP: Example
-// var u1 = ProjectUser{
-// 	Id:        "5c509e17910f118485a1a7ba",
-// 	Login:     "2015bernarda",
-// 	FirstName: "aymeric",
-// 	LastName:  "bernard",
-// 	Email:     "nope@nope.fr",
-// 	Scope:     "admin",
-// }
-
-// // TEMP: Example
-// var d1 = ProjectDatabase{
-// 	Type:        "mysql",
-// 	Version:     "5.7",
-// 	EnvDatabase: "test",
-// 	EnvUsername: "root",
-// 	EnvPassword: "password",
-// }
-
-// // TEMP: Example
-// var d2 = ProjectDatabase{
-// 	Type:        "postgres",
-// 	Version:     "",
-// 	EnvDatabase: "tp",
-// 	EnvUsername: "rootp",
-// 	EnvPassword: "passwordp",
-// }
-
-// // TEMP: Example
-// var p1 = Project{
-// 	Id:                  "123456",
-// 	Name:                "goProject1",
-// 	RepositoryType:      "github",
-// 	RepositoryUrl:       "https://github.com/typhoon-docker/example-flask",
-// 	RepositoryToken:     "",
-// 	ExternalDomainNames: []string{"myflask.fr", "cake.fr"},
-// 	UseHttps:            true,
-// 	TemplateId:          "python3",
-// 	DockerImageVersion:  "3.7",
-// 	RootFolder:          "",
-// 	ExposedPort:         8042,
-// 	SystemDependencies:  []string{"git", "screen"},
-// 	DependencyFiles:     []string{"requirements.txt", "nope.txt"},
-// 	InstallScript:       "echo installing",
-// 	BuildScript:         "echo building",
-// 	StartScript:         "python3 flaskserver.py",
-// 	StaticFolder:        "",
-// 	Databases:           []*ProjectDatabase{&d1, &d2},
-// 	Env:                 map[string]string{"test1": "lol", "test2": "mdr"},
-// 	BelongsToId:         "5c509e17910f118485a1a7ba",
-// 	BelongsTo:           u1,
-// }
-
 type DockerfileData struct {
 	TemplateFile     string `json:"template_file"`
 	ImageSuffix      string `json:"image_name"`

@@ -372,19 +372,21 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 	RoutesAdmin(e, m, dao)
 	RoutesMisc(e, m, dao)
 
-	////////////////////////////  // TEMP Make JWTs for tests, and allow routes to list and delete users
-	/////////// TEMP ///////////  // Those routes are open for everyone, should not be accessible as is in prod
+	// JWTs for tests, and allow routes to list and delete users
 	e.GET("/token/:login", func(c echo.Context) error {
+		// Close this route in production mode
 		if os.Getenv("GO_ENV") == "production" {
 			return c.String(http.StatusUnauthorized, "You cannot do that. At least not in production.")
 		}
 
+		// Gather requested info
 		userLoginToTest := c.Param("login")
 		scope := c.QueryParam("scope")
 		if scope == "" {
 			scope = "user"
 		}
-		// Get user from mongoDB, create the entry in db if not found. Get its Id and Scope.
+
+		// Get user from mongoDB, create the entry in db if not found.
 		pUser, err := dao.FindUserByLogin(userLoginToTest)
 		if err == mgo.ErrNotFound {
 			tUser := ProjectUser{Login: userLoginToTest, FirstName: "foo", LastName: "bar", Email: "nope@nope.fr", Scope: scope}
@@ -396,8 +398,8 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		} else if err != nil {
 			log.Println("FindUserByLogin error for " + userLoginToTest + ": " + err.Error())
 		}
-		// Now user Id and Scope should have the right value
 
+		// Now we have all the info we need about the user
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, JwtCustomClaims{
 			pUser.OauthId, pUser.Login, pUser.FirstName, pUser.LastName,
 			pUser.Email, pUser.Id.Hex(), pUser.Scope, jwt.StandardClaims{},
@@ -409,6 +411,4 @@ func Routes(e *echo.Echo, dao TyphoonDAO) {
 		log.Println("Made JWT for " + pUser.Login + ": " + tokenString)
 		return c.String(http.StatusOK, tokenString)
 	})
-	/////////// /TEMP ///////////
-	/////////////////////////////
 }
