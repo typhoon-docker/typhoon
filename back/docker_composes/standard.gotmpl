@@ -5,6 +5,9 @@ services:
     image: {{.Name}}
     container_name: cn_{{.Name}}
     restart: always
+    networks:
+      - proxy
+      - missile
     volumes:
       - /typhoon_volumes/{{$.Name}}/persistent:/persistent
     environment:
@@ -27,6 +30,8 @@ services:
     image: mysql{{if .Version}}:{{.Version}}{{end}}
     container_name: cn_{{$.Name}}_mysql
     restart: always
+    networks:
+      - missile
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
 {{if .EnvDatabase}}      - MYSQL_DATABASE={{.EnvDatabase}}{{end}}
@@ -42,6 +47,8 @@ services:
     image: postgres{{if .Version}}:{{.Version}}{{end}}
     container_name: cn_{{$.Name}}_postgres
     restart: always
+    networks:
+      - missile
     environment:
 {{if .EnvDatabase}}      - POSTGRES_DB={{.EnvDatabase}}{{end}}
 {{if .EnvUsername}}      - POSTGRES_USER={{.EnvUsername}}{{end}}
@@ -55,6 +62,8 @@ services:
     image: mongo{{if .Version}}:{{.Version}}{{end}}
     container_name: cn_{{$.Name}}_mongo
     restart: always
+    networks:
+      - missile
     environment:
 {{if .EnvDatabase}}      - MONGO_INITDB_DATABASE={{.EnvDatabase}}{{end}}
 {{if .EnvUsername}}      - MONGO_INITDB_ROOT_USERNAME={{.EnvUsername}}{{end}}
@@ -66,6 +75,7 @@ services:
 {{- end}}
 
 networks:
-  default:
+  proxy:
     external:
       name: nginx-proxy
+  missile:
