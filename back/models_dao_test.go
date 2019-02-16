@@ -57,7 +57,7 @@ var p0 = Project{
 	BelongsTo:           &u0,
 }
 
-func getProject() Project {
+func getTestProject() Project {
 	project := p0
 	project.Id = bson.NewObjectId()
 	user := u0
@@ -94,7 +94,7 @@ func TestProjectActions(t *testing.T) {
 	var projects []Project
 	var err error
 	var found bool
-	p1 := getProject()
+	p1 := getTestProject()
 
 	// Inserting user u1
 	_, err = daoTest.InsertUser(*(p1.BelongsTo))
@@ -226,7 +226,7 @@ func TestUserActions(t *testing.T) {
 	var users []ProjectUser
 	var err error
 	var found bool
-	p1 := getProject()
+	p1 := getTestProject()
 	var u1 ProjectUser
 
 	// Inserting user u1
