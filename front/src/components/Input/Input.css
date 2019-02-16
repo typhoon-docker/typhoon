@@ -5,6 +5,12 @@
   margin-bottom: 0.5em;
 }
 
+.select:active + .label {
+  &:before {
+    content: "✓";
+  }
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -14,4 +20,12 @@
 
 .error {
   color: rgb(var(--error));
+}
+
+.radio {
+  opacity: 0;
+  overflow: hidden;
+  width: 0;
+  height: 0;
+  margin: 0;
 }

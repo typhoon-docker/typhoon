@@ -18,3 +18,24 @@
   @extend .highlightable;
   background-color: rgba(var(--primary), 0.05);
 }
+
+.highlightable_offset {
+  padding: 1em;
+  border-radius: 0.5em;
+  font-weight: 400;
+
+  color: rgb(var(--text));
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(var(--primary), 0.1);
+  }
+}
+
+.highlightable_ref:focus + .highlightable_offset {
+  background: rgba(var(--primary), 0.2);
+}
+
+.highlightable_ref:checked + .highlightable_offset {
+  background: rgba(var(--primary), 0.3);
+}
