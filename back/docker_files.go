@@ -47,6 +47,10 @@ var templateIdToFiles = map[string]DockerData{
 		},
 		DockerCompose: "docker_composes/standalone.gotmpl",
 	},
+	"wordpress": DockerData{
+		Dockerfiles:   []DockerfileData{},
+		DockerCompose: "docker_composes/wordpress.gotmpl",
+	},
 	"static": DockerData{
 		Dockerfiles:   []DockerfileData{},
 		DockerCompose: "docker_composes/static.gotmpl",

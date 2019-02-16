@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  code:
+    image: wordpress:{{if .DockerImageVersion}}{{.DockerImageVersion}}{{else}}latest{{end}}
+    container_name: cn_{{.Name}}
+    restart: always
+    networks:
+      - proxy
+      - missile
+    environment:
+      - VIRTUAL_HOST={{.Name}}.typhoon.viarezo.fr
+      - WORDPRESS_DB_HOST=mysql:3306
+      - WORDPRESS_DB_USER: wordpress
+      - WORDPRESS_DB_PASSWORD: typhoonWordpressPassword
+{{- if .UseHttps}}
+      - LETSENCRYPT_HOST={{.Name}}.typhoon.viarezo.fr{{range .ExternalDomainNames}} {{.}}{{end}}
+      - LETSENCRYPT_EMAIL={{.BelongsTo.Email}}
+{{- end}}
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:5.7
+    container_name: cn_{{$.Name}}_mysql
+    volumes:
+      - /typhoon_volumes/{{$.Name}}/mysql:/var/lib/mysql
+    restart: always
+    networks:
+      - missile
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: typhoonWordpressPassword
+      MYSQL_ROOT_PASSWORD: typhoonWordpressPassword
+
+networks:
+  proxy:
+    external:
+      name: nginx-proxy
+  missile:
