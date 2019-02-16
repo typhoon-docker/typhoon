@@ -76,7 +76,7 @@ export const getProject = projectID => client.get(`/projects/${projectID}`);
 export const putProject = project => client.put(`/projects/${project.id}`, project);
 export const deleteProject = project => client.delete(`/projects/${project.id}`);
 export const checkProject = name => client.get(`/checkProject?name=${name}`);
-export const activateProject = projectID => client.post(`/docker/apply/${projectID}`);
+export const activateProject = projectID => client.post(`/docker/apply/${projectID}`, { timeout: 5 * 60 * 1000 });
 export const startProject = projectID => client.post(`/docker/up/${projectID}`);
 export const stopProject = projectID => client.post(`/docker/down/${projectID}`);
 export const statusProject = projectID => client.get(`/docker/status/${projectID}`);
