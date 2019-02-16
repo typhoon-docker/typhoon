@@ -34,7 +34,7 @@ Oauths:
 
 #### Container
 
-```
+```go
 type Container struct {
 	Id     string `json:"id"`
 	Image  string `json:"name"`
@@ -86,7 +86,8 @@ type Container struct {
 - return:
 
 ```
-{ "project": <project structure>,
+{
+  "project": <project structure>,
   "dockerfile_0": <dockerfile> || "error_dockerfile_0": <error>,
   "docker_compose": <docker_compose> || "error_docker_compose": <error>
 }
@@ -99,7 +100,8 @@ type Container struct {
 - return:
 
 ```
-{ "project": <project structure>,
+{
+  "project": <project structure>,
   "dockerfile_0": <dockerfile> || "error_dockerfile_0": <error>,
   "docker_compose": <docker_compose> || "error_docker_compose": <error>
 }
