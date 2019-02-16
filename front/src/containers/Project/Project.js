@@ -3,11 +3,15 @@ import React, { useRef, useEffect } from 'react';
 import { details, summary, content } from './Project.css';
 import { highlightable } from '/styles/highlightable.css';
 
+import { statusProject } from '/utils/typhoonAPI';
+
 import cx from '/utils/className';
 
 const Project = ({ project, onSelect, selected }) => {
   const { id, name, repository_url, template_id } = project;
   const el = useRef(null);
+
+  statusProject(project.id).then(console.log);
 
   useEffect(() => {
     el.current.style.setProperty('--border-color', `rgb(var(--${template_id}))`);

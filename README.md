@@ -123,7 +123,7 @@ type Container struct {
 
 `/docker/status/:id` - **GET**
 - headers : `{ "Authorization: "Bearer <token>" }`
-- return: `[Containers]`
+- return: `[Container]`
 
 #### Get logs
 
