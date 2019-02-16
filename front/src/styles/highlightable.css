@@ -1,25 +1,27 @@
 .highlightable {
+  --color: var(--primary);
   border-radius: 0.5em;
   padding: 1em;
   border: none;
 
   &:hover {
     cursor: pointer;
-    background-color: rgba(var(--primary), 0.1);
+    background-color: rgba(var(--color), 0.1);
   }
 
   &:focus {
     outline: none;
-    background-color: rgba(var(--primary), 0.2);
+    background-color: rgba(var(--color), 0.2);
   }
 }
 
 .auto_highlightable {
   @extend .highlightable;
-  background-color: rgba(var(--primary), 0.05);
+  background-color: rgba(var(--color), 0.05);
 }
 
 .highlightable_offset {
+  --color: var(--primary);
   padding: 1em;
   border-radius: 0.5em;
   font-weight: 400;
@@ -28,14 +30,14 @@
 
   &:hover {
     cursor: pointer;
-    background-color: rgba(var(--primary), 0.1);
+    background-color: rgba(var(--color), 0.1);
   }
 }
 
 .highlightable_ref:focus + .highlightable_offset {
-  background: rgba(var(--primary), 0.2);
+  background: rgba(var(--color), 0.2);
 }
 
 .highlightable_ref:checked + .highlightable_offset {
-  background: rgba(var(--primary), 0.3);
+  background: rgba(var(--color), 0.3);
 }

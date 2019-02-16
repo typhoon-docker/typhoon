@@ -1,33 +1,20 @@
-import React, { useEffect, useRef } from 'react';
-import Color from 'color';
+import React, { useRef, useEffect } from 'react';
 
 import { button } from './Button.css';
 
-const regex = /^[a-z]([a-z]|-)*$/;
+import { auto_highlightable as highlightable } from '/styles/highlightable.css';
+import cx from '/utils/className';
 
-const Button = ({ color: c, className: cn, style: s, ...props }) => {
+const Button = ({ color, className: cn, style: s, ...props }) => {
   const ref = useRef(null);
 
   const style = s ? { ...s } : {};
-  const color = c || 'text';
-  style.backgroundColor = color.match(regex) ? `rgb(var(--${color}))` : color;
-
-  const className = [button];
-  if (cn) {
-    className.push(cn);
-  }
 
   useEffect(() => {
-    const textColor = window.getComputedStyle(ref.current).backgroundColor;
-
-    if (Color(textColor).isLight()) {
-      ref.current.style.color = 'rgb(var(--text))';
-    } else {
-      ref.current.style.color = 'white';
-    }
+    ref.current.style.setProperty('--color', `var(--${color || 'text'})`);
   });
 
-  return <button type="button" {...props} className={className.join(' ')} style={style} ref={ref} />;
+  return <button type="button" {...props} className={cx(button, highlightable, cn)} style={style} ref={ref} />;
 };
 
 export default Button;

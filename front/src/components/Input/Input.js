@@ -23,7 +23,7 @@ const Input = ({ title, error, defaultValue, askIfEmpty, errorMessage, ...props 
     </div>
   ) : (
     <div style={{ color: 'var(--text)' }}>
-      <Button color="rgba(var(--secondary), 0.3)" type="button" onClick={() => setShowInput(true)}>
+      <Button color="primary" className="highlightable" type="button" onClick={() => setShowInput(true)}>
         <span role="img" aria-label="plus">
           ➕
         </span>
