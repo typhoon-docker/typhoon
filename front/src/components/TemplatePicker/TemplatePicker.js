@@ -28,6 +28,7 @@ const TemplatePicker = ({ onSelect }) => {
         {Object.values(templates).map(template => (
           <div key={template.template_id}>
             <Radio
+              id={template.template_id}
               name="template_id"
               value={template.template_id}
               className={label}

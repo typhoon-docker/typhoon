@@ -12,7 +12,7 @@ const Repositories = ({ onSelect }) => {
       getRepos(page)
         .then(({ data, headers }) => {
           setRepos(r => [...r, ...data]);
-          if (headers.link && headers.link.includes(';')) {
+          if (headers && headers.link && headers.link.includes(';')) {
             const nextPage = Number(headers.link.split('>; rel="next"')[0].replace(/.*\?page=/, ''));
             if (!Number.isNaN(nextPage)) {
               fetchRepos(nextPage);
@@ -24,7 +24,14 @@ const Repositories = ({ onSelect }) => {
   }, []);
 
   return repositories.map(repo => (
-    <Radio key={repo.id} id={repo.id} name="repository_url" value={repo.clone_url} onChange={() => onSelect(repo)}>
+    <Radio
+      key={repo.id}
+      id={repo.id}
+      name="repository_url"
+      value={repo.clone_url}
+      onChange={() => onSelect(repo)}
+      autoCheck
+    >
       {repo.full_name}
     </Radio>
   ));
