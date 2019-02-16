@@ -38,8 +38,7 @@
 
 .previous:before {
   content: "\27F5\2919";
-  letter-spacing: -0.2em;
-  clip-path: inset(0 0.3em 0 00);
+  clip-path: inset(0 0.25em 0 0);
   overflow: hidden;
   margin-right: 0.2em;
   padding-left: 0.2em;
