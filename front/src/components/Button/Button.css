@@ -1,6 +1,7 @@
 .button {
   border-radius: 1em;
   border: none;
+  margin-bottom: 1em;
   color: white;
   padding: 1em;
   font-size: inherit;

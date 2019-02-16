@@ -22,21 +22,34 @@ const Variables = ({ project }) => {
         title="Dossier contenant le code (monorepo)"
         name="root_folder"
         placeholder="Exemple back"
+        askIfEmpty
         defaultValue={project ? project.root_folder : ''}
       />
-      <Input title="Script d'installation" name="install_script" defaultValue={project ? project.install_script : ''} />
-      <Input title="Script de build" name="build_script" defaultValue={project ? project.build_script : ''} />
-      <Input title="Script de run" name="start_script" defaultValue={project ? project.start_script : ''} />
+      <Input
+        title="Script d'installation"
+        name="install_script"
+        askIfEmpty
+        defaultValue={project ? project.install_script : ''}
+      />
+      <Input
+        title="Script de build"
+        name="build_script"
+        askIfEmpty
+        defaultValue={project ? project.build_script : ''}
+      />
+      <Input title="Script de run" name="start_script" askIfEmpty defaultValue={project ? project.start_script : ''} />
       <Input
         title="Dossier statique"
         placeholder="Exemple images"
         name="static_folder"
+        askIfEmpty
         defaultValue={project ? project.static_folder : ''}
       />
       <Input
         type="number"
         title="Port d'écoute"
         name="exposed_port"
+        askIfEmpty
         defaultValue={project ? project.exposed_port : ''}
         min={80}
         max={65535}
