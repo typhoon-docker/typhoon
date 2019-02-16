@@ -1,7 +1,30 @@
 .wrapper {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-row-gap: 1em;
   margin-bottom: 1.5em;
+
+  @media screen and (max-width: 550px) {
+    & {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+  }
+
+  @media screen and (max-width: 450px) {
+    & {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  @media screen and (max-width: 350px) {
+    & {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  & > div {
+    text-align: center;
+  }
 }
 
 .img {
@@ -22,25 +45,10 @@
 }
 
 .label {
-  padding: 1em;
-  border-radius: 0.5em;
   width: 4em;
   height: 4em;
   display: inline-block;
   position: relative;
-
-  &:hover {
-    cursor: pointer;
-    background-color: rgba(var(--text), 0.1);
-  }
-}
-
-.input:focus + .label {
-  background: rgba(var(--text), 0.2);
-}
-
-.input:checked + .label {
-  background: rgba(var(--text), 0.3);
 }
 
 .name {
