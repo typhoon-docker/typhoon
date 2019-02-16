@@ -2,7 +2,7 @@ version: "3"
 
 services:
   code:
-    image: nginx:{{.DockerImageVersion}}
+    image: nginx{{if .DockerImageVersion}}:{{.DockerImageVersion}}{{end}}
     container_name: cn_{{.Name}}
     restart: always
     environment:

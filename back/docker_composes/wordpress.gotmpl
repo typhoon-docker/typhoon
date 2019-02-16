@@ -2,7 +2,7 @@ version: "3"
 
 services:
   code:
-    image: wordpress:{{if .DockerImageVersion}}{{.DockerImageVersion}}{{else}}latest{{end}}
+    image: wordpress{{if .DockerImageVersion}}:{{.DockerImageVersion}}{{end}}
     container_name: cn_{{.Name}}
     restart: always
     networks:
@@ -23,7 +23,7 @@ services:
     image: mysql:5.7
     container_name: cn_{{$.Name}}_mysql
     volumes:
-      - /typhoon_volumes/{{$.Name}}/mysql:/var/lib/mysql
+      - /typhoon_volumes/{{$.Id.Hex}}/mysql:/var/lib/mysql
     restart: always
     networks:
       - missile
