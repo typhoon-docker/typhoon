@@ -6,9 +6,9 @@ services:
     container_name: cn_{{.Name}}
     restart: always
     environment:
-      - VIRTUAL_HOST={{.Name}}.typhoon.viarezo.fr
+      - VIRTUAL_HOST={{.Name}}.typhoon.viarezo.fr{{range .ExternalDomainNames}},{{.}}{{end}}
 {{- if .UseHttps}}
-      - LETSENCRYPT_HOST={{.Name}}.typhoon.viarezo.fr{{range .ExternalDomainNames}} {{.}}{{end}}
+      - LETSENCRYPT_HOST={{.Name}}.typhoon.viarezo.fr{{range .ExternalDomainNames}},{{.}}{{end}}
       - LETSENCRYPT_EMAIL={{.BelongsTo.Email}}
 {{- end}}
     volumes:
