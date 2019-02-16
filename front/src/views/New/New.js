@@ -126,10 +126,12 @@ const New = () => {
           {
             exposed_port: value => !value || !Number.isNaN(Number(value)),
           },
-          ({ use_https, exposed_port, dependency_files }) => ({
+          ({ external_domain_names, dependency_files, system_dependencies, use_https, exposed_port }) => ({
+            external_domain_names: external_domain_names.split(','),
+            dependency_files: dependency_files.split(','),
+            system_dependencies: system_dependencies.split(','),
             use_https: use_https === 'https',
             exposed_port: Number(exposed_port) || null,
-            dependency_files: dependency_files.split(','),
           }),
         )}
       >

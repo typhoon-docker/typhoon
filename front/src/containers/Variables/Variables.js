@@ -2,9 +2,6 @@ import React from 'react';
 
 import { Input, Checkbox } from '/components/Input';
 
-// external_domain_names: [],
-// system_dependencies: [],
-
 const Variables = ({ project }) => {
   return (
     <>
@@ -16,12 +13,22 @@ const Variables = ({ project }) => {
       </h2>
 
       <Input
+        title="Noms de domaines externes"
+        name="external_domain_names"
+        placeholder="Exemple : https://mon-site.fr/,https://www.mon-site.fr/ (séparés par une virgule)"
+        askIfEmpty
+        agreement="plural"
+        defaultValue={project ? project.external_domain_names.join(',') : ''}
+      />
+
+      <Input
         title="Dossier contenant le code (monorepo)"
         name="root_folder"
         placeholder="Exemple back"
         askIfEmpty
         defaultValue={project ? project.root_folder : ''}
       />
+
       <Input
         title="Script d'installation"
         name="install_script"
@@ -31,11 +38,20 @@ const Variables = ({ project }) => {
       <Input
         title="Fichiers de dépendances"
         name="dependency_files"
-        placeholder="Exemple : package.json,yarn.lock"
+        placeholder="Exemple : package.json,yarn.lock (séparés par une virgule)"
         askIfEmpty
         agreement="plural"
         defaultValue={project ? project.dependency_files.join(',') : ''}
       />
+      <Input
+        title="Dépendances systèmes"
+        name="system_dependencies"
+        placeholder="Exemple : ffmpeg,imagemagick (séparés par une virgule)"
+        askIfEmpty
+        agreement="plural"
+        defaultValue={project ? project.system_dependencies.join(',') : ''}
+      />
+
       <Input
         title="Script de build"
         name="build_script"
@@ -43,6 +59,7 @@ const Variables = ({ project }) => {
         defaultValue={project ? project.build_script : ''}
       />
       <Input title="Script de run" name="start_script" askIfEmpty defaultValue={project ? project.start_script : ''} />
+
       <Input
         title="Dossier statique"
         placeholder="Exemple images"
@@ -50,6 +67,7 @@ const Variables = ({ project }) => {
         askIfEmpty
         defaultValue={project ? project.static_folder : ''}
       />
+
       <Input
         type="number"
         title="Port d'écoute"
@@ -59,7 +77,6 @@ const Variables = ({ project }) => {
         min={80}
         max={65535}
       />
-
       <Checkbox title="HTTPS" name="use_https" defaultChecked={project ? project.use_https : false} value="https" />
     </>
   );
