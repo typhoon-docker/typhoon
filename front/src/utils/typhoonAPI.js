@@ -29,7 +29,7 @@ export const importMocks = async () => {
 
   // postProject
   mock.onPost('/projects').reply(({ data }) => {
-    const { project } = JSON.parse(data);
+    const project = JSON.parse(data);
     if (!mockProjects.map(({ id }) => id).includes(project.id)) {
       mockProjects.push(project);
     }
@@ -46,7 +46,7 @@ export const importMocks = async () => {
   // putProject
   mock.onPut(/\/projects\/\d+/).reply(({ data, url, baseURL }) => {
     const projectID = parseInt(url.substring(baseURL.length + 10), 10);
-    const { project } = JSON.parse(data);
+    const project = JSON.parse(data);
     if (projectID === project.id && mockProjects.map(({ id }) => id).includes(projectID)) {
       const projectIndex = mockProjects.findIndex(p => p.id === projectID);
       mockProjects[projectIndex] = project;
