@@ -57,16 +57,16 @@ type Container struct {
 - headers : `{ "Authorization: "Bearer <token>" }`
 - return: `Project`
 
-#### Update project with new info (full override, id in url and body must match)
+#### Post a new project (will be added to database but not built)
 
-`/projects/:id` - **PUT**
+`/projects` - **POST**
 - headers : `{ "Authorization: "Bearer <token>", "Content-Type": "application/json" }`
 - body: Project
 - return: `[Project]`
 
-#### Post a new project (will be added to database but not built)
+#### Update project with new info (full override, id in url and body must match)
 
-`/projects` - **POST**
+`/projects/:id` - **PUT**
 - headers : `{ "Authorization: "Bearer <token>", "Content-Type": "application/json" }`
 - body: Project
 - return: `[Project]`
