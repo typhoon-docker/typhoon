@@ -5,7 +5,7 @@ WORKDIR /typhoon
 ENV PATH /typhoon/node_modules/.bin:$PATH
 
 {{if .SystemDependencies}}RUN apt-get update && apt-get install -y --no-install-recommends \
-    {{range SystemDependencies}}{{.}} {{end}}\
+    {{range .SystemDependencies}}{{.}} {{end}}\
     && rm -rf /var/lib/apt/lists/*{{end}}
 
 {{range .DependencyFiles}}COPY {{.}} /typhoon/{{.}}
