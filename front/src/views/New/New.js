@@ -66,9 +66,12 @@ const New = () => {
       })
       .then(array => array.reduce((acc, isValid, index) => (isValid ? [...acc, newDataArray[index]] : acc), []))
       .then(array => {
-        let newData = arrayToJSON(array);
-        newData = { ...newData, ...(transform || (x => x))(newData) };
-        setProject(p => ({ ...p, ...newData }));
+        setProject(p => {
+          let newData = arrayToJSON(array);
+          newData = { ...newData, ...(transform || (x => x))(newData, p) };
+
+          return { ...p, ...newData };
+        });
         nextStep();
       })
       .then(cb)
@@ -80,9 +83,20 @@ const New = () => {
       <Box
         as="form"
         className={block}
-        onSubmit={onSubmit({
-          repository_url: Boolean,
-        })}
+        onSubmit={onSubmit(
+          {
+            repository_url: Boolean,
+          },
+          ({ repository_url }, { repository_token }) =>
+            repository_token
+              ? {
+                  repository_url: repository_url.replace(
+                    'https://github.com',
+                    `https://${repository_token}@github.com`,
+                  ),
+                }
+              : { repository_url },
+        )}
       >
         <Repositories onSelect={repository => setRepo(repository)} />
         <div className={direction}>
