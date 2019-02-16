@@ -118,8 +118,9 @@ func RoutesDocker(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 
 	// Get deployment status
 	d.GET("/status/:id", func(c echo.Context) error {
-		// Parse id and JWT
+		// Parse id, query params, and JWT
 		id := c.Param("id")
+
 		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
 
 		// Get project if authorized
@@ -128,14 +129,29 @@ func RoutesDocker(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 			return err
 		}
 
-		// Docker-compose ps
-		out, err := DockerStatus(&project)
+		// Get Status
+		containers, err := GetContainerStatus(&project)
 		if err != nil {
 			return c.String(http.StatusInternalServerError, "Could not check status: "+err.Error())
 		}
 
+		myContainers := make([]Container, 0)
+
+		for _, container := range containers {
+			// fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+			// create smaller struc with less elements
+			myContainer := Container{
+				Id:     container.ID,
+				Image:  container.Image,
+				State:  container.State,
+				Status: container.Status,
+			}
+
+			myContainers = append(myContainers, myContainer)
+		}
+
 		// Return output
-		return c.String(http.StatusOK, out)
+		return c.JSON(http.StatusOK, myContainers)
 	})
 
 	// Get logs

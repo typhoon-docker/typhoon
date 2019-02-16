@@ -1,9 +1,16 @@
 package main
 
 import (
-	"github.com/dgrijalva/jwt-go"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/globalsign/mgo/bson"
 )
+
+type Container struct {
+	Id     string `json:"id"`
+	Image  string `json:"name"`
+	Status string `json:"status"`
+	State  string `json:"state"`
+}
 
 type Project struct {
 	Id                  bson.ObjectId      `bson:"_id,omitempty" json:"id"`

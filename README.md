@@ -30,6 +30,21 @@ Oauths:
 
 ## Projects management
 
+### Structs
+
+#### Container
+
+```
+type Container struct {
+	Id     string `json:"id"`
+	Image  string `json:"name"`
+	Status string `json:"status"` // ex: "Up for 14 min."
+	State  string `json:"state"`  // ex: "running"
+}
+```
+
+### Routes
+
 #### Get my projects, or get all projects if I am admin
 
 `/projects(?all)` - **GET**
@@ -106,7 +121,7 @@ Oauths:
 
 `/docker/status/:id` - **GET**
 - headers : `{ "Authorization: "Bearer <token>" }`
-- return: `raw $(docker-compose ps) output`
+- return: `[Containers]`
 
 #### Get logs
 

@@ -40,6 +40,56 @@ func FindContainerID(containerImage string) (string, error) {
 	return "", errors.New("Could not find container")
 }
 
+func GetContainerStatus(p *Project) ([]types.Container, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	client, _ := client.NewClientWithOpts(client.WithVersion("1.39"))
+
+	containers, err := client.ContainerList(ctx, types.ContainerListOptions{})
+	if err != nil {
+		panic(err)
+	}
+
+	projectContainers := make([]types.Container, 0)
+
+	for _, container := range containers {
+		// fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+		if p.Name == container.Image {
+			projectContainers = append(projectContainers, container)
+		}
+	}
+
+	return projectContainers, nil
+}
+
+// GetContainerStats such as mem usage
+func GetContainerStats(p *Project) (string, error) {
+	containerID, err := FindContainerID(p.Name)
+	if err != nil {
+		log.Println(err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	client, _ := client.NewClientWithOpts(client.WithVersion("1.39"))
+
+	stats, err := client.ContainerStats(ctx, containerID, false)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(stats.Body)
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(stats.Body)
+	statsReponse := buf.String()
+
+	return statsReponse, nil
+
+}
+
 // Get the logs of the project
 func GetLogsByName(p *Project, lines int) (string, error) {
 	// Get the last timestamp
