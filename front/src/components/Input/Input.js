@@ -8,7 +8,17 @@ import Button from '/components/Button';
 
 import cx from '/utils/className';
 
-const Input = ({ title, error, defaultValue, askIfEmpty, errorMessage, ...props }) => {
+const agreements = agreement => {
+  if (agreement === 'plural') {
+    return 'des';
+  }
+  if (agreement === 'feminine') {
+    return 'une';
+  }
+  return 'un';
+};
+
+const Input = ({ title, error, agreement, defaultValue, askIfEmpty, errorMessage, ...props }) => {
   const [showInput, setShowInput] = useState(false);
 
   const id = murmur(`${Date.now()}_${title}`);
@@ -27,7 +37,7 @@ const Input = ({ title, error, defaultValue, askIfEmpty, errorMessage, ...props 
         <span role="img" aria-label="plus">
           ➕
         </span>
-        Ajouter un <span style={{ textTransform: 'lowercase' }}>{title}</span>
+        Ajouter {agreements(agreement)} <span style={{ textTransform: 'lowercase' }}>{title}</span>
       </Button>
     </div>
   );
