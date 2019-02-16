@@ -5,11 +5,6 @@
   margin-bottom: 0.5em;
 }
 
-.input {
-  border: none;
-  padding: 1em;
-}
-
 .wrapper {
   display: flex;
   flex-direction: column;

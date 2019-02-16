@@ -1,0 +1,20 @@
+.highlightable {
+  border-radius: 0.5em;
+  padding: 1em;
+  border: none;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(var(--primary), 0.1);
+  }
+
+  &:focus {
+    outline: none;
+    background-color: rgba(var(--primary), 0.2);
+  }
+}
+
+.auto_highlightable {
+  @extend .highlightable;
+  background-color: rgba(var(--primary), 0.05);
+}
