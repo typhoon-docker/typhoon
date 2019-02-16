@@ -4,9 +4,6 @@ import { Input, Checkbox } from '/components/Input';
 
 // external_domain_names: [],
 // system_dependencies: [],
-// dependency_files: [],
-// databases: [],
-// env: {},
 
 const Variables = ({ project }) => {
   return (
@@ -30,6 +27,14 @@ const Variables = ({ project }) => {
         name="install_script"
         askIfEmpty
         defaultValue={project ? project.install_script : ''}
+      />
+      <Input
+        title="Fichiers de dépendances"
+        name="dependency_files"
+        placeholder="Exemple : package.json,yarn.lock"
+        askIfEmpty
+        agreement="plural"
+        defaultValue={project ? project.dependency_files.join(',') : ''}
       />
       <Input
         title="Script de build"
