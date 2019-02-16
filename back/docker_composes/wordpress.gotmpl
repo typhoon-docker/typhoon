@@ -9,12 +9,12 @@ services:
       - proxy
       - missile
     environment:
-      - VIRTUAL_HOST={{.Name}}.typhoon.viarezo.fr{{range .ExternalDomainNames}},{{.}}{{end}}
+      - VIRTUAL_HOST={{.Name}}.{{.Host}}{{range .ExternalDomainNames}},{{.}}{{end}}
       - WORDPRESS_DB_HOST=mysql:3306
       - WORDPRESS_DB_USER=wordpress
       - WORDPRESS_DB_PASSWORD=typhoonWordpressPassword
 {{- if .UseHttps}}
-      - LETSENCRYPT_HOST={{.Name}}.typhoon.viarezo.fr{{range .ExternalDomainNames}},{{.}}{{end}}
+      - LETSENCRYPT_HOST={{.Name}}.{{.Host}}{{range .ExternalDomainNames}},{{.}}{{end}}
       - LETSENCRYPT_EMAIL={{.BelongsTo.Email}}
 {{- end}}
     depends_on:

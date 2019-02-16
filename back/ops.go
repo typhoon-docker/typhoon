@@ -177,6 +177,9 @@ func FillTemplates(p *Project, write bool) (map[string]string, error) {
 	// Dockerfiles
 	dockerfileDataA, _ := p.DockerfilePaths()
 
+	// add Host to project for template
+	p.Host = os.Getenv("HOST")
+
 	for i, dfd := range dockerfileDataA {
 		if write {
 			outputFile = dfd.DockerfilePath

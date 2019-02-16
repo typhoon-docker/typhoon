@@ -35,6 +35,7 @@ type Project struct {
 	Env                 map[string]string  `bson:"env" json:"env"`
 	BelongsToId         string             `bson:"belongs_to" json:"-"`
 	BelongsTo           *ProjectUser       `bson:"-" json:"belongs_to"`
+	Host                string             `bson:"-" json:"-"`
 }
 
 type ProjectDatabase struct {
