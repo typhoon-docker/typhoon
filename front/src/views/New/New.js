@@ -60,7 +60,8 @@ const New = () => {
       })
       .then(array => array.reduce((acc, isValid, index) => (isValid ? [...acc, newDataArray[index]] : acc), []))
       .then(array => {
-        const newData = (transform || (x => x))(arrayToJSON(array));
+        let newData = arrayToJSON(array);
+        newData = { ...newData, ...(transform || (x => x))(newData) };
         setProject(p => ({ ...p, ...newData }));
         nextStep();
       })
@@ -127,9 +128,9 @@ const New = () => {
             exposed_port: value => !value || !Number.isNaN(Number(value)),
           },
           ({ external_domain_names, dependency_files, system_dependencies, use_https, exposed_port }) => ({
-            external_domain_names: external_domain_names.split(','),
-            dependency_files: dependency_files.split(','),
-            system_dependencies: system_dependencies.split(','),
+            external_domain_names: (external_domain_names || '').split(','),
+            dependency_files: (dependency_files || '').split(','),
+            system_dependencies: (system_dependencies || '').split(','),
             use_https: use_https === 'https',
             exposed_port: Number(exposed_port) || null,
           }),
