@@ -26,6 +26,10 @@ export const newProjectCup = createCup({
   env: {},
 });
 
+if (process.env.NODE_ENV === 'development') {
+  newProjectCup.on(x => console.log(x));
+}
+
 export const useProject = () => {
   const [project, setProject] = useState(newProjectCup());
   useEffect(() => {
