@@ -18,19 +18,7 @@
 }
 
 .summary {
-  padding: 1em;
-  border-radius: 0.5em;
   font-weight: 400;
-
-  &:hover {
-    cursor: pointer;
-    background-color: rgba(var(--primary), 0.1);
-  }
-
-  &:focus {
-    outline: none;
-    background-color: rgba(var(--primary), 0.2);
-  }
 
   &::-webkit-details-marker {
     display: none;

@@ -1,6 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 
 import { details, summary, content } from './Project.css';
+import { highlightable } from '/styles/highlightable.css';
+
+import cx from '/utils/className';
 
 const Project = ({ project, onSelect, selected }) => {
   const { id, name, repository_url, template_id } = project;
@@ -12,7 +15,7 @@ const Project = ({ project, onSelect, selected }) => {
 
   return (
     <details key={id} open={selected} className={details}>
-      <summary onClick={onSelect} className={summary}>
+      <summary onClick={onSelect} className={cx(summary, highlightable)}>
         {name}
       </summary>
       <div className={content} ref={el}>
