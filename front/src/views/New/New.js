@@ -40,7 +40,7 @@ const New = () => {
   const nextStep = () => setStep(step + 1);
   const previousStep = () => setStep(step - 1);
 
-  const onSubmit = (verifies = {}, cb = () => {}) => event => {
+  const onSubmit = (verifies = {}, transform, cb = () => {}) => event => {
     event.preventDefault();
     const newDataArray = formDataToArray(new FormData(event.target));
     if (Object.keys(verifies).length > newDataArray.length) {
@@ -60,7 +60,7 @@ const New = () => {
       })
       .then(array => array.reduce((acc, isValid, index) => (isValid ? [...acc, newDataArray[index]] : acc), []))
       .then(array => {
-        const newData = arrayToJSON(array);
+        const newData = (transform || (x => x))(arrayToJSON(array));
         setProject(p => ({ ...p, ...newData }));
         nextStep();
       })
@@ -92,7 +92,7 @@ const New = () => {
             branch: Boolean,
             template_id: Boolean,
           },
-          () => setProject(p => ({ ...p, ...template })),
+          p => ({ ...p, ...template }),
         )}
       >
         <Input
@@ -126,12 +126,10 @@ const New = () => {
           {
             exposed_port: value => !value || !Number.isNaN(Number(value)),
           },
-          () =>
-            setProject(({ use_https, exposed_port, ...p }) => ({
-              ...p,
-              use_https: use_https === 'https',
-              exposed_port: Number(exposed_port) || null,
-            })),
+          ({ use_https, exposed_port }) => ({
+            use_https: use_https === 'https',
+            exposed_port: Number(exposed_port) || null,
+          }),
         )}
       >
         <Variables project={project} />
@@ -144,9 +142,9 @@ const New = () => {
       </Box>
       <Box
         as="form"
-        onSubmit={onSubmit({}, () => {
-          setProject(p => ({ ...p, databases: Array.isArray(p.databases) ? [] : Object.values(p.databases) }));
-        })}
+        onSubmit={onSubmit({}, ({ databases }) => ({
+          databases: !databases || Array.isArray(databases) ? [] : Object.values(databases),
+        }))}
       >
         <Database />
         <div className={direction}>
@@ -158,7 +156,7 @@ const New = () => {
       </Box>
       <Box
         as="form"
-        onSubmit={onSubmit({}, () =>
+        onSubmit={onSubmit({}, null, () =>
           postProject(project)
             .then(({ data: { id } }) => activateProject(id))
             .then(() => setLoading(false)),
