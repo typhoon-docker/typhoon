@@ -18,6 +18,12 @@ import { getBranches } from '/utils/githubAPI';
 
 import { block, direction } from './New.css';
 
+const split = string =>
+  (string || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+
 const New = () => {
   const [step, setStep] = useState(0);
   const [error, setError] = useState(null);
@@ -128,9 +134,9 @@ const New = () => {
             exposed_port: value => !value || !Number.isNaN(Number(value)),
           },
           ({ external_domain_names, dependency_files, system_dependencies, use_https, exposed_port }) => ({
-            external_domain_names: (external_domain_names || '').split(','),
-            dependency_files: (dependency_files || '').split(','),
-            system_dependencies: (system_dependencies || '').split(','),
+            external_domain_names: split(external_domain_names),
+            dependency_files: split(dependency_files),
+            system_dependencies: split(system_dependencies),
             use_https: use_https === 'https',
             exposed_port: Number(exposed_port) || null,
           }),
