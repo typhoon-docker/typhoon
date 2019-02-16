@@ -7,6 +7,7 @@ import php from './php.png';
 import python3 from './python3.svg';
 import raw from './static.svg';
 import cra from './create-react-app.svg';
+import wordpress from './wordpress.svg';
 
 import { img, label, wrapper, name } from './TemplatePicker.css';
 
@@ -18,6 +19,7 @@ const images = {
   python3,
   static: raw,
   'create-react-app': cra,
+  wordpress,
 };
 
 const TemplatePicker = ({ onSelect }) => {

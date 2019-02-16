@@ -25,7 +25,7 @@
     "use_https": true,
     "exposed_port": 80,
     "dependency_files": ["requirements.txt"],
-    "install_script": "pip install -r requirements.txt",
+    "install_script": "pip3 install -r requirements.txt --no-cache-dir",
     "build_script": null,
     "start_script": null,
     "env": {
@@ -41,6 +41,16 @@
     "install_script": "npm install",
     "build_script": "npm build",
     "static_folder": "build",
+    "start_script": null
+  },
+  "wordpress": {
+    "template_id": "wordpress",
+    "docker_image_version": "5.0.3-php7.2-apache",
+    "use_https": true,
+    "exposed_port": null,
+    "dependency_files": [],
+    "install_script": null,
+    "build_script": null,
     "start_script": null
   },
   "static": {

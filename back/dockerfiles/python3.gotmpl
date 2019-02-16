@@ -10,7 +10,6 @@ ENV PYTHONPATH /typhoon
 
 {{if .DependencyFiles}}RUN pip3 install -U pip --no-cache-dir
 {{range .DependencyFiles}}COPY {{.}} /typhoon/{{.}}
-RUN pip3 install -r {{.}} --no-cache-dir
 {{end}}{{end}}
 {{if .InstallScript}}RUN {{.InstallScript}}{{end}}
 
