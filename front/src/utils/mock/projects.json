@@ -4,7 +4,7 @@
     "name": "Typhoon",
     "repository_url": "https://github.com/typhoon-docker/typhoon.git",
     "repository_type": "github",
-    "template_id": "react",
+    "template_id": "create-react-app",
     "repository_token": null,
     "external_domain_names": [],
     "use_https": true,
