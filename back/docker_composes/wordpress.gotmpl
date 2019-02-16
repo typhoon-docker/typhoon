@@ -11,8 +11,8 @@ services:
     environment:
       - VIRTUAL_HOST={{.Name}}.typhoon.viarezo.fr
       - WORDPRESS_DB_HOST=mysql:3306
-      - WORDPRESS_DB_USER: wordpress
-      - WORDPRESS_DB_PASSWORD: typhoonWordpressPassword
+      - WORDPRESS_DB_USER=wordpress
+      - WORDPRESS_DB_PASSWORD=typhoonWordpressPassword
 {{- if .UseHttps}}
       - LETSENCRYPT_HOST={{.Name}}.typhoon.viarezo.fr{{range .ExternalDomainNames}} {{.}}{{end}}
       - LETSENCRYPT_EMAIL={{.BelongsTo.Email}}
