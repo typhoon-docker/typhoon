@@ -30,10 +30,12 @@ const Variables = ({ project }) => {
       />
 
       <Input
-        title="Script d'installation"
-        name="install_script"
+        title="Dépendances systèmes"
+        name="system_dependencies"
+        placeholder="Exemple : ffmpeg,imagemagick (séparés par une virgule)"
         askIfEmpty
-        defaultValue={project ? project.install_script : ''}
+        agreement="plural"
+        defaultValue={project ? project.system_dependencies.join(',') : ''}
       />
       <Input
         title="Fichiers de dépendances"
@@ -44,12 +46,10 @@ const Variables = ({ project }) => {
         defaultValue={project ? project.dependency_files.join(',') : ''}
       />
       <Input
-        title="Dépendances systèmes"
-        name="system_dependencies"
-        placeholder="Exemple : ffmpeg,imagemagick (séparés par une virgule)"
+        title="Script d'installation"
+        name="install_script"
         askIfEmpty
-        agreement="plural"
-        defaultValue={project ? project.system_dependencies.join(',') : ''}
+        defaultValue={project ? project.install_script : ''}
       />
 
       <Input
