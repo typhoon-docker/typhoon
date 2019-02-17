@@ -11,5 +11,17 @@
 
 .lines {
   max-height: 15em;
+  white-space: pre-wrap;
+  font-family: monospace;
   overflow-y: scroll;
+}
+
+.line {
+  display: block;
+  & + & {
+    margin-top: 0.5em;
+  }
+  &::before {
+    content: "$ ";
+  }
 }

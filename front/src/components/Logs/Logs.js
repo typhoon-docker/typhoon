@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { getLogs } from '/utils/typhoonAPI';
 import useAxios from '/utils/useAxios';
 
-import { button, lines } from './Logs.css';
+import { button, lines, line } from './Logs.css';
 
 const Logs = ({ projectID }) => {
   const [logs, , refetch] = useAxios(getLogs(projectID), '', [projectID]);
@@ -24,7 +24,9 @@ const Logs = ({ projectID }) => {
         </button>
       </h2>
       <pre ref={ref} className={lines}>
-        {logs}
+        {logs.split('\n').map(log => (
+          <span className={line}>{log}</span>
+        ))}
       </pre>
     </>
   );
