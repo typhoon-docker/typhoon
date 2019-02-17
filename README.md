@@ -62,7 +62,12 @@ In a similar fashion, go to the `front` folder from the root. Modify
       - LETSENCRYPT_HOST=typhoon.viarezo.fr
 ```
 
-to suit your domain name.
+to suit your domain name, as well as `.env.production`:
+
+```
+BACKEND_URL=https://typhoon-back.[your domain name]
+FRONTEND_URL=https://[your domain name]
+```
 
 Then:
 
