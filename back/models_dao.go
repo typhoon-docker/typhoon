@@ -76,6 +76,18 @@ func (m *TyphoonDAO) FindProjectByName(name string) (Project, error) {
 	return project, nil
 }
 
+// Find a project by its repository URL
+func (m *TyphoonDAO) FindProjectsByUrl(repositoryUrl string) ([]Project, error) {
+	projects := make([]Project, 0)
+	err := db.C("projects").Find(bson.M{"repository_url": repositoryUrl}).All(&projects)
+	for i := range projects {
+		userId := projects[i].BelongsToId
+		user, _ := m.FindUserById(userId)
+		projects[i].BelongsTo = &user
+	}
+	return projects, err
+}
+
 // Insert a project into database
 func (m *TyphoonDAO) InsertProject(project Project) error {
 	err := db.C("projects").Insert(&project)
