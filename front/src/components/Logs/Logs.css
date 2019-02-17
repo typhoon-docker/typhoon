@@ -1,0 +1,15 @@
+.button {
+  border: none;
+  padding: 0.5em;
+  background-color: transparent;
+  text-align: center;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.lines {
+  max-height: 15em;
+  overflow-y: scroll;
+}
