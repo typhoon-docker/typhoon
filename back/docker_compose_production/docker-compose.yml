@@ -26,6 +26,7 @@ services:
       - /typhoon_dockerfile:/typhoon_dockerfile
       - /typhoon_docker_compose:/typhoon_docker_compose
       - /typhoon_volumes:/typhoon_volumes
+      - /typhoon_logs:/typhoon_logs
 
     stdin_open: true
     tty: true
