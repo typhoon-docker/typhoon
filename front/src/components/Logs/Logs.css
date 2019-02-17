@@ -14,10 +14,18 @@
   white-space: pre-wrap;
   font-family: monospace;
   overflow-y: scroll;
+  background-color: rgb(var(--text));
+  color: white;
+  padding: 0 1.2em;
+  border: 1.2em solid rgb(var(--text));
+  border-left: none;
+  border-right: none;
+  font-size: 0.8em;
 }
 
 .line {
   display: block;
+
   & + & {
     margin-top: 0.5em;
   }

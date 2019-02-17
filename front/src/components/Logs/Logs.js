@@ -24,9 +24,12 @@ const Logs = ({ projectID }) => {
         </button>
       </h2>
       <pre ref={ref} className={lines}>
-        {logs.split('\n').map(log => (
-          <span className={line}>{log}</span>
-        ))}
+        {logs
+          .trim()
+          .split('\n')
+          .map(log => (
+            <span className={line}>{log}</span>
+          ))}
       </pre>
     </>
   );
