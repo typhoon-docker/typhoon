@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 
+import useProperty from '/utils/useProperty';
 import { underline, bold } from './Underline.css';
 
 const validStyle = [
@@ -26,11 +27,12 @@ const Underline = ({
   style: s = {},
   ...props
 }) => {
-  const el = useRef(null);
-
-  useEffect(() => {
-    el.current.style.setProperty('--color', `rgb(var(--${color}))`);
-  });
+  const el = useProperty(
+    () => ({
+      '--color': `rgb(var(--${color}))`,
+    }),
+    [color],
+  );
 
   let className = [underline];
 
