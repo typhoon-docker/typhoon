@@ -30,16 +30,6 @@ if (process.env.NODE_ENV === 'development') {
   newProjectCup.on(x => console.log(x));
 }
 
-export const useProject = () => {
-  const [project, setProject] = useState(newProjectCup());
-  useEffect(() => {
-    const listener = newProjectCup.on(p => setProject(p));
-    setProject(newProjectCup());
-    return listener;
-  }, []);
-  return [project, p => newProjectCup(p)];
-};
-
 export const isProjectFilled = () => {
   const project = newProjectCup();
   if (!project.name || !project.repository_url || !project.template_id || !project.repository_type) {

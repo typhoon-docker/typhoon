@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useInfuser } from 'react-manatea';
 
 import Repositories from '/containers/Repositories/';
 import Variables from '/containers/Variables/';
@@ -11,7 +12,7 @@ import { Input, Select } from '/components/Input/';
 import ArrowButton from '/components/ArrowButton/';
 import TemplatePicker from '/components/TemplatePicker/';
 
-import { useProject } from '/utils/project';
+import { newProjectCup } from '/utils/project';
 import { formDataToArray, arrayToJSON } from '/utils/formData';
 import { checkProject, postProject, activateProject } from '/utils/typhoonAPI';
 import { getBranches } from '/utils/githubAPI';
@@ -31,7 +32,7 @@ const New = () => {
   const [loading, setLoading] = useState(true);
   const [template, setTemplate] = useState({});
   const [branches, setBranches] = useState([]);
-  const [project, setProject] = useProject();
+  const [project, setProject] = useInfuser(newProjectCup);
 
   useEffect(() => {
     if (repo) {
