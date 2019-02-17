@@ -6,13 +6,15 @@ Here is the repository of the Typhoon project. With Typhoon we allow logged in u
 ## Project status
 
 Features developped:
-- Github and VR Oauth
+- Github and ViaRezo Oauth
 - Deploy a site in a variety of languages / frameworks (see UI)
-- With DBs: Mongo, MySQL, Postgres
-- Persistent directory for a each project
+- With databases: Mongo, MySQL, Postgres
+- Persistent directories for each project, databases
 - See container logs
 - Delete a project
 - Modifying project parameters is implemented in the back, but not the front yet
+- Unit tests for the DAO module (`models_dao_test.go`)
+- Integration tests for project creation, status and deleting, using the api (`integration_test.go`)
 
 ## Project architecture
 
@@ -104,7 +106,7 @@ Then:
 - build image: `docker build -t typhoon-front -f docker/Dockerfile .`
 - start container: `docker-compose up`
 
-# Commands to deploy the backend code
+# Deploy the backend code
 
 - Build image: (from `./back`) `docker build -t typhoon-back-go .`
 
@@ -113,7 +115,7 @@ Then:
 
 - Open console (for debug): `docker-compose run code bash`
 
-# Env variable files that are loaded
+### Env variable files that are loaded
 
 | valid `.env` filenames | `GO_ENV=\*` | `GO_ENV=test` |
 | ---------------------- | ----------- | ------------- |
@@ -126,7 +128,13 @@ Notably:
 * `GO_ENV` defaults to `development`, can be `development`, `test`, `production`
 * `.env.local` and `.env.test.local` are not loaded when `GO_ENV=test` since tests should produce the same results for everyone
 
-# Commands to deploy the frontend code
+### Run unit tests for the backend
+
+This only applies in development mode.
+
+Once the development backend is running, (also from `./back`), run `docker-compose start typhoon-tests` to rerun the tests. To see the logs, if you run the backend using `docker-compose up`, you will see them in the shell you used to run the backend. If you use `docker-compose up -d`, you can still run `docker-compose logs -f typhoon-tests`
+
+# Deploy the frontend code
 
 - Build image: (from `./front`) `docker build -t typhoon-front -f docker/Dockerfile .`
 - Start: (from `./front/docker`) `docker-compose up`
