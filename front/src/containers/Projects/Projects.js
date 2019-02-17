@@ -6,7 +6,7 @@ import Box from '/components/Box/';
 import ArrowButton from '/components/ArrowButton/';
 import Button from '/components/Button/';
 import Steps from '/components/Steps/';
-import Project from '/containers/Project/';
+import Project from '/components/Project/';
 import EmptyProject from '/components/EmptyProject/';
 
 import { title, git_wrapper } from './Projects.css';
