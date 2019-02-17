@@ -118,4 +118,4 @@ export const activateProject = projectID => client.post(`/docker/apply/${project
 export const startProject = projectID => client.post(`/docker/up/${projectID}`);
 export const stopProject = projectID => client.post(`/docker/down/${projectID}`);
 export const statusProject = projectID => client.get(`/docker/status/${projectID}`);
-export const getLogs = (projectID, lines = 500) => client.get(`/docker/logs/${projectID}?lines=${lines}`);
+export const getLogs = (projectID, lines = 500) => client.get(`/docker/logs/${projectID}?lines=${lines}`, , { timeout: 1 * 60 * 1000 });

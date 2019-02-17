@@ -1,4 +1,5 @@
 import React from 'react';
+import { navigate } from '@reach/router';
 
 import { getProject, putProject, deleteProject } from '/utils/typhoonAPI';
 
@@ -12,7 +13,7 @@ const Project = ({ projectID }) => {
 
   const onDelete = () => {
     if (window.confirm(`Tu es sûr de vouloir suppimer ${project.name}`)) {
-      deleteProject(projectID);
+      deleteProject(projectID).then(() => navigate('/'));
     }
   };
 
