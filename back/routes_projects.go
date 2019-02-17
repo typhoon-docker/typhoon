@@ -116,7 +116,6 @@ func RoutesProjects(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 			return c.String(http.StatusInternalServerError, "Could not insert project in database: "+err.Error())
 		}
 
-		// TODO process the project request, extract the repository url, add a hook using addHook
 		addHook(project)
 		return c.JSON(http.StatusCreated, project)
 	})

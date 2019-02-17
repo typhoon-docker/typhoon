@@ -143,6 +143,7 @@ func addHook(p *Project) error {
 	if strings.HasSuffix(repoURL, ".git") {
 		repoURL = strings.TrimSuffix(repoURL, ".git")
 	}
+	log.Println("hook " + repoURL)
 	r, err := http.NewRequest(http.MethodPost, repoURL+"/hooks", bytes.NewBuffer(buf))
 	if err != nil {
 		return err
@@ -152,6 +153,7 @@ func addHook(p *Project) error {
 	if err != nil {
 		return err
 	}
+	log.Println(res)
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
 		return errors.New("add hook: github: http: unexpected status code " + strconv.Itoa(res.StatusCode) + "!")
 	}
