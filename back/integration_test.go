@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"testing"
-	"time"
 )
 
 var backUrl = "http://typhoon-go"
@@ -55,7 +54,7 @@ func doRequestAndLog(t *testing.T, client *http.Client, req *http.Request, desc 
 // Test the API for the projects
 func TestProjectApi(t *testing.T) {
 	var projects *[]Project
-	var containers *[]Container
+	// var containers *[]Container
 	var req *http.Request
 	var resp *http.Response
 	var err error
@@ -141,10 +140,10 @@ func TestProjectApi(t *testing.T) {
 	resp, err = doRequestAndLog(t, client, req, "POST /docker/apply")
 	t.Logf("Applying the test project returned")
 
-	// Wait for it to be ready
-	log.Println("Waiting for 20 seconds...")
-	time.Sleep(20 * time.Second)
-	log.Println("End of waiting")
+	// // Wait for it to be ready
+	// log.Println("Waiting for 20 seconds...")
+	// time.Sleep(20 * time.Second)
+	// log.Println("End of waiting")
 
 	// // Check if up
 	// req, err = http.NewRequest("GET", "http://"+testProjectHost+":"+testProjectPort, nil)

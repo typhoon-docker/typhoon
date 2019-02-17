@@ -73,7 +73,7 @@ var daoTest = TyphoonDAO{}
 // Connect the DAO to the database if it is empty
 func (td *TyphoonDAO) connectIfNeeded() {
 	if daoTest.Database != "typhoon_test" {
-		daoTest.Server = "mongodb://root:example@mongo:27017/"
+		daoTest.Server = "mongodb://root:example@typhoon-mongo:27017/"
 		daoTest.Database = "typhoon_test"
 		daoTest.Connect()
 	}
