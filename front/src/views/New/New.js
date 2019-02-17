@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useInfuser } from 'react-manatea';
+import { Redirect } from '@reach/router';
 
 import Repositories from '/containers/Repositories/';
 import Variables from '/containers/Variables/';
@@ -43,6 +44,10 @@ const New = () => {
         .catch(console.warn);
     }
   }, [repo]);
+
+  if (!project.repository_token && process.env.NODE_ENV !== 'development') {
+    return <Redirect to="/" />;
+  }
 
   const nextStep = () => setStep(step + 1);
   const previousStep = () => setStep(step - 1);

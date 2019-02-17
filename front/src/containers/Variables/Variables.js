@@ -15,7 +15,7 @@ const Variables = ({ project }) => {
       <Input
         title="Noms de domaines externes"
         name="external_domain_names"
-        placeholder="Exemple : https://mon-site.fr/,https://www.mon-site.fr/ (séparés par une virgule)"
+        placeholder="Exemple : mon-site.fr,www.mon-site.fr (séparés par une virgule, sans https ni / à la fin)"
         askIfEmpty
         agreement="plural"
         defaultValue={project ? project.external_domain_names.join(',') : ''}
