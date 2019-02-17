@@ -389,6 +389,8 @@ func main() {
 		// 	return
 
 		projects, _ := dao.FindProjectsByUrl(h.cloneUrl)
+		log.Println(h.cloneUrl)
+		log.Println(projects)
 
 		for _, project := range projects {
 
