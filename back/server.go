@@ -143,8 +143,9 @@ func addHook(p *Project) error {
 	if strings.HasSuffix(repoURL, ".git") {
 		repoURL = strings.TrimSuffix(repoURL, ".git")
 	}
-	log.Println("hook " + repoURL)
-	r, err := http.NewRequest(http.MethodPost, repoURL+"/hooks", bytes.NewBuffer(buf))
+	hookURL := strings.replace(repoURL, 'github.com', 'api.github.com/repos', 1) + '/hooks'
+	log.Println("hook " + hookURL)
+	r, err := http.NewRequest(http.MethodPost, hookURL, bytes.NewBuffer(buf))
 	if err != nil {
 		return err
 	}
