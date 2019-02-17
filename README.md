@@ -2,6 +2,28 @@
 
 Here is the repository of the Typhoon project. With Typhoon we allow logged in users to deploy their own websites on our infrastructure, on a given domain name, and with HTTPS.
 
+
+## Project status
+
+Features developped:
+- Github and VR Oauth
+- Deploy a site in a variety of languages / frameworks (see UI)
+- With DBs: Mongo, MySQL, Postgres
+- Persistent directory for a each project
+- See container logs
+- Delete a project
+- Modifying project parameters is implemented in the back, but not the front yet
+
+## Project architecture
+
+The project is deployed via `docker-compose`. It consists of 3 docker composes:
+
+- One for the back (in Go) + DB (in mongo)
+- One for the front (in React)
+- One for the ngnix proxy (using code from of `https://github.com/jwilder/nginx-proxy` and `https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion`)
+
+How it works: when one creates a project a new entry is created in the database, with the project parameters that include a bunch of information necessary for deployment (port, environmental variables, and so on). A `Dockerfile` and `docker-compose.yml` are created by parsing a template and filling in the related information from the parameters. Then the docker image is built and the docker-compose is deployed. The nginx proxy will detect a new container with the right environment variables (`VIRTUAL_HOST` and `LETSENCRYPT_HOST`)has been created and will modify its configuration on the fly, thus redirecting the correct domain name to the project deployed.
+
 ## How to deploy the Typhoon project in production
 
 Hallo! Here's how to deploy:
@@ -60,6 +82,8 @@ Do make sure your DNS config (that pointing to the VM) also allows for wildcards
 You can use `typhoon-back.[your domain name]/healthCheck` to see it the back is successfully running (and the nginx).
 
 ### Setting up the frontend
+
+When deploying a project through Typhoon, we will give you each site access to `TYPHOON_PERSISTENT_DIR` environment variable to a persistent directory.
 
 In a similar fashion, go to the `front` folder from the root. Modify
 
