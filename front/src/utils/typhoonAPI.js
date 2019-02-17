@@ -77,6 +77,34 @@ export const importMocks = async () => {
   mock.onGet(/\/docker\/status\/\w+/).reply(() => {
     return [200, randomArray(mockContainers, 3)];
   });
+
+  // getLogs
+  mock.onGet(/\/docker\/logs\/.*/).reply(() => {
+    return [
+      200,
+      `Donec
+vitae nisi vel
+dolor pretium scelerisque.
+Nulla mollis feugiat neque
+eget convallis. Nulla laoreet urna enim, at
+efficitur libero
+placerat vitae. Suspendisse
+potenti. Quisque sem lacus,
+ultrices sed aliquam et, pellentesque quis
+sapien. Integer nec
+purus mollis, pretium
+lectus id, tincidunt arcu.
+Pellentesque aliquet risus a odio ultrices,
+sed bibendum quam
+venenatis. Fusce elementum
+est viverra, cursus felis ne
+uctus diam. Morbi vestibulum lorem
+non nisl sagittis,
+porttitor lobortis quam
+interdum. Morbi ut sem a leo
+tincidunt tincidunt eu vitae`,
+    ];
+  });
 };
 
 export const getProjects = () => client.get('/projects');
@@ -90,3 +118,4 @@ export const activateProject = projectID => client.post(`/docker/apply/${project
 export const startProject = projectID => client.post(`/docker/up/${projectID}`);
 export const stopProject = projectID => client.post(`/docker/down/${projectID}`);
 export const statusProject = projectID => client.get(`/docker/status/${projectID}`);
+export const getLogs = (projectID, lines = 500) => client.get(`/docker/logs/${projectID}?lines=${lines}`);
