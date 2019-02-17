@@ -4,13 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -381,25 +378,36 @@ func main() {
 			if i := strings.Index(h.cloneUrl, "//"); i != -1 {
 				h.cloneUrl = h.cloneUrl[i+len("//"):]
 			}
-			dir, err := ioutil.TempDir("", "typhoon-clone")
-			if err != nil {
-				log.Println(err)
-				return
+			// dir, err := ioutil.TempDir("", "typhoon-clone")
+			// if err != nil {
+			// 	log.Println(err)
+			// 	return
+			// }
+			// defer os.RemoveAll(dir)
+			// path, err := filepath.Abs(dir)
+			// if err != nil {
+			// 	log.Println(err)
+			// 	return
+
+			projects = FindProjectsByUrl(h.cloneUrl)
+
+			for _, project := range projects {
+
+				// Clone the source code
+				if err := GetSourceCode(&project); err != nil {
+					return c.String(http.StatusInternalServerError, "Could not clone: "+err.Error())
+				}
+
+				// Build images
+				if err := BuildImages(&project); err != nil {
+					return c.String(http.StatusInternalServerError, "Could not build: "+err.Error())
+				}
+
+				// Docker-compose up
+				if err := DockerUp(&project); err != nil {
+					return c.String(http.StatusInternalServerError, "Could not up: "+err.Error())
+				}
 			}
-			defer os.RemoveAll(dir)
-			path, err := filepath.Abs(dir)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-			cmdGit := exec.Command("git", "clone", "-q", "--depth", "1", "--", h.cloneUrl, path)
-			cmdGit.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
-			if err := cmdGit.Run(); err != nil {
-				log.Fatal(err)
-			}
-			// TODO run build and install commands
-			// TODO push the image to a docker image repository
-			// TODO notify the docker slave to restart the container (and use the latest image)
 		}()
 		return c.String(http.StatusOK, "")
 	})
