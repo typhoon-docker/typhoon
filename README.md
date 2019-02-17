@@ -1,4 +1,8 @@
-## How to deploy into a new Virtual Machine in production
+# Typhoon
+
+Here is the repository of the Typhoon project. With Typhoon we allow logged in users to deploy their own websites on our infrastructure, on a given domain name, and with HTTPS.
+
+## How to deploy the Typhoon project in production
 
 Hallo! Here's how to deploy:
 
@@ -6,36 +10,38 @@ You'll need a machine (preferably debian), and be able to run ansible scripts in
 Git clone `https://github.com/typhoon-docker/ansible.git`.
 Follow the `README` (and make sure to update `users.yml` in `ansible/roles/setup_users/vars` with your admin's RSA keys).
 
-This will install, docker, go, oh-my-zsh, and create necessary directories.
+This will install `docker`, `go`, `oh-my-zsh`, and create the required directories.
 
-Then, ssh into the VM. Make sure docker is working: `docker run hello-world`. You may have to deal with group issues to be able to run docker from the debian user (use `sudo groupadd docker` to create the group and `sudo usermod -aG docker debian` to add `debian` to it).
+Then, connect into the VM via SSH. Make sure docker is working: `docker run hello-world`. You may have to deal with group issues to be able to run docker from the debian user (use `sudo groupadd docker` to create the group and `sudo usermod -aG docker debian` to add `debian` to it).
 
-Once docker works fine, git clone the typhoon repo in `~`: `https://github.com/typhoon-docker/typhoon.git`. It contains the front and back.
+Once docker works fine, git clone the typhoon repo in `~`: `https://github.com/typhoon-docker/typhoon.git`. It contains the frontend and backend code.
 
-### Deploying the back
+### Setting up the backend
 
-This projects uses a nginx proxy to deploy the sites. You will need to (from `~`):
-```
+This projects uses a nginx proxy to deploy the websites. You will need to (from `~`):
+
+```sh
 git clone https://github.com/typhoon-docker/docker-nginx-proxy
 cd docker-nginx-proxy
 mkdir certs
 docker network create nginx-proxy
 docker-compose up
 ```
-Once the proxy is up and running it's time to run the back.
-Go to the `back` folder of the typhoon repo.
+
+Once the proxy is up and running it's time to run the backend.
+Go to the `back` folder of the typhoon project.
 
 First, use the `.env.template` to create the `.env` (copy it and add the correct values):
 
 ```
-VIAREZO_CLIENT_ID= # App ID for VR Oauth
-VIAREZO_CLIENT_SECRET= # App secret for VR Oauth
+VIAREZO_CLIENT_ID= # App ID for ViaRezo Oauth
+VIAREZO_CLIENT_SECRET= # App secret for ViaRezo Oauth
 GITHUB_CLIENT_ID=# App ID for Github Oauth
 GITHUB_CLIENT_SECRET=# App secret for Github Oauth
 JWT_SECRET= # To sign you tokens, put a random (long) string
 ```
 
-Then `cd docker_compose_production`. This contains the production docker-compose.
+Then `cd docker_compose_production`. This contains the production docker-compose yml file.
 You will have to (manually) modify the `docker-compose.yml`. Replace:
 ```
       - VIRTUAL_HOST=typhoon-back.typhoon.viarezo.fr
@@ -53,7 +59,7 @@ Do make sure your DNS config (that pointing to the VM) also allows for wildcards
 
 You can use `typhoon-back.[your domain name]/healthCheck` to see it the back is successfully running (and the nginx).
 
-### Deploying the front
+### Setting up the frontend
 
 In a similar fashion, go to the `front` folder from the root. Modify
 
@@ -71,19 +77,30 @@ FRONTEND_URL=https://[your domain name]
 
 Then:
 
-- build image: `docker build -t 2015koltesb-typhoon -f docker/Dockerfile .`
+- build image: `docker build -t typhoon-front -f docker/Dockerfile .`
 - start container: `docker-compose up`
 
-# Commands
+# Commands to deploy the backend code
 
 - Build image: (from `./back`) `docker build -t typhoon-back-go .`
 
 - Start in dev: (from `./back`) `docker-compose up`
 - Start in prod: (from `./back/docker_compose_production`) `docker-compose up`
 
-- Open console: `docker-compose run code bash`
+- Open console (for debug): `docker-compose run code bash`
 
-# Env variable
+# Commands to deploy the frontend code
+
+git pull && docker build -t 2015koltesb-typhoon -f docker/Dockerfile . && cd docker && docker-compose up -d && cd ..
+
+- Build image: (from `./back`) `docker build -t typhoon-back-go .`
+
+- Start in dev: (from `./back`) `docker-compose up`
+- Start in prod: (from `./back/docker_compose_production`) `docker-compose up`
+
+- Open console (for debug): `docker-compose run code bash`
+
+# Env variable files that are loaded
 
 | valid `.env` filenames | `GO_ENV=\*` | `GO_ENV=test` |
 | ---------------------- | ----------- | ------------- |

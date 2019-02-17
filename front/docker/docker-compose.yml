@@ -2,8 +2,8 @@ version: "3"
 
 services:
   code:
-    image: 2015koltesb-typhoon
-    container_name: 2015koltesb_typhoon
+    image: typhoon-front
+    container_name: typhoon_front
     restart: always
     environment:
       - VIRTUAL_HOST=typhoon.viarezo.fr
