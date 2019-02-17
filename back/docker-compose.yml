@@ -3,26 +3,36 @@ version: "3"
 services:
   nginx-proxy:
     image: jwilder/nginx-proxy
+    container_name: typhoon_back_proxy
+    restart: always
     ports:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - proxy
+      - missile
 
-  mongo:
+  typhoon-mongo:
     image: mongo
     container_name: typhoon_back_mongodb
     restart: always
+    networks:
+      - missile
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - mongodata:/data/db
 
-  code:
+  typhoon-go:
     # use `docker build -t typhoon-back-go .` in this directory to build the image
     image: typhoon-back-go
     container_name: typhoon_back_go
     restart: always
+    networks:
+      - proxy
+      - missile
     environment:
       - PORT=3000
       - VIRTUAL_HOST=typhoon-dev.viarezo.fr
@@ -31,7 +41,7 @@ services:
     expose:
       - "3000"
     depends_on:
-      - mongo
+      - typhoon-mongo
     environment:
       - GO_ENV=development
     stdin_open: true
@@ -46,13 +56,16 @@ services:
       - /typhoon_volumes:/typhoon_volumes
       - /typhoon_logs:/typhoon_logs
 
-  tests:
+  typhoon-tests:
     # once the deployment is running, run `docker-compose start tests` to rerun the tests
     image: typhoon-back-go
     container_name: typhoon_back_go_tests
     restart: "no"
+    networks:
+      - proxy
+      - missile
     depends_on:
-      - mongo
+      - typhoon-go
     environment:
       - GO_ENV=test
     stdin_open: true
@@ -67,9 +80,10 @@ services:
       - /typhoon_volumes:/typhoon_volumes
 
 networks:
-  default:
+  proxy:
     external:
       name: nginx-proxy
+  missile:
 
 volumes:
   mongodata:

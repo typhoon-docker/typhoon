@@ -161,7 +161,7 @@ func main() {
 	loadEnv()
 
 	// Create the DAO object and connect it to the mongo server
-	dao.Server = "mongodb://root:example@mongo:27017/"
+	dao.Server = "mongodb://root:example@typhoon-mongo:27017/"
 	dao.Database = "typhoon"
 	dao.Connect()
 

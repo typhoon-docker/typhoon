@@ -1,29 +1,25 @@
 version: "3"
 
 services:
-  mongo:
-    image: mongo
-    container_name: typhoon_back_mongodb
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    volumes:
-      - "/typhoon_database:/data/db"
-
-  code:
+  typhoon-go:
     # use `docker build -t typhoon-back-go .` in this directory to build the image
     image: typhoon-back-go
     container_name: typhoon_back_go
     restart: always
+    networks:
+      - proxy
+      - missile
     ports:
       - "8037:80"
     expose:
       - "8037"
     depends_on:
-      - mongo
+      - typhoon-mongo
     environment:
       - GO_ENV=production
+      - VIRTUAL_HOST=typhoon-back.typhoon.viarezo.fr
+      - LETSENCRYPT_HOST=typhoon-back.typhoon.viarezo.fr
+      - LETSENCRYPT_EMAIL=aymeric.bernard@student.ecp.fr
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /typhoon_sites:/typhoon_sites
@@ -33,3 +29,21 @@ services:
 
     stdin_open: true
     tty: true
+
+  typhoon-mongo:
+    image: mongo
+    container_name: typhoon_back_mongodb
+    restart: always
+    networks:
+      - missile
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - "/typhoon_database:/data/db"
+
+networks:
+  proxy:
+    external:
+      name: nginx-proxy
+  missile:

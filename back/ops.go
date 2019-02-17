@@ -221,7 +221,7 @@ func BuildImages(p *Project) error {
 		log.Println("Will try to build " + p.Name + " from " + dfd.DockerfilePath + "...")
 		cmd := exec.Command("docker", "build", "-t", p.Name, "-f", dfd.DockerfilePath, context)
 		if err := cmd.Run(); err != nil {
-			log.Println("Could build image: " + err.Error())
+			log.Println("Could not build image: " + err.Error())
 			return err
 		}
 	}
@@ -257,7 +257,7 @@ func DockerDown(p *Project) error {
 	cmd := exec.Command("docker-compose", "down")
 	cmd.Dir = dockerComposeFileDir
 	if err := cmd.Run(); err != nil {
-		return errors.New("Could run docker-compose down: " + err.Error())
+		return errors.New("Could not run docker-compose down: " + err.Error())
 	}
 	return nil
 }
