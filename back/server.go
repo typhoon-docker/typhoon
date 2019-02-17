@@ -356,59 +356,57 @@ func main() {
 	})
 
 	e.POST("/hook", func(c echo.Context) error {
-		func() {
-			var h hook
-			if c.Request().Header.Get("X-GitHub-Event") == "push" {
-				var gh githubHook
-				if err := c.Bind(&h); err != nil {
-					e.Logger.Warn(err)
-					return
-				}
-				h = hook{
-					ref:      gh.GitRef,
-					cloneUrl: gh.Repository.CloneUrl,
-					user:     gh.Repository.Owner.Login,
-				}
-			} else {
+		var h hook
+		if c.Request().Header.Get("X-GitHub-Event") == "push" {
+			var gh githubHook
+			if err := c.Bind(&h); err != nil {
+				e.Logger.Warn(err)
 				return
 			}
-			if h.ref != "refs/heads/master" {
-				return
+			h = hook{
+				ref:      gh.GitRef,
+				cloneUrl: gh.Repository.CloneUrl,
+				user:     gh.Repository.Owner.Login,
 			}
-			if i := strings.Index(h.cloneUrl, "//"); i != -1 {
-				h.cloneUrl = h.cloneUrl[i+len("//"):]
+		} else {
+			return
+		}
+		if h.ref != "refs/heads/master" {
+			return
+		}
+		if i := strings.Index(h.cloneUrl, "//"); i != -1 {
+			h.cloneUrl = h.cloneUrl[i+len("//"):]
+		}
+		// dir, err := ioutil.TempDir("", "typhoon-clone")
+		// if err != nil {
+		// 	log.Println(err)
+		// 	return
+		// }
+		// defer os.RemoveAll(dir)
+		// path, err := filepath.Abs(dir)
+		// if err != nil {
+		// 	log.Println(err)
+		// 	return
+
+		projects, _ := dao.FindProjectsByUrl(h.cloneUrl)
+
+		for _, project := range projects {
+
+			// Clone the source code
+			if err := GetSourceCode(&project); err != nil {
+				return c.String(http.StatusInternalServerError, "Could not clone: "+err.Error())
 			}
-			// dir, err := ioutil.TempDir("", "typhoon-clone")
-			// if err != nil {
-			// 	log.Println(err)
-			// 	return
-			// }
-			// defer os.RemoveAll(dir)
-			// path, err := filepath.Abs(dir)
-			// if err != nil {
-			// 	log.Println(err)
-			// 	return
 
-			projects := FindProjectsByUrl(h.cloneUrl)
-
-			for _, project := range projects {
-
-				// Clone the source code
-				if err := GetSourceCode(&project); err != nil {
-					return c.String(http.StatusInternalServerError, "Could not clone: "+err.Error())
-				}
-
-				// Build images
-				if err := BuildImages(&project); err != nil {
-					return c.String(http.StatusInternalServerError, "Could not build: "+err.Error())
-				}
-
-				// Docker-compose up
-				if err := DockerUp(&project); err != nil {
-					return c.String(http.StatusInternalServerError, "Could not up: "+err.Error())
-				}
+			// Build images
+			if err := BuildImages(&project); err != nil {
+				return c.String(http.StatusInternalServerError, "Could not build: "+err.Error())
 			}
-		}()
+
+			// Docker-compose up
+			if err := DockerUp(&project); err != nil {
+				return c.String(http.StatusInternalServerError, "Could not up: "+err.Error())
+			}
+		}
 		return c.String(http.StatusOK, "")
 	})
 
