@@ -5,6 +5,7 @@ import Home from '/views/Home';
 import Admin from '/views/Admin';
 import Login from '/views/Login/';
 import New from '/views/New/';
+import Project from '/views/Project/';
 import CallbackViaRezo from '/views/CallbackViaRezo/';
 import CallbackGitHub from '/views/CallbackGitHub/';
 import AOA from '/views/404/';
@@ -23,6 +24,7 @@ const App = () => {
           <Home path="/" />
           <Admin path="/admin" />
           <New path="/new" />
+          <Project path="/project/:projectID" />
           <CallbackGitHub path="/callback/github" />
           <AOA default />
         </Fragment>
