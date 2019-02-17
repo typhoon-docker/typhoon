@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { statusProject } from '/utils/typhoonAPI';
+import useAxios from '/utils/useAxios';
 
 import { bubble } from './StatusBubbles.css';
 
@@ -15,11 +16,7 @@ const colors = {
 };
 
 const StatusBubbles = ({ projectID, ...props }) => {
-  const [containers, setContainers] = useState([]);
-
-  useEffect(() => {
-    statusProject(projectID).then(({ data }) => setContainers(data));
-  }, [projectID]);
+  const [containers] = useAxios(statusProject(projectID), [], [projectID]);
 
   return (
     <div {...props}>

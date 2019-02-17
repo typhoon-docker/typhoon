@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { getProjects, getAllProjects } from '/utils/typhoonAPI';
+import useAxios from '/utils/useAxios';
 
 import Box from '/components/Box/';
 import ArrowButton from '/components/ArrowButton/';
@@ -12,15 +13,11 @@ import EmptyProject from '/components/EmptyProject/';
 import { title, git_wrapper } from './Projects.css';
 
 const Projects = ({ all = false }) => {
-  const [projects, setProjects] = useState(null);
-  const [selectedProjects, selectProject] = useState({});
-  const [step, setStep] = useState(0);
-
   const fetchFn = all ? getAllProjects : getProjects;
 
-  useEffect(() => {
-    fetchFn().then(({ data }) => setProjects(data));
-  }, []);
+  const [projects] = useAxios(fetchFn(), null, []);
+  const [selectedProjects, selectProject] = useState({});
+  const [step, setStep] = useState(0);
 
   const onSelect = id => event => {
     event.preventDefault();
