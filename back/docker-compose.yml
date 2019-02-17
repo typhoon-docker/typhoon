@@ -42,6 +42,7 @@ services:
       - "3000"
     depends_on:
       - typhoon-mongo
+      - nginx-proxy
     environment:
       - GO_ENV=development
     stdin_open: true
