@@ -5,7 +5,15 @@ import { createCup } from 'manatea';
 import { shouldMock } from './env';
 
 const TOKEN_KEY = 'token-hjqbgk-oiqjwe-1-4.0';
+const LOCATION = 'token-qnh-oqqe-1-3-6';
 const storage = sessionStorage;
+
+export const saveLocation = () => storage.setItem(LOCATION, document.location.pathname);
+export const retrieveLocation = () => {
+  const location = storage.getItem(LOCATION);
+  storage.removeItem(LOCATION);
+  return location;
+};
 
 export const tokenCup = createCup(null);
 
