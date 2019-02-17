@@ -26,7 +26,7 @@ const StatusBubbles = ({ projectID, ...props }) => {
       {containers.map(({ id, state, name }) => (
         <div
           key={id}
-          title={name}
+          title={`${name} : ${state}`}
           className={bubble}
           style={{
             backgroundColor: colors[state],
