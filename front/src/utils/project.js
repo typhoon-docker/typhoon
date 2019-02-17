@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { createCup } from 'manatea';
 
 export const systemEnvVars = {

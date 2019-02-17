@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from '@reach/router';
 
 import ArrowButton from '/components/ArrowButton';
 import StatusBubbles from '/components/StatusBubbles';
@@ -24,16 +25,25 @@ const Project = ({ project, onSelect, selected }) => {
         {name}
       </summary>
       <div className={content} ref={el}>
-        <div>
-          <a href={`https://${name}.typhoon.viarezo.fr/`} target="_blank" rel="noopener noreferrer">
-            {`https://${name}.typhoon.viarezo.fr/`}
+        <span style={{ gridArea: 'name' }}>
+          <a href={`https://${name.toLowerCase()}.typhoon.viarezo.fr/`} target="_blank" rel="noopener noreferrer">
+            {`https://${name.toLowerCase()}.typhoon.viarezo.fr/`}
           </a>{' '}
           <a href={repository_url} target="_blank" rel="noopener noreferrer">
             (source code)
           </a>
-          <ArrowButton>Voir le projet</ArrowButton>
-        </div>
-        <StatusBubbles projectID={project.id} />
+        </span>
+        <span style={{ gridArea: 'button' }}>
+          <ArrowButton
+            as={Link}
+            to={`/project/${id}`}
+            color="text"
+            style={{ fontSize: '1.2em', textDecoration: 'none' }}
+          >
+            Voir le projet
+          </ArrowButton>
+        </span>
+        <StatusBubbles projectID={project.id} style={{ gridArea: 'bubbles' }} />
       </div>
     </details>
   );
