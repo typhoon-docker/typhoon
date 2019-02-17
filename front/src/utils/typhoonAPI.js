@@ -15,11 +15,15 @@ tokenCup.on(token => updateClient(token));
 updateClient(getRawToken());
 
 export const importMocks = async () => {
-  const MockAdapter = await import('axios-mock-adapter');
+  const [MockAdapter, { default: randomArray }] = await Promise.all([
+    import('axios-mock-adapter'),
+    import('@libshin/random-array'),
+  ]);
   const mock = new MockAdapter(client);
 
   const mockUser = await import('./mock/user.json');
   const mockProjects = (await import('./mock/projects.json')).map(project => ({ ...project, owner: mockUser }));
+  const mockContainers = await import('./mock/containers.json');
 
   // getProjects
   mock.onGet('/projects').reply(200, mockProjects);
@@ -60,12 +64,18 @@ export const importMocks = async () => {
     return [200, mockProjects.filter(project => project.id !== projectID)];
   });
 
+  // checkProject
   mock.onGet(/\/checkProject\?name=\w(\w|-)*/).reply(({ url, baseURL }) => {
     const name = url.substring(baseURL.length + 19);
     if (mockProjects.find(p => p.name === name)) {
       return [200, 'true'];
     }
     return [200, 'false'];
+  });
+
+  // statusProject
+  mock.onGet(/\/docker\/status\/\w+/).reply(() => {
+    return [200, randomArray(mockContainers, 3)];
   });
 };
 

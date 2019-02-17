@@ -1,0 +1,44 @@
+[
+  {
+    "id": "created",
+    "name": "container created",
+    "state": "running created",
+    "status": "Up About an hour"
+  },
+  {
+    "id": "restarting",
+    "name": "container restarting",
+    "state": "restarting",
+    "status": "Up About an hour"
+  },
+  {
+    "id": "running",
+    "name": "container running",
+    "state": "running",
+    "status": "Up About an hour"
+  },
+  {
+    "id": "removing",
+    "name": "container removing",
+    "state": "removing",
+    "status": "Up About an hour"
+  },
+  {
+    "id": "paused",
+    "name": "container paused",
+    "state": "paused",
+    "status": "Up About an hour"
+  },
+  {
+    "id": "exited",
+    "name": "container exited",
+    "state": "exited",
+    "status": "Up About an hour"
+  },
+  {
+    "id": "dead",
+    "name": "container dead",
+    "state": "dead",
+    "status": "Up About an hour"
+  }
+]
