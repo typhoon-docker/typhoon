@@ -130,7 +130,7 @@ func setToken(user string, token string) {
 
 func addHook(p *Project) error {
 	buf, err := json.Marshal(githubHookCreate{
-		Name: "url",
+		Name: "web",
 		Config: githubHookCreateConfig{
 			Url:         os.Getenv("BACKEND_URL") + "/hook",
 			ContentType: "json",
