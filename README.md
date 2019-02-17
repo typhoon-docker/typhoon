@@ -1,3 +1,74 @@
+## How to deploy into a new Virtual Machine in production
+
+Hallo! Here's how to deploy:
+
+You'll need a machine (preferably debian), and be able to run ansible scripts in that machine.
+Git clone `https://github.com/typhoon-docker/ansible.git`.
+Follow the `README` (and make sure to update `users.yml` in `ansible/roles/setup_users/vars` with your admin's RSA keys).
+
+This will install, docker, go, oh-my-zsh, and create necessary directories.
+
+Then, ssh into the VM. Make sure docker is working: `docker run hello-world`. You may have to deal with group issues to be able to run docker from the debian user (use `sudo groupadd docker` to create the group and `sudo usermod -aG docker debian` to add `debian` to it).
+
+Once docker works fine, git clone the typhoon repo in `~`: `https://github.com/typhoon-docker/typhoon.git`. It contains the front and back.
+
+### Deploying the back
+
+This projects uses a nginx proxy to deploy the sites. You will need to (from `~`):
+```
+git clone https://github.com/typhoon-docker/docker-nginx-proxy
+cd docker-nginx-proxy
+mkdir certs
+docker network create nginx-proxy
+docker-compose up
+```
+Once the proxy is up and running it's time to run the back.
+Go to the `back` folder of the typhoon repo.
+
+First, use the `.env.template` to create the `.env` (copy it and add the correct values):
+
+```
+VIAREZO_CLIENT_ID= # App ID for VR Oauth
+VIAREZO_CLIENT_SECRET= # App secret for VR Oauth
+GITHUB_CLIENT_ID=# App ID for Github Oauth
+GITHUB_CLIENT_SECRET=# App secret for Github Oauth
+JWT_SECRET= # To sign you tokens, put a random (long) string
+```
+
+Then `cd docker_compose_production`. This contains the production docker-compose.
+You will have to (manually) modify the `docker-compose.yml`. Replace:
+```
+      - VIRTUAL_HOST=typhoon-back.typhoon.viarezo.fr
+      - LETSENCRYPT_HOST=typhoon-back.typhoon.viarezo.fr
+      - LETSENCRYPT_EMAIL=aymeric.bernard@student.ecp.fr
+```
+
+By changing `typhoon.viarezo.fr` to your domain name.
+
+Then modify `.env.production` in the same way regarding the domain name.
+
+Finally `docker-compose up`.
+
+Do make sure your DNS config (that pointing to the VM) also allows for wildcards as your projects will be deployed as `[project_name].typhoon.viarezo.fr`.
+
+You can use `typhoon-back.[your domain name]/healthCheck` to see it the back is successfully running (and the nginx).
+
+### Deploying the front
+
+In a similar fashion, go to the `front` folder from the root. Modify
+
+```
+      - VIRTUAL_HOST=typhoon.viarezo.fr
+      - LETSENCRYPT_HOST=typhoon.viarezo.fr
+```
+
+to suit your domain name.
+
+Then:
+
+- build image: `docker build -t 2015koltesb-typhoon -f docker/Dockerfile .`
+- start container: `docker-compose up`
+
 # Commands
 
 - Build image: (from `./back`) `docker build -t typhoon-back-go .`
