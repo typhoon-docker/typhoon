@@ -389,7 +389,7 @@ func main() {
 			// 	log.Println(err)
 			// 	return
 
-			projects = FindProjectsByUrl(h.cloneUrl)
+			projects := FindProjectsByUrl(h.cloneUrl)
 
 			for _, project := range projects {
 
