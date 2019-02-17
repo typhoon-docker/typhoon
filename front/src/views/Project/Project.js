@@ -20,6 +20,7 @@ const Project = ({ projectID }) => {
   return (
     <Box>
       <Logs projectID={projectID} />
+      <pre>{JSON.stringify(project, null, 2)}</pre>
       <button type="button" onClick={onDelete}>
         Supprimer
       </button>
