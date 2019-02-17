@@ -89,17 +89,6 @@ Then:
 
 - Open console (for debug): `docker-compose run code bash`
 
-# Commands to deploy the frontend code
-
-git pull && docker build -t 2015koltesb-typhoon -f docker/Dockerfile . && cd docker && docker-compose up -d && cd ..
-
-- Build image: (from `./back`) `docker build -t typhoon-back-go .`
-
-- Start in dev: (from `./back`) `docker-compose up`
-- Start in prod: (from `./back/docker_compose_production`) `docker-compose up`
-
-- Open console (for debug): `docker-compose run code bash`
-
 # Env variable files that are loaded
 
 | valid `.env` filenames | `GO_ENV=\*` | `GO_ENV=test` |
@@ -112,6 +101,11 @@ git pull && docker build -t 2015koltesb-typhoon -f docker/Dockerfile . && cd doc
 Notably:
 * `GO_ENV` defaults to `development`, can be `development`, `test`, `production`
 * `.env.local` and `.env.test.local` are not loaded when `GO_ENV=test` since tests should produce the same results for everyone
+
+# Commands to deploy the frontend code
+
+- Build image: (from `./front`) `docker build -t typhoon-front -f docker/Dockerfile .`
+- Start: (from `./front/docker`) `docker-compose up`
 
 # Doc
 
