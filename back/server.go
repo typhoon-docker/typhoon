@@ -360,8 +360,7 @@ func main() {
 		if c.Request().Header.Get("X-GitHub-Event") == "push" {
 			var gh githubHook
 			if err := c.Bind(&h); err != nil {
-				e.Logger.Warn(err)
-				return
+				return c.String(http.StatusInternalServerError, "couldn't bind hook: "+err.Error())
 			}
 			h = hook{
 				ref:      gh.GitRef,
@@ -369,10 +368,10 @@ func main() {
 				user:     gh.Repository.Owner.Login,
 			}
 		} else {
-			return
+			return c.String(http.StatusInternalServerError, "not a push method")
 		}
 		if h.ref != "refs/heads/master" {
-			return
+			return c.String(http.StatusInternalServerError, "wrong head")
 		}
 		if i := strings.Index(h.cloneUrl, "//"); i != -1 {
 			h.cloneUrl = h.cloneUrl[i+len("//"):]
