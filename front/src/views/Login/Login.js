@@ -3,6 +3,7 @@ import React from 'react';
 import Link from '/components/Link/';
 
 import { main, img, title } from './Login.css';
+import { saveLocation } from '/utils/connect';
 
 import typhoonImg from '/public/docker-swarm-typhoon.196x196.png';
 
@@ -16,7 +17,13 @@ const Login = () => (
       }
     </p>
     <p>
-      <Link color="primary" bold href={`${process.env.BACKEND_URL}/login/viarezo`} title="Connecte toi">
+      <Link
+        color="primary"
+        bold
+        href={`${process.env.BACKEND_URL}/login/viarezo`}
+        title="Connecte toi"
+        onClick={saveLocation}
+      >
         Se connecter
       </Link>{' '}
       avec mon compte{' '}
