@@ -150,6 +150,7 @@ func addHook(p *Project) error {
 		return err
 	}
 	r.Header.Add("Authorization", "token "+p.RepositoryToken)
+	log.Println(r)
 	res, err := http.DefaultClient.Do(r)
 	if err != nil {
 		return err
