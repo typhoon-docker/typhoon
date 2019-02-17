@@ -356,26 +356,27 @@ func main() {
 	})
 
 	e.POST("/hook", func(c echo.Context) error {
-		var h hook
-		if c.Request().Header.Get("X-GitHub-Event") == "push" {
-			var gh githubHook
-			if err := c.Bind(&h); err != nil {
-				return c.String(http.StatusInternalServerError, "couldn't bind hook: "+err.Error())
-			}
-			h = hook{
-				ref:      gh.GitRef,
-				cloneUrl: gh.Repository.CloneUrl,
-				user:     gh.Repository.Owner.Login,
-			}
-		} else {
+		if c.Request().Header.Get("X-GitHub-Event") != "push" {
+			log.Println("not a push method")
 			return c.String(http.StatusInternalServerError, "not a push method")
 		}
+		var gh githubHook
+		if err := c.Bind(&gh); err != nil {
+			log.Println("couldn't bind hook: " + err.Error())
+			return c.String(http.StatusInternalServerError, "couldn't bind hook: "+err.Error())
+		}
+		h := hook{
+			ref:      gh.GitRef,
+			cloneUrl: gh.Repository.CloneUrl,
+			user:     gh.Repository.Owner.Login,
+		}
 		if h.ref != "refs/heads/master" {
+			log.Println("wrong head: " + h.ref)
 			return c.String(http.StatusInternalServerError, "wrong head")
 		}
-		if i := strings.Index(h.cloneUrl, "//"); i != -1 {
-			h.cloneUrl = h.cloneUrl[i+len("//"):]
-		}
+		// if i := strings.Index(h.cloneUrl, "//"); i != -1 {
+		// 	h.cloneUrl = h.cloneUrl[i+len("//"):]
+		// }
 		// dir, err := ioutil.TempDir("", "typhoon-clone")
 		// if err != nil {
 		// 	log.Println(err)
@@ -393,16 +394,19 @@ func main() {
 
 			// Clone the source code
 			if err := GetSourceCode(&project); err != nil {
+				log.Println("Could not clone: " + err.Error())
 				return c.String(http.StatusInternalServerError, "Could not clone: "+err.Error())
 			}
 
 			// Build images
 			if err := BuildImages(&project); err != nil {
+				log.Println("Could not build: " + err.Error())
 				return c.String(http.StatusInternalServerError, "Could not build: "+err.Error())
 			}
 
 			// Docker-compose up
 			if err := DockerUp(&project); err != nil {
+				log.Println("Could not up: " + err.Error())
 				return c.String(http.StatusInternalServerError, "Could not up: "+err.Error())
 			}
 		}
