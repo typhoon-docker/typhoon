@@ -117,7 +117,7 @@ func RoutesProjects(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 		}
 
 		// TODO process the project request, extract the repository url, add a hook using addHook
-		// addHook(project)
+		addHook(project)
 		return c.JSON(http.StatusCreated, project)
 	})
 

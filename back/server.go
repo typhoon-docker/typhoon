@@ -139,7 +139,11 @@ func addHook(p *Project) error {
 	if err != nil {
 		return err
 	}
-	r, err := http.NewRequest(http.MethodPost, p.RepositoryUrl+"/hooks", bytes.NewBuffer(buf))
+	repoUrl := p.RepositoryUrl
+	if strings.HasSuffix(repoUrl, ".git") {
+		repoUrl := strings.TrimSuffix(repoUrl, ".git")
+	}
+	r, err := http.NewRequest(http.MethodPost, repoUrl+"/hooks", bytes.NewBuffer(buf))
 	if err != nil {
 		return err
 	}
