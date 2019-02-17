@@ -89,20 +89,9 @@ const New = () => {
       <Box
         as="form"
         className={block}
-        onSubmit={onSubmit(
-          {
-            repository_url: Boolean,
-          },
-          ({ repository_url }, { repository_token }) =>
-            repository_token
-              ? {
-                  repository_url: repository_url.replace(
-                    'https://github.com',
-                    `https://${repository_token}@github.com`,
-                  ),
-                }
-              : { repository_url },
-        )}
+        onSubmit={onSubmit({
+          repository_url: Boolean,
+        })}
       >
         <Repositories onSelect={repository => setRepo(repository)} />
         <div className={direction}>
