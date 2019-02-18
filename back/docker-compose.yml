@@ -58,7 +58,7 @@ services:
       - /typhoon_logs:/typhoon_logs
 
   typhoon-tests:
-    # once the deployment is running, run `docker-compose start tests` to rerun the tests
+    # once the deployment is running, run `docker-compose start typhoon-tests` to rerun the tests
     image: typhoon-back-go
     container_name: typhoon_back_go_tests
     restart: "no"
