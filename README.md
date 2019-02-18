@@ -154,7 +154,7 @@ Oauths:
 
 ## Projects management
 
-### Structs
+### Types
 
 #### Container
 
@@ -163,7 +163,7 @@ interface Container {
   id: string,
   name: string,
   status: string, // ex: "Up for 14 min."
-  state: "created" | "restarting" | "running" | "removing" | "paused" | "exited" | "dead"
+  state: "created" | "restarting" | "running" | "removing" | "paused" | "exited" | "dead",
 }
 ```
 
@@ -211,7 +211,7 @@ interface Project {
     env_password: string,
   }>,
   env: { [env: string]: string },
-  belongs_to: User // omit on POST,
+  belongs_to: User, // omit on POST
 }
 ```
 
@@ -221,33 +221,33 @@ interface Project {
 
 `/projects(?all)` - **GET**
 - headers : `{ "Authorization: "Bearer <token>" }`
-- return: `[Project]`
+- return: [`[Project]`](#project)
 
 #### Get details by project id
 
 `/projects/:id` - **GET**
 - headers : `{ "Authorization: "Bearer <token>" }`
-- return: `Project`
+- return: [`Project`](#project)
 
 #### Post a new project (will be added to database but not built)
 
 `/projects` - **POST**
 - headers : `{ "Authorization: "Bearer <token>", "Content-Type": "application/json" }`
-- body: Project
-- return: `[Project]`
+- body: [Project](#project)
+- return: [`[Project]`](#project)
 
 #### Update project with new info (full override, id in url and body must match)
 
 `/projects/:id` - **PUT**
 - headers : `{ "Authorization: "Bearer <token>", "Content-Type": "application/json" }`
-- body: Project
-- return: `[Project]`
+- body: [Project](#project)
+- return: [`[Project]`](#project)
 
 ### Remove a project by id
 
 `/projects/:id` - **DELETE**
 - headers : `{ "Authorization: "Bearer <token>" }`
-- return: `[Project]`
+- return: [`[Project]`](#project)
 
 ## Docker management
 
@@ -295,7 +295,7 @@ interface Project {
 
 `/docker/status/:id` - **GET**
 - headers : `{ "Authorization: "Bearer <token>" }`
-- return: `[Container]`
+- return: [`[Container]`](#container)
 
 #### Get logs
 
@@ -312,7 +312,7 @@ Parameter lines is optional. Default is 30.
 
 `/admin/list(?admin)` - **GET**
 - headers : `{ "Authorization: "Bearer <token>" }`
-- return: `[User]`
+- return: [`[User]`](#user)
 
 #### Change user scope
 
@@ -323,8 +323,8 @@ Parameter lines is optional. Default is 30.
 #### Edit user
 
 `/admin/user/:id` - **PUT**
-- body: User
-- return: `User`
+- body: [User](#user)
+- return: [`User`](#user)
 
 #### Delete user
 
