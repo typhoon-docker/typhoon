@@ -2,9 +2,27 @@
 
 Here is the repository of the Typhoon project. With Typhoon we allow logged in users to deploy their own websites on our infrastructure, on a given domain name, and with HTTPS.
 
+## Table of Contents
+
+1. [Project architecture](#project-architecture)
+   1. [How it works](#how-it-works)
+2. [How to deploy the Typhoon project in production](#how-to-deploy-the-typhoon-project-in-production)
+   1. [Deploy Backend](#deploy-backend)
+   2. [Deploy Frontend](#deploy-frontend)
+3. [How to run the project](#how-to-run-the-project)
+   1. [Run Backend](#run-backend)
+   2. [Run Frontend](#run-frontend)
+4. [Documentation](#documentation)
+5. [API specification](#api-specification)
+   1. [Projects management routes](#projects-management-routes)
+   2. [Docker management routes](#docker-management-routes)
+   3. [User and Admin management](#user-and-admin-management)
+   4. [Miscellaneous](#miscellaneous)
+   5.  [Types](#types)
+
 ## Project status
 
-Features developped:
+Features developed:
 - Github and ViaRezo Oauth
 - Deploy a site in a variety of languages / frameworks (see UI)
 - Redeploy a site at each push
@@ -24,7 +42,7 @@ The project is deployed via `docker-compose`. It consists of 3 docker composes:
 - One for the front (in React)
 - One for the proxy (using code from of [nginx-proxy](https://github.com/jwilder/nginx-proxy) and a [letsencrypt companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion))
 
-### How it works:
+### How it works
 
 When one creates a project a new entry is created in the database, with the project parameters that include a bunch of information necessary for deployment (port, environmental variables, and so on).
 
@@ -44,7 +62,7 @@ Then, connect into the VM via SSH. Make sure docker is working: `docker run hell
 
 Once docker works fine, git clone the typhoon repo in `~`: `https://github.com/typhoon-docker/typhoon.git`. It contains the frontend and backend code.
 
-### Setting up the backend
+### Deploy Backend
 
 This projects uses a nginx proxy to deploy the websites. You will need to (from `~`):
 
@@ -88,7 +106,7 @@ Do make sure your DNS config (that pointing to the VM) also allows for wildcards
 
 You can use `typhoon-back.[your domain name]/healthCheck` to see it the back is successfully running (and the nginx).
 
-### Setting up the frontend
+### Deploy Frontend
 
 When deploying a project through Typhoon, we will give you each site access to `TYPHOON_PERSISTENT_DIR` environment variable to a persistent directory.
 
@@ -111,7 +129,9 @@ Then:
 - build image: `docker build -t typhoon-front -f docker/Dockerfile .`
 - start container: `docker-compose up`
 
-# Deploy the backend code
+## How to run the project
+
+### Run Backend
 
 - Build image: (from `./back`) `docker build -t typhoon-back-go .`
 
@@ -120,7 +140,7 @@ Then:
 
 - Open console (for debug): `docker-compose run code bash`
 
-### Env variable files that are loaded
+#### Env variable files that are loaded
 
 | valid `.env` filenames | `GO_ENV=\*` | `GO_ENV=test` |
 | ---------------------- | ----------- | ------------- |
@@ -133,26 +153,33 @@ Notably:
 * `GO_ENV` defaults to `development`, can be `development`, `test`, `production`
 * `.env.local` and `.env.test.local` are not loaded when `GO_ENV=test` since tests should produce the same results for everyone
 
-### Run unit tests for the backend
+#### Run unit tests for the backend
 
 This only applies in development mode.
 
 Once the development backend is running, (also from `./back`), run `docker-compose start typhoon-tests` to rerun the tests. To see the logs, if you run the backend using `docker-compose up`, you will see them in the shell you used to run the backend. If you use `docker-compose up -d`, you can still run `docker-compose logs -f typhoon-tests`
 
-# Deploy the frontend code
+### Run Frontend
 
 - Build image: (from `./front`) `docker build -t typhoon-front -f docker/Dockerfile .`
 - Start: (from `./front/docker`) `docker-compose up`
 
-# Doc
+## Documentation
 
-Oauths:
+#### GitHub API
+
+- [repositories](https://developer.github.com/v3/repos/)
+- [git hooks](https://developer.github.com/v3/repos/hooks/)
+
+#### Oauth
+
+- [Oauth flow](https://oauth2.thephpleague.com/authorization-server/auth-code-grant/)
 - [GitHub](https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/)
 - [ViaRezo](https://auth.viarezo.fr/docs)
 
-# API specification
+## API specification
 
-## Projects management routes
+### Projects management routes
 
 #### Get my projects, or get all projects if I am admin
 
@@ -186,7 +213,7 @@ Oauths:
 - headers: `{ "Authorization: "Bearer <token>" }`
 - return: [`[Project]`](#project)
 
-## Docker management routes
+### Docker management routes
 
 #### Return docker files of project (doesn't write them)
 
@@ -243,7 +270,7 @@ Oauths:
 
 Parameter lines is optional. Default is 30.
 
-## User and Admin management
+### User and Admin management
 
 #### List all users, or all admins
 
@@ -268,7 +295,7 @@ Parameter lines is optional. Default is 30.
 `/admin/user/:id` - **DELETE**
 - return: `user_id`
 
-## Misc.
+### Miscellaneous
 
 #### Check if the server is up
 
@@ -286,7 +313,7 @@ Parameter lines is optional. Default is 30.
 - headers: `{ "Authorization: "Bearer <token>" }`
 - return: `<JWT info>`
 
-## Types
+### Types
 
 #### Container
 
