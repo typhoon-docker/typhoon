@@ -152,67 +152,6 @@ Oauths:
 
 # API specification
 
-## Types
-
-#### Container
-
-```ts
-interface Container {
-  id: string,
-  name: string,
-  status: string, // ex: "Up for 14 min."
-  state: "created" | "restarting" | "running" | "removing" | "paused" | "exited" | "dead",
-}
-```
-
-#### User
-
-```ts
-interface User {
-  id: string,
-  oauth_id: string,
-  login: string,
-  first_name: string,
-  last_name: string,
-  email: string,
-  scope: string,
-}
-```
-
-#### Project
-
-```ts
-interface Project {
-  id: string, // omit on POST
-  name: string,
-  repository_type: string,
-  repository_url: string,
-  repository_token: string,
-  branch: string,
-  external_domain_names: Array<string>,
-  use_https: boolean,
-  template_id: string,
-  docker_image_version: string?,
-  root_folder: string?,
-  exposed_port: int?,
-  system_dependencies: Array<string>,
-  dependency_files: Array<string>,
-  install_script: string?,
-  build_script:string?,
-  start_script: string?,
-  static_folder: string?,
-  databases: Array<{
-    type: "mysql" | "postgres" | "mongo",
-    version: string,
-    env_db: string,
-    env_user: string,
-    env_password: string,
-  }>,
-  env: { [env: string]: string },
-  belongs_to: User, // omit on POST
-}
-```
-
 ## Projects management routes
 
 #### Get my projects, or get all projects if I am admin
@@ -346,3 +285,64 @@ Parameter lines is optional. Default is 30.
 `/showme` - **GET**
 - headers: `{ "Authorization: "Bearer <token>" }`
 - return: `<JWT info>`
+
+## Types
+
+#### Container
+
+```ts
+interface Container {
+  id: string,
+  name: string,
+  status: string, // ex: "Up for 14 min."
+  state: "created" | "restarting" | "running" | "removing" | "paused" | "exited" | "dead",
+}
+```
+
+#### User
+
+```ts
+interface User {
+  id: string,
+  oauth_id: string,
+  login: string,
+  first_name: string,
+  last_name: string,
+  email: string,
+  scope: string,
+}
+```
+
+#### Project
+
+```ts
+interface Project {
+  id: string, // omit on POST
+  name: string,
+  repository_type: string,
+  repository_url: string,
+  repository_token: string,
+  branch: string,
+  external_domain_names: Array<string>,
+  use_https: boolean,
+  template_id: string,
+  docker_image_version: string?,
+  root_folder: string?,
+  exposed_port: int?,
+  system_dependencies: Array<string>,
+  dependency_files: Array<string>,
+  install_script: string?,
+  build_script:string?,
+  start_script: string?,
+  static_folder: string?,
+  databases: Array<{
+    type: "mysql" | "postgres" | "mongo",
+    version: string,
+    env_db: string,
+    env_user: string,
+    env_password: string,
+  }>,
+  env: { [env: string]: string },
+  belongs_to: User, // omit on POST
+}
+```
