@@ -2,6 +2,10 @@
 
 Here is the repository of the Typhoon project. With Typhoon we allow logged in users to deploy their own websites on our infrastructure, on a given domain name, and with HTTPS.
 
+#### Demo
+
+![Demo](./demo.gif)
+
 ## Table of Contents
 
 1. [Project architecture](#project-architecture)
