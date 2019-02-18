@@ -2,12 +2,13 @@
 
 Here is the repository of the Typhoon project. With Typhoon we allow logged in users to deploy their own websites on our infrastructure, on a given domain name, and with HTTPS.
 
-
 ## Project status
 
-Features developped:
+Features developed:
+
 - Github and VR Oauth
 - Deploy a site in a variety of languages / frameworks (see UI)
+- Redeploy a site at each push
 - With DBs: Mongo, MySQL, Postgres
 - Persistent directory for a each project
 - See container logs
@@ -20,16 +21,20 @@ The project is deployed via `docker-compose`. It consists of 3 docker composes:
 
 - One for the back (in Go) + DB (in mongo)
 - One for the front (in React)
-- One for the ngnix proxy (using code from of `https://github.com/jwilder/nginx-proxy` and `https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion`)
+- One for the proxy (using code from of [nginx-proxy](https://github.com/jwilder/nginx-proxy) and a [letsencrypt companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion))
 
-How it works: when one creates a project a new entry is created in the database, with the project parameters that include a bunch of information necessary for deployment (port, environmental variables, and so on). A `Dockerfile` and `docker-compose.yml` are created by parsing a template and filling in the related information from the parameters. Then the docker image is built and the docker-compose is deployed. The nginx proxy will detect a new container with the right environment variables (`VIRTUAL_HOST` and `LETSENCRYPT_HOST`)has been created and will modify its configuration on the fly, thus redirecting the correct domain name to the project deployed.
+### How it works:
+
+When one creates a project a new entry is created in the database, with the project parameters that include a bunch of information necessary for deployment (port, environmental variables, and so on).
+
+A `Dockerfile` and `docker-compose.yml` are created by parsing a template and filling in the related information from the parameters. Then the docker image is built and the docker-compose is deployed.
+
+The nginx proxy will detect a new container with the right environment variables (`VIRTUAL_HOST` and `LETSENCRYPT_HOST`)has been created and will modify its configuration on the fly, thus redirecting the correct domain name to the project deployed.
 
 ## How to deploy the Typhoon project in production
 
-Hallo! Here's how to deploy:
-
-You'll need a machine (preferably debian), and be able to run ansible scripts in that machine.
-Git clone `https://github.com/typhoon-docker/ansible.git`.
+You'll need a machine (preferably debian), and be able to run ansible scripts in that machine. <br>
+Git clone `https://github.com/typhoon-docker/ansible.git`. <br>
 Follow the `README` (and make sure to update `users.yml` in `ansible/roles/setup_users/vars` with your admin's RSA keys).
 
 This will install `docker`, `go`, `oh-my-zsh`, and create the required directories.
@@ -56,16 +61,17 @@ Go to the `back` folder of the typhoon project.
 First, use the `.env.template` to create the `.env` (copy it and add the correct values):
 
 ```
-VIAREZO_CLIENT_ID= # App ID for ViaRezo Oauth
-VIAREZO_CLIENT_SECRET= # App secret for ViaRezo Oauth
-GITHUB_CLIENT_ID=# App ID for Github Oauth
-GITHUB_CLIENT_SECRET=# App secret for Github Oauth
-JWT_SECRET= # To sign you tokens, put a random (long) string
+VIAREZO_CLIENT_ID=client_id # App ID for ViaRezo Oauth
+VIAREZO_CLIENT_SECRET=client_secret # App secret for ViaRezo Oauth
+GITHUB_CLIENT_ID=client_id # App ID for Github Oauth
+GITHUB_CLIENT_SECRET=client_secret # App secret for Github Oauth
+JWT_SECRET=secret # To sign you tokens, put a random (long) string
 ```
 
-Then `cd docker_compose_production`. This contains the production docker-compose yml file.
+Then `cd docker_compose_production`. This contains the production docker-compose yml file. <br>
 You will have to (manually) modify the `docker-compose.yml`. Replace:
-```
+
+```yml
       - VIRTUAL_HOST=typhoon-back.typhoon.viarezo.fr
       - LETSENCRYPT_HOST=typhoon-back.typhoon.viarezo.fr
       - LETSENCRYPT_EMAIL=aymeric.bernard@student.ecp.fr
@@ -87,7 +93,7 @@ When deploying a project through Typhoon, we will give you each site access to `
 
 In a similar fashion, go to the `front` folder from the root. Modify
 
-```
+```yml
       - VIRTUAL_HOST=typhoon.viarezo.fr
       - LETSENCRYPT_HOST=typhoon.viarezo.fr
 ```
@@ -145,12 +151,60 @@ Oauths:
 
 #### Container
 
-```go
-type Container struct {
-	Id     string `json:"id"`
-	Image  string `json:"name"`
-	Status string `json:"status"` // ex: "Up for 14 min."
-	State  string `json:"state"`  // ex: "running"
+```ts
+interface Container {
+  id: string,
+  name: string,
+  status: string, // ex: "Up for 14 min."
+  state: "created" | "restarting" | "running" | "removing" | "paused" | "exited" | "dead"
+}
+```
+
+#### User
+
+```ts
+interface User {
+  id: string,
+  oauth_id: string,
+  login: string,
+  first_name: string,
+  last_name: string,
+  email: string,
+  scope: string,
+}
+```
+
+#### Project
+
+```ts
+interface Project {
+  id: string, // omit on POST
+  name: string,
+  repository_type: string,
+  repository_url: string,
+  repository_token: string,
+  branch: string,
+  external_domain_names: Array<string>,
+  use_https: boolean,
+  template_id: string,
+  docker_image_version: string?,
+  root_folder: string?,
+  exposed_port: int?,
+  system_dependencies: Array<string>,
+  dependency_files: Array<string>,
+  install_script: string?,
+  build_script:string?,
+  start_script: string?,
+  static_folder: string?,
+  databases: Array<{
+    type: "mysql" | "postgres" | "mongo",
+    version: string,
+    env_db: string,
+    env_user: string,
+    env_password: string,
+  }>,
+  env: { [env: string]: string },
+  belongs_to: User // omit on POST,
 }
 ```
 
