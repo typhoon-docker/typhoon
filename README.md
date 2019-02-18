@@ -220,33 +220,33 @@ interface Project {
 #### Get my projects, or get all projects if I am admin
 
 `/projects(?all)` - **GET**
-- headers : `{ "Authorization: "Bearer <token>" }`
+- headers: `{ "Authorization: "Bearer <token>" }`
 - return: [`[Project]`](#project)
 
 #### Get details by project id
 
 `/projects/:id` - **GET**
-- headers : `{ "Authorization: "Bearer <token>" }`
+- headers: `{ "Authorization: "Bearer <token>" }`
 - return: [`Project`](#project)
 
 #### Post a new project (will be added to database but not built)
 
 `/projects` - **POST**
-- headers : `{ "Authorization: "Bearer <token>", "Content-Type": "application/json" }`
+- headers: `{ "Authorization: "Bearer <token>", "Content-Type": "application/json" }`
 - body: [Project](#project)
 - return: [`[Project]`](#project)
 
 #### Update project with new info (full override, id in url and body must match)
 
 `/projects/:id` - **PUT**
-- headers : `{ "Authorization: "Bearer <token>", "Content-Type": "application/json" }`
+- headers: `{ "Authorization: "Bearer <token>", "Content-Type": "application/json" }`
 - body: [Project](#project)
 - return: [`[Project]`](#project)
 
 ### Remove a project by id
 
 `/projects/:id` - **DELETE**
-- headers : `{ "Authorization: "Bearer <token>" }`
+- headers: `{ "Authorization: "Bearer <token>" }`
 - return: [`[Project]`](#project)
 
 ## Docker management
@@ -254,7 +254,7 @@ interface Project {
 #### Return docker files of project (doesn't write them)
 
 `/docker/files/:id` - **GET**
-- headers : `{ "Authorization: "Bearer <token>" }`
+- headers: `{ "Authorization: "Bearer <token>" }`
 - return:
 
 ```
@@ -268,7 +268,7 @@ interface Project {
 #### Clone, build and run project
 
 `/docker/apply/:id` - **POST**
-- headers : `{ "Authorization: "Bearer <token>" }`
+- headers: `{ "Authorization: "Bearer <token>" }`
 - return:
 
 ```
@@ -282,26 +282,26 @@ interface Project {
 #### Run project
 
 `/docker/up/:id` - **POST**
-- headers : `{ "Authorization: "Bearer <token>" }`
+- headers: `{ "Authorization: "Bearer <token>" }`
 - return: `"OK" || <error>`
 
 #### Undeploy project
 
 `/docker/down/:id` - **POST**
-- headers : `{ "Authorization: "Bearer <token>" }`
+- headers: `{ "Authorization: "Bearer <token>" }`
 - return: `"OK" || <error>`
 
 #### Get project status
 
 `/docker/status/:id` - **GET**
-- headers : `{ "Authorization: "Bearer <token>" }`
+- headers: `{ "Authorization: "Bearer <token>" }`
 - return: [`[Container]`](#container)
 
 #### Get logs
 
 `/docker/logs/:id?lines=<lines>` - **GET**
 
-- headers : `{ "Authorization: "Bearer <token>" }`
+- headers: `{ "Authorization: "Bearer <token>" }`
 - return: `raw logs`
 
 Parameter lines is optional. Default is 30.
@@ -311,13 +311,13 @@ Parameter lines is optional. Default is 30.
 #### List all users, or all admins
 
 `/admin/list(?admin)` - **GET**
-- headers : `{ "Authorization: "Bearer <token>" }`
+- headers: `{ "Authorization: "Bearer <token>" }`
 - return: [`[User]`](#user)
 
 #### Change user scope
 
 `/admin/scope/:id?scope=<scope>` - **PUT**
-- headers : `{ "Authorization: "Bearer <token>" }`
+- headers: `{ "Authorization: "Bearer <token>" }`
 - return: `"OK" || <error>`
 
 #### Edit user
@@ -346,5 +346,5 @@ Parameter lines is optional. Default is 30.
 ### See my token info
 
 `/showme` - **GET**
-- headers : `{ "Authorization: "Bearer <token>" }`
+- headers: `{ "Authorization: "Bearer <token>" }`
 - return: `<JWT info>`
