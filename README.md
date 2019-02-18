@@ -152,9 +152,7 @@ Oauths:
 
 # API specification
 
-## Projects management
-
-### Types
+## Types
 
 #### Container
 
@@ -215,7 +213,7 @@ interface Project {
 }
 ```
 
-### Routes
+## Projects management routes
 
 #### Get my projects, or get all projects if I am admin
 
@@ -243,13 +241,13 @@ interface Project {
 - body: [Project](#project)
 - return: [`[Project]`](#project)
 
-### Remove a project by id
+#### Remove a project by id
 
 `/projects/:id` - **DELETE**
 - headers : `{ "Authorization: "Bearer <token>" }`
 - return: [`[Project]`](#project)
 
-## Docker management
+## Docker management routes
 
 #### Return docker files of project (doesn't write them)
 
@@ -333,17 +331,17 @@ Parameter lines is optional. Default is 30.
 
 ## Misc.
 
-### Check if the server is up
+#### Check if the server is up
 
 `/healthCheck` - **GET**
 - return: `"OK"`
 
-### Check if a project has the given name
+#### Check if a project has the given name
 
 `/checkProject?name=<name>` - **GET**
 - return: `true` if project with that name exists, else `false`
 
-### See my token info
+#### See my token info
 
 `/showme` - **GET**
 - headers : `{ "Authorization: "Bearer <token>" }`
