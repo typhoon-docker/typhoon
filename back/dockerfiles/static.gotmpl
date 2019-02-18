@@ -1,0 +1,25 @@
+FROM nginx{{if .DockerImageVersion}}:{{.DockerImageVersion}}{{end}}
+
+RUN mkdir /typhoon
+WORKDIR /typhoon
+
+{{if .SystemDependencies}}RUN apt-get update && apt-get install -y --no-install-recommends \
+    {{range .SystemDependencies}}{{.}} {{end}}\
+    && rm -rf /var/lib/apt/lists/*{{end}}
+
+{{range .DependencyFiles}}COPY {{.}} /typhoon/{{.}}
+{{end}}
+{{if .InstallScript}}RUN {{.InstallScript}}{{end}}
+
+COPY . /usr/share/nginx/html
+
+{{range $key, $val := .Env}}ENV {{$key}} {{$val}}
+{{end}}
+
+{{- if .BuildScript}}
+RUN {{.BuildScript}}
+{{end}}
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
