@@ -1,11 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 
-import hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/highlight';
+import accesslog from 'highlight.js/lib/languages/accesslog';
 
 import { getLogs } from '/utils/typhoonAPI';
 import useAxios from '/utils/useAxios';
 
 import { button, lines, line } from './Logs.css';
+
+hljs.registerLanguage('accesslog', accesslog);
 
 const Logs = ({ projectID }) => {
   const [logs, , refetch] = useAxios(getLogs(projectID), '', [projectID]);
@@ -13,7 +16,9 @@ const Logs = ({ projectID }) => {
 
   useEffect(() => {
     if (logs) {
-      hljs.highlightBlock(ref.current);
+      Array.from(ref.current.children).forEach(el => {
+        hljs.highlightBlock(el);
+      });
     }
   }, [logs]);
 
@@ -32,7 +37,7 @@ const Logs = ({ projectID }) => {
         </button>
       </h2>
       <pre ref={ref} className={lines}>
-        <code className="accesslog">
+        <code>
           {logs
             .trim()
             .split('\n')

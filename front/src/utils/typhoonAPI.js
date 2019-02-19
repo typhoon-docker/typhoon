@@ -82,27 +82,8 @@ export const importMocks = async () => {
   mock.onGet(/\/docker\/logs\/.*/).reply(() => {
     return [
       200,
-      `Donec
-vitae nisi vel
-dolor pretium scelerisque.
-Nulla mollis feugiat neque
-eget convallis. Nulla laoreet urna enim, at
-efficitur libero
-placerat vitae. Suspendisse
-potenti. Quisque sem lacus,
-ultrices sed aliquam et, pellentesque quis
-sapien. Integer nec
-purus mollis, pretium
-lectus id, tincidunt arcu.
-Pellentesque aliquet risus a odio ultrices,
-sed bibendum quam
-venenatis. Fusce elementum
-est viverra, cursus felis ne
-uctus diam. Morbi vestibulum lorem
-non nisl sagittis,
-porttitor lobortis quam
-interdum. Morbi ut sem a leo
-tincidunt tincidunt eu vitae`,
+      `2019-02-19T15:23:01.324798233Z 172.22.0.3 - - [19/Feb/2019:15:23:01 +0000] "GET /src.7c18372e.map HTTP/1.1" 200 2803513 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36" "138.195.247.76"
+2019-02-19T15:23:12.631459136Z 172.22.0.3 - - [19/Feb/2019:15:23:12 +0000] "GET /src.e3e4955e.css HTTP/1.1" 304 0 "https://typhoon.viarezo.fr/project/5c69f587a10f3c0001fb522e" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36" "138.195.247.76"`,
     ];
   });
 };
