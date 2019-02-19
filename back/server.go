@@ -401,7 +401,9 @@ func main() {
 			}
 
 			// Build images
-			if err := BuildImages(&project); err != nil {
+			output, err := BuildImages(&project)
+			dao.UpdateLogsById(project.Id.Hex(), output)
+			if err != nil {
 				log.Println("Could not build: " + err.Error())
 				return c.String(http.StatusInternalServerError, "Could not build: "+err.Error())
 			}

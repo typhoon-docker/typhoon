@@ -96,6 +96,7 @@ func (m *TyphoonDAO) InsertProject(project Project) error {
 
 // Delete an existing project
 func (m *TyphoonDAO) DeleteProject(id string) error {
+	m.DeleteLogs(id)
 	err := db.C("projects").RemoveId(bson.ObjectIdHex(id))
 	return err
 }
@@ -159,5 +160,52 @@ func (m *TyphoonDAO) UpdateUser(user ProjectUser) error {
 // Delete user
 func (m *TyphoonDAO) DeleteUser(id string) error {
 	err := db.C("users").RemoveId(bson.ObjectIdHex(id))
+	return err
+}
+
+//////////////////////////////////
+////////// PROJECT LOGS //////////
+//////////////////////////////////
+
+// Find project logs by its id
+func (m *TyphoonDAO) FindLogsByProjectId(id string) (ProjectLogs, error) {
+	var logs ProjectLogs
+	if id == "" {
+		return logs, errors.New("Trying to find logs by id with empty id!")
+	}
+	err := db.C("logs").FindId(bson.ObjectIdHex(id)).One(&logs)
+	return logs, err
+}
+
+// Insert project logs in the database
+func (m *TyphoonDAO) InsertLogs(logs ProjectLogs) (ProjectLogs, error) {
+	err := db.C("logs").Insert(&logs)
+	return logs, err
+}
+
+// Update existing logs, adding new keys and overriding existing ones
+func (m *TyphoonDAO) UpdateLogs(logs ProjectLogs) (ProjectLogs, error) {
+	oldLogs, err := m.FindLogsByProjectId(logs.Id.Hex())
+	if err == mgo.ErrNotFound {
+		oldLogs = ProjectLogs{Id: logs.Id, Logs: map[string]string{}}
+		m.InsertLogs(oldLogs)
+	} else if err != nil {
+		return oldLogs, err
+	}
+	for nlKey, nlValue := range logs.Logs {
+		oldLogs.Logs[nlKey] = nlValue
+	}
+	err = db.C("logs").UpdateId(logs.Id, &oldLogs)
+	return oldLogs, err
+}
+
+// Update existing logs, adding new keys and overriding existing ones
+func (m *TyphoonDAO) UpdateLogsById(id string, content map[string]string) (ProjectLogs, error) {
+	return m.UpdateLogs(ProjectLogs{Id: bson.ObjectIdHex(id), Logs: content})
+}
+
+// Delete logs
+func (m *TyphoonDAO) DeleteLogs(id string) error {
+	err := db.C("logs").RemoveId(bson.ObjectIdHex(id))
 	return err
 }

@@ -61,7 +61,9 @@ func RoutesDocker(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 		}
 
 		// Build images
-		if err := BuildImages(&project); err != nil {
+		output, err := BuildImages(&project)
+		dao.UpdateLogsById(project.Id.Hex(), output)
+		if err != nil {
 			return c.String(http.StatusInternalServerError, "Could not build: "+err.Error())
 		}
 
@@ -179,5 +181,27 @@ func RoutesDocker(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 
 		// Return output
 		return c.String(http.StatusOK, stdout)
+	})
+
+	// Get logs
+	d.GET("/buildLogs/:id", func(c echo.Context) error {
+		// Parse id and JWT
+		id := c.Param("id")
+		claims := c.Get("user").(*jwt.Token).Claims.(*JwtCustomClaims)
+
+		// Get project if authorized
+		project, err := getProjectIfAuthorized(c, id, claims)
+		if err != nil {
+			return err
+		}
+
+		// Get Logs
+		logs, err := dao.FindLogsByProjectId(project.Id.Hex())
+		if err != nil {
+			return c.String(http.StatusInternalServerError, "Could not check build logs: "+err.Error())
+		}
+
+		// Return output
+		return c.JSON(http.StatusOK, logs)
 	})
 }

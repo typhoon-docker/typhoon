@@ -67,3 +67,8 @@ type JwtCustomClaims struct {
 	Scope     string `json:"scope"`
 	jwt.StandardClaims
 }
+
+type ProjectLogs struct {
+	Id   bson.ObjectId     `bson:"_id,omitempty" json:"id"`
+	Logs map[string]string `bson:"logs" json:"logs"`
+}

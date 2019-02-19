@@ -209,26 +209,34 @@ func FillTemplates(p *Project, write bool) (map[string]string, error) {
 }
 
 // From a project, will write all the templates in files
-func BuildImages(p *Project) error {
+func BuildImages(p *Project) (map[string]string, error) {
+	outputs := map[string]string{}
+
+	// Gather Dockerfile data
 	dockerfileDataA, err := p.DockerfilePaths()
 	if err != nil {
-		return err
+		return outputs, err
 	}
 
 	// Build from Dockerfiles
-	for _, dfd := range dockerfileDataA {
+	for i, dfd := range dockerfileDataA {
 		// Location of the code, from where the Dockerfile is based
 		context := filepath.Join(p.ClonePath(), p.RootFolder)
 
 		// Run command to build. Uses the host's /var/run/docker.sock to build image into host
 		log.Println("Will try to build " + p.Name + " from " + dfd.DockerfilePath + "...")
 		cmd := exec.Command("docker", "build", "-t", p.Name, "-f", dfd.DockerfilePath, context)
-		if err := cmd.Run(); err != nil {
+		out, err := cmd.CombinedOutput()
+		outputs[fmt.Sprintf("dockerfile_%d", i)] = string(out)
+		if err != nil {
 			log.Println("Could not build image: " + err.Error())
-			return err
+			outputs[fmt.Sprintf("error_dockerfile_%d", i)] = err.Error()
+			return outputs, err
+		} else {
+			outputs[fmt.Sprintf("error_dockerfile_%d", i)] = ""
 		}
 	}
-	return nil
+	return outputs, nil
 }
 
 // From a project, will run docker-compose up
