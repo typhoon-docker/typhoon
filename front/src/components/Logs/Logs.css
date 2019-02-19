@@ -17,6 +17,7 @@
   overflow-y: scroll;
   background-color: rgb(var(--atom-one-dark-background));
   padding: 0 1.2em !important;
+  color: white;
   border: 1.2em solid rgb(var(--atom-one-dark-background));
   border-left: none;
   border-right: none;
