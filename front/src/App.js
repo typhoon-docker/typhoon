@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Router } from '@reach/router';
+import 'highlight.js/styles/atom-one-dark.css';
 
 import Home from '/views/Home';
 import Admin from '/views/Admin';

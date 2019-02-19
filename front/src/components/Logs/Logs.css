@@ -10,14 +10,14 @@
 }
 
 .lines {
+  --atom-one-dark-background: 40, 44, 51;
   max-height: 15em;
   white-space: pre-wrap;
   font-family: monospace;
   overflow-y: scroll;
-  background-color: rgb(var(--text));
-  color: white;
-  padding: 0 1.2em;
-  border: 1.2em solid rgb(var(--text));
+  background-color: rgb(var(--atom-one-dark-background));
+  padding: 0 1.2em !important;
+  border: 1.2em solid rgb(var(--atom-one-dark-background));
   border-left: none;
   border-right: none;
   font-size: 0.8em;
