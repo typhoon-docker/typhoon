@@ -265,7 +265,7 @@ Once the development backend is running, (also from `./back`), run `docker-compo
 - headers: `{ "Authorization: "Bearer <token>" }`
 - return: [`[Container]`](#container)
 
-#### Get logs
+#### Get container runtime logs
 
 `/docker/logs/:id?lines=<lines>` - **GET**
 
@@ -273,6 +273,22 @@ Once the development backend is running, (also from `./back`), run `docker-compo
 - return: `raw logs`
 
 Parameter lines is optional. Default is 30.
+
+#### Get docker image build logs
+
+`/docker/buildLogs/:id` - **GET**
+
+- headers: `{ "Authorization: "Bearer <token>" }`
+- return:
+```json
+{
+  "id": "<project_id>",
+  "logs": {
+    "dockerfile_0": "... <stdin+stderr of the `docker build` command>",
+    "error_dockerfile_0": "<error status only if the command failed>"
+  }
+}
+```
 
 ### User and Admin management
 
