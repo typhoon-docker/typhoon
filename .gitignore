@@ -5,7 +5,6 @@ node_modules/
 *.log
 *.exe
 
-.vscode
 .idea/
 *.iml
 

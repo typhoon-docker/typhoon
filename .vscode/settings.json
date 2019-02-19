@@ -1,0 +1,14 @@
+{
+  "files.associations": {
+    "*.sum": "plaintext",
+    "*.template": "plaintext",
+    "*.mod": "plaintext",
+    "*.test": "plaintext",
+    "*.css": "postcss"
+  },
+  "path-autocomplete.pathMappings": {
+    "/": "${folder}/front/src",
+    "$root/": "${folder}/front/src",
+    "~/": "${folder}/front"
+  }
+}
