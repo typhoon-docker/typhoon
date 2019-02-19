@@ -148,11 +148,14 @@ func GetSourceCode(p *Project) error {
 	if !strings.HasSuffix(repoUrl, ".git") {
 		repoUrl = repoUrl + ".git"
 	}
+	if p.RepositoryToken != "" {
+		repoUrl = strings.Replace(repoUrl, "https://", "https://"+p.RepositoryToken+"@", 1)
+	}
 	branch := p.Branch
 	if branch == "" {
 		branch = "master"
 	}
-	cmd := exec.Command("git", "clone", "-b", branch, "--single-branch", "-q", "--depth", "1", "--", strings.Replace(repoUrl, "https://", "https://"+p.RepositoryToken+"@", 1), clonePath)
+	cmd := exec.Command("git", "clone", "-b", branch, "--single-branch", "-q", "--depth", "1", "--", repoUrl, clonePath)
 	cmd.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
 	if err := cmd.Run(); err != nil {
 		log.Println(cmd)
