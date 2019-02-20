@@ -17,6 +17,7 @@ import { newProjectCup } from '/utils/project';
 import { formDataToArray, arrayToJSON } from '/utils/formData';
 import { checkProject, postProject, activateProject } from '/utils/typhoonAPI';
 import { getBranches } from '/utils/githubAPI';
+import globalIgnoreField from '/utils/ignore_fields.json';
 
 import { block, direction } from './New.css';
 
@@ -84,112 +85,115 @@ const New = () => {
       .catch(console.warn);
   };
 
+  const ignoreField = globalIgnoreField[project.template_id] || {};
+
+  const steps = [
+    {
+      name: 'Url',
+      onSubmit: onSubmit({
+        repository_url: Boolean,
+      }),
+      content: <Repositories onSelect={repository => setRepo(repository)} />,
+    },
+    {
+      name: 'Langage',
+      onSubmit: onSubmit(
+        {
+          name: name => checkProject(name).then(({ data }) => data === false),
+          branch: Boolean,
+          template_id: Boolean,
+        },
+        p => ({ ...p, ...template }),
+      ),
+      content: (
+        <>
+          <Input
+            title="Nom du projet"
+            name="name"
+            error={error === 'name'}
+            errorMessage="Ce projet existe déjà, trouve un autre nom 😉"
+            defaultValue={repo ? repo.name : ''}
+            required
+          />
+          <Select
+            title="Sur quelle branche veux-tu que ton projet soit déployé ?"
+            name="branch"
+            error={error === 'branch'}
+            required
+            data={branches.map(({ name }) => ({ value: name }))}
+          />
+          <TemplatePicker onSelect={setTemplate} />
+        </>
+      ),
+    },
+    {
+      name: 'Variables',
+      onSubmit: onSubmit(
+        {
+          exposed_port: value => !value || !Number.isNaN(Number(value)),
+        },
+        ({ external_domain_names, dependency_files, system_dependencies, use_https, exposed_port }) => ({
+          external_domain_names: split(external_domain_names),
+          dependency_files: split(dependency_files),
+          system_dependencies: split(system_dependencies),
+          use_https: use_https === 'https',
+          exposed_port: Number(exposed_port) || null,
+        }),
+      ),
+      content: <Variables project={project} />,
+    },
+    ignoreField.databases
+      ? null
+      : {
+          name: 'Bdd',
+          onSubmit: onSubmit({}, ({ databases }) => ({
+            databases: !databases || Array.isArray(databases) ? [] : Object.values(databases),
+          })),
+          content: <Database />,
+        },
+    {
+      name: 'Environnement',
+      onSubmit: onSubmit({}, null, () =>
+        postProject(project)
+          .then(({ data: { id } }) => activateProject(id))
+          .then(() => setLoading(false)),
+      ),
+      content: <Envs />,
+    },
+    {
+      name: 'Envoyer',
+      content: loading ? 'Ton site va être déployé. Vérifie dans quelques instants' : 'Ton site est déployé',
+    },
+  ].filter(Boolean);
+
   return (
     <Steps step={step}>
-      <Box
-        as="form"
-        className={block}
-        onSubmit={onSubmit({
-          repository_url: Boolean,
-        })}
-      >
-        <Repositories onSelect={repository => setRepo(repository)} />
-        <div className={direction}>
-          <div />
-          <ArrowButton type="submit">Langage</ArrowButton>
-        </div>
-      </Box>
-      <Box
-        as="form"
-        className={block}
-        onSubmit={onSubmit(
-          {
-            name: name => checkProject(name).then(({ data }) => data === false),
-            branch: Boolean,
-            template_id: Boolean,
-          },
-          p => ({ ...p, ...template }),
-        )}
-      >
-        <Input
-          title="Nom du projet"
-          name="name"
-          error={error === 'name'}
-          errorMessage="Ce projet existe déjà, trouve un autre nom 😉"
-          defaultValue={repo ? repo.name : ''}
-          required
-        />
-        <Select
-          title="Sur quelle branche veux-tu que ton projet soit déployé ?"
-          name="branch"
-          error={error === 'branch'}
-          required
-          data={branches.map(({ name }) => ({ value: name }))}
-        />
-        <TemplatePicker onSelect={setTemplate} />
-
-        <div className={direction}>
-          <ArrowButton type="button" onClick={previousStep} direction="previous">
-            Url
-          </ArrowButton>
-          <ArrowButton type="submit">Variables</ArrowButton>
-        </div>
-      </Box>
-      <Box
-        as="form"
-        className={block}
-        onSubmit={onSubmit(
-          {
-            exposed_port: value => !value || !Number.isNaN(Number(value)),
-          },
-          ({ external_domain_names, dependency_files, system_dependencies, use_https, exposed_port }) => ({
-            external_domain_names: split(external_domain_names),
-            dependency_files: split(dependency_files),
-            system_dependencies: split(system_dependencies),
-            use_https: use_https === 'https',
-            exposed_port: Number(exposed_port) || null,
-          }),
-        )}
-      >
-        <Variables project={project} />
-        <div className={direction}>
-          <ArrowButton type="button" onClick={previousStep} direction="previous">
-            Langage
-          </ArrowButton>
-          <ArrowButton type="submit">Bdd</ArrowButton>
-        </div>
-      </Box>
-      <Box
-        as="form"
-        onSubmit={onSubmit({}, ({ databases }) => ({
-          databases: !databases || Array.isArray(databases) ? [] : Object.values(databases),
-        }))}
-      >
-        <Database />
-        <div className={direction}>
-          <ArrowButton type="button" onClick={previousStep} direction="previous">
-            Url
-          </ArrowButton>
-          <ArrowButton type="submit">Variables</ArrowButton>
-        </div>
-      </Box>
-      <Box
-        as="form"
-        onSubmit={onSubmit({}, null, () =>
-          postProject(project)
-            .then(({ data: { id } }) => activateProject(id))
-            .then(() => setLoading(false)),
-        )}
-      >
-        <Envs />
-        <div className={direction}>
-          <ArrowButton type="button" onClick={previousStep} direction="previous">
-            Db
-          </ArrowButton>
-          <ArrowButton type="submit">Valider</ArrowButton>
-        </div>
-      </Box>
-      <Box>{loading ? 'Ton site va être déployé. Vérifie dans quelques instants' : 'Ton site est déployé'}</Box>
+      {steps.map((s, index) => (
+        <Box
+          key={s.name}
+          className={block}
+          {...(s.onSubmit
+            ? {
+                as: 'form',
+                onSubmit: s.onSubmit,
+              }
+            : {})}
+        >
+          {s.content}
+          {index !== steps.length - 1 && (
+            <div className={direction}>
+              {index === 0 ? (
+                <div />
+              ) : (
+                <ArrowButton type="button" onClick={previousStep} direction="previous">
+                  {steps[index - 1].name}
+                </ArrowButton>
+              )}
+              <ArrowButton type="submit">{steps[index + 1].name}</ArrowButton>
+            </div>
+          )}
+        </Box>
+      ))}
     </Steps>
   );
 };
