@@ -1,4 +1,4 @@
-FROM node:{{.DockerImageVersion}}-stretch as builder
+FROM node:{{if .DockerImageVersion}}{{.DockerImageVersion}}{{else}}10.15.1{{end}}-stretch-slim as builder
 
 RUN mkdir /typhoon
 WORKDIR /typhoon

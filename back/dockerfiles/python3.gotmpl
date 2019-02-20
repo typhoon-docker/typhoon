@@ -1,4 +1,4 @@
-FROM python:{{.DockerImageVersion}}-slim
+FROM python:{{if .DockerImageVersion}}{{.DockerImageVersion}}{{else}}3.7.2{{end}}-slim
 
 RUN mkdir /typhoon
 WORKDIR /typhoon

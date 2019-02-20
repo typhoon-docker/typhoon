@@ -1,4 +1,4 @@
-FROM php:{{.DockerImageVersion}}-apache
+FROM php:{{if .DockerImageVersion}}{{.DockerImageVersion}}{{else}}7.3.2{{end}}-apache
 
 WORKDIR /var/www/html
 

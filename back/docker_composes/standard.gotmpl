@@ -27,7 +27,7 @@ services:
 
 {{- if eq .Type "mysql"}}
   mysql:
-    image: mysql{{if .Version}}:{{.Version}}{{end}}
+    image: mysql:{{if .Version}}{{.Version}}{{else}}5.7{{end}}
     container_name: cn_{{$.Name}}_mysql
     restart: always
     networks:
@@ -44,7 +44,7 @@ services:
 
 {{- if eq .Type "postgres"}}
   postgres:
-    image: postgres{{if .Version}}:{{.Version}}{{end}}
+    image: postgres:{{if .Version}}{{.Version}}{{else}}11.2{{end}}
     container_name: cn_{{$.Name}}_postgres
     restart: always
     networks:
@@ -59,7 +59,7 @@ services:
 
 {{- if eq .Type "mongo"}}
   mongo:
-    image: mongo{{if .Version}}:{{.Version}}{{end}}
+    image: mongo:{{if .Version}}{{.Version}}{{else}}4.0{{end}}
     container_name: cn_{{$.Name}}_mongo
     restart: always
     networks:

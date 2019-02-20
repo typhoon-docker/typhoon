@@ -1,4 +1,4 @@
-FROM nginx{{if .DockerImageVersion}}:{{.DockerImageVersion}}{{end}}
+FROM nginx:{{if .DockerImageVersion}}{{.DockerImageVersion}}{{else}}1.15.8{{end}}
 
 RUN mkdir /typhoon
 WORKDIR /typhoon
