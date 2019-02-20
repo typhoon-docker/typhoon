@@ -1,0 +1,29 @@
+{
+  "create-react-app": {},
+  "node": {
+    "static_script": true
+  },
+  "php": {
+    "static_script": true
+  },
+  "python3": {
+    "static_script": true
+  },
+  "wordpress": {
+    "root_folder": true,
+    "system_dependencies": true,
+    "dependency_files": true,
+    "install_script": true,
+    "build_script": true,
+    "start_script": true,
+    "static_folder": true,
+    "exposed_port": true,
+    "databases": true
+  },
+  "static": {
+    "exposed_port": true,
+    "start_script": true,
+    "static_script": true,
+    "databases": true
+  }
+}
