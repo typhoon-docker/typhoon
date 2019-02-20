@@ -19,7 +19,7 @@ import { checkProject, postProject, activateProject } from '/utils/typhoonAPI';
 import { getBranches } from '/utils/githubAPI';
 import globalIgnoreField from '/utils/ignore_fields.json';
 
-import { block, direction } from './New.css';
+import { block, direction, description } from './New.css';
 
 const split = string =>
   (string || '')
@@ -35,6 +35,11 @@ const New = () => {
   const [template, setTemplate] = useState({});
   const [branches, setBranches] = useState([]);
   const [project, setProject] = useInfuser(newProjectCup);
+
+  const setRepository = repository => {
+    setRepo(repository);
+    setProject(p => ({ ...p, name: repository.name }));
+  };
 
   useEffect(() => {
     if (repo) {
@@ -144,7 +149,7 @@ const New = () => {
       onSubmit: onSubmit({
         repository_url: Boolean,
       }),
-      content: <Repositories onSelect={repository => setRepo(repository)} />,
+      content: <Repositories onSelect={repository => setRepository(repository)} />,
     },
     {
       name: 'Langage',
@@ -164,16 +169,13 @@ const New = () => {
             name="name"
             error={error === 'name'}
             errorMessage="Ce projet existe déjà, trouve un autre nom 😉"
+            onChange={event => setProject(p => ({ ...p, name: event.target.value }))}
             defaultValue={repo ? repo.name : ''}
             required
           />
-          <Select
-            title="Sur quelle branche veux-tu que ton projet soit déployé ?"
-            name="branch"
-            error={error === 'branch'}
-            required
-            data={branches.map(({ name }) => ({ value: name }))}
-          />
+          <span className={description}>
+            Ton site sera déployé sur : <b>https://{project.name}.typhoon.viarezo.fr/</b>
+          </span>
           <Input
             title="Autres noms de domaine"
             name="external_domain_names"
@@ -181,6 +183,18 @@ const New = () => {
             agreement="plural"
             defaultValue={project.external_domain_names ? project.external_domain_names.join(',') : ''}
           />
+          <i className={description}>
+            (si tu renseignes d{"'"}autres noms de domaines, penses à faire une redirection DNS de tes noms de domaines
+            sur Typhoon)
+          </i>
+          <Select
+            title="Sur quelle branche veux-tu que ton projet soit déployé ?"
+            name="branch"
+            error={error === 'branch'}
+            required
+            data={branches.map(({ name }) => ({ value: name }))}
+          />
+
           <TemplatePicker onSelect={setTemplate} />
         </>
       ),

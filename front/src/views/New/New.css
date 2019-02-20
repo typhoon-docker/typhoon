@@ -9,3 +9,11 @@
   display: flex;
   justify-content: space-between;
 }
+
+.description {
+  font-size: 0.9em;
+  margin-top: 0;
+  margin-left: 0.8rem;
+  margin-right: 0.8rem;
+  margin-bottom: 1rem;
+}
