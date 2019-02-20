@@ -1,13 +1,17 @@
 {
-  "create-react-app": {},
+  "create-react-app": {
+    "start_script": true,
+    "exposed_port": true,
+    "databases": true
+  },
   "node": {
-    "static_script": true
+    "static_folder": true
   },
   "php": {
-    "static_script": true
+    "static_folder": true
   },
   "python3": {
-    "static_script": true
+    "static_folder": true
   },
   "wordpress": {
     "root_folder": true,
@@ -23,7 +27,7 @@
   "static": {
     "exposed_port": true,
     "start_script": true,
-    "static_script": true,
+    "static_folder": true,
     "databases": true
   }
 }
