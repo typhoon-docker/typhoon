@@ -3,7 +3,6 @@ import { useInfuser } from 'react-manatea';
 import { Redirect } from '@reach/router';
 
 import Repositories from '/containers/Repositories/';
-import Variables from '/containers/Variables/';
 import Database from '/containers/Database/';
 import Envs from '/containers/Envs/';
 
@@ -12,6 +11,7 @@ import Box from '/components/Box/';
 import { Input, Select } from '/components/Input/';
 import ArrowButton from '/components/ArrowButton/';
 import TemplatePicker from '/components/TemplatePicker/';
+import Variables from '/components/Variables/';
 
 import { newProjectCup } from '/utils/project';
 import { formDataToArray, arrayToJSON } from '/utils/formData';
@@ -86,6 +86,57 @@ const New = () => {
   };
 
   const ignoreField = globalIgnoreField[project.template_id] || {};
+  const questions = [
+    {
+      title: 'Dossier contenant le code (monorepo)',
+      name: 'root_folder',
+      placeholder: 'Exemple back',
+      defaultValue: project.root_folder || '',
+    },
+    {
+      title: 'Dépendances systèmes',
+      name: 'system_dependencies',
+      placeholder: 'Exemple : ffmpeg,imagemagick (séparés par une virgule)',
+      agreement: 'plural',
+      defaultValue: project.system_dependencies ? project.system_dependencies.join(',') : '',
+    },
+    {
+      title: 'Fichiers de dépendances',
+      name: 'dependency_files',
+      placeholder: 'Exemple : package.json,yarn.lock (séparés par une virgule)',
+      agreement: 'plural',
+      defaultValue: project.dependency_files ? project.dependency_files.join(',') : '',
+    },
+    {
+      title: "Script d'installation",
+      name: 'install_script',
+      defaultValue: project.install_script || '',
+    },
+    {
+      title: 'Script de build',
+      name: 'build_script',
+      defaultValue: project.build_script || '',
+    },
+    {
+      title: 'Script de run',
+      name: 'start_script',
+      defaultValue: project.start_script || '',
+    },
+    {
+      title: 'Dossier statique',
+      placeholder: 'Exemple images',
+      name: 'static_folder',
+      defaultValue: project.static_folder || '',
+    },
+    {
+      type: 'number',
+      title: "Port d'écoute",
+      name: 'exposed_port',
+      defaultValue: project.exposed_port || '',
+      min: 80,
+      max: 65535,
+    },
+  ].filter(question => !ignoreField[question.name]);
 
   const steps = [
     {
@@ -102,8 +153,9 @@ const New = () => {
           name: name => checkProject(name).then(({ data }) => data === false),
           branch: Boolean,
           template_id: Boolean,
+          external_domain_names: edn => typeof edn === 'string' && !edn.includes('/'),
         },
-        p => ({ ...p, ...template }),
+        p => ({ ...p, ...template, external_domain_names: split(p.external_domain_names) }),
       ),
       content: (
         <>
@@ -122,25 +174,31 @@ const New = () => {
             required
             data={branches.map(({ name }) => ({ value: name }))}
           />
+          <Input
+            title="Autres noms de domaine"
+            name="external_domain_names"
+            placeholder="Exemple : mon-site.fr,www.mon-site.fr (séparés par une virgule, sans https ni / à la fin)"
+            agreement="plural"
+            defaultValue={project.external_domain_names ? project.external_domain_names.join(',') : ''}
+          />
           <TemplatePicker onSelect={setTemplate} />
         </>
       ),
     },
-    {
+    questions.length && {
       name: 'Variables',
       onSubmit: onSubmit(
         {
           exposed_port: value => !value || !Number.isNaN(Number(value)),
         },
-        ({ external_domain_names, dependency_files, system_dependencies, use_https, exposed_port }) => ({
-          external_domain_names: split(external_domain_names),
+        ({ dependency_files, system_dependencies, use_https, exposed_port }) => ({
           dependency_files: split(dependency_files),
           system_dependencies: split(system_dependencies),
           use_https: use_https === 'https',
           exposed_port: Number(exposed_port) || null,
         }),
       ),
-      content: <Variables project={project} />,
+      content: <Variables project={project} questions={questions} />,
     },
     ignoreField.databases
       ? null
