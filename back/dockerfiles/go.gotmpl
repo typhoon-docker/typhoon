@@ -1,0 +1,29 @@
+FROM golang:{{if .DockerImageVersion}}{{.DockerImageVersion}}{{else}}1.11.5{{end}}
+
+RUN mkdir /typhoon
+WORKDIR /typhoon
+
+{{if .SystemDependencies}}RUN apt-get update && apt-get install -y --no-install-recommends \
+    {{range .SystemDependencies}}{{.}} {{end}}\
+    && rm -rf /var/lib/apt/lists/*{{end}}
+
+{{range .DependencyFiles}}COPY {{.}} /typhoon/{{.}}
+{{end}}{{end}}
+{{if .InstallScript}}RUN {{.InstallScript}}{{end}}
+
+COPY . /typhoon
+
+{{range $key, $val := .Env}}ENV {{$key}} {{$val}}
+{{end}}
+
+{{- if .BuildScript}}
+RUN {{.BuildScript}}
+{{end}}
+
+{{- if .ExposedPort}}
+EXPOSE {{.ExposedPort}}
+{{end}}
+
+{{- if .StartScript}}
+CMD {{.StartScript}}
+{{end}}
