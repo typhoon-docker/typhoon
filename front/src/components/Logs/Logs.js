@@ -5,6 +5,7 @@ import accesslog from 'highlight.js/lib/languages/accesslog';
 
 import { getLogs } from '/utils/typhoonAPI';
 import useAxios from '/utils/useAxios';
+import cx from '/utils/className';
 
 import { button, lines, line } from './Logs.css';
 
@@ -36,7 +37,7 @@ const Logs = ({ projectID }) => {
           </span>
         </button>
       </h2>
-      <pre ref={ref} className={lines}>
+      <pre ref={ref} className={cx(lines, 'accesslog')}>
         <code>
           {logs
             .trim()
