@@ -27,7 +27,7 @@ export const importMocks = async () => {
   mock.onGet('/user/repos').reply(200, mockRepos);
 
   // getBranches
-  mock.onGet(/\/repos\/\w+\/\w+\/branches/).reply(200, mockBranches);
+  mock.onGet(/\/repos\/.*\/branches/).reply(200, mockBranches);
 
   // getOrgs
   mock.onGet('/user/orgs').reply(200, mockOrgs);

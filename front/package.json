@@ -12,7 +12,8 @@
     "manatea": "^0.3.4",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
-    "react-manatea": "^0.4.3"
+    "react-manatea": "^0.4.3",
+    "sluggr": "^1.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-0",

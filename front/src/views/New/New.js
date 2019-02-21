@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useInfuser } from 'react-manatea';
 import { Redirect } from '@reach/router';
+import sluggr from 'sluggr';
 
 import Repositories from '/containers/Repositories/';
 import Database from '/containers/Database/';
@@ -21,6 +22,8 @@ import globalIgnoreField from '/utils/ignore_fields.json';
 
 import { block, direction, description } from './New.css';
 
+const slugger = sluggr('-');
+
 const split = string =>
   (string || '')
     .split(',')
@@ -38,7 +41,7 @@ const New = () => {
 
   const setRepository = repository => {
     setRepo(repository);
-    setProject(p => ({ ...p, name: repository.name }));
+    setProject(p => ({ ...p, name: slugger(repository.name) }));
   };
 
   useEffect(() => {
@@ -155,12 +158,12 @@ const New = () => {
       name: 'Langage',
       onSubmit: onSubmit(
         {
-          name: name => checkProject(name).then(({ data }) => data === false),
+          name: name => checkProject(slugger(name)).then(({ data }) => data === false),
           branch: Boolean,
           template_id: Boolean,
           external_domain_names: edn => typeof edn === 'string' && !edn.includes('/'),
         },
-        p => ({ ...p, ...template, external_domain_names: split(p.external_domain_names) }),
+        p => ({ ...p, ...template, external_domain_names: split(p.external_domain_names), name: slugger(p.name) }),
       ),
       content: (
         <>
@@ -169,7 +172,7 @@ const New = () => {
             name="name"
             error={error === 'name'}
             errorMessage="Ce projet existe déjà, trouve un autre nom 😉"
-            onChange={event => setProject(p => ({ ...p, name: event.target.value }))}
+            onChange={event => setProject(p => ({ ...p, name: slugger(event.target.value) }))}
             defaultValue={repo ? repo.name : ''}
             required
           />

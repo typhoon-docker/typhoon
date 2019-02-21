@@ -5834,6 +5834,11 @@ slice-ansi@^2.0.0:
     astral-regex "^1.0.0"
     is-fullwidth-code-point "^2.0.0"
 
+sluggr@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/sluggr/-/sluggr-1.2.1.tgz#6d9613af17111dd22fe9708c32e8b8b2f0b60282"
+  integrity sha512-3VVIycOJy4f4plTePIWBPAy1H/9RH5pcxWa39BlUL61BQVuWf0CWvv4WGJZGqc5REjnXM/0huBuwX0O8VSaBGQ==
+
 snapdragon-node@^2.0.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/snapdragon-node/-/snapdragon-node-2.1.1.tgz#6c175f86ff14bdb0724563e8f3c1b021a286853b"
