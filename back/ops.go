@@ -18,6 +18,11 @@ import (
 	"github.com/docker/docker/pkg/stdcopy"
 )
 
+// The project's host. Used by the docker-compose templates for urls
+func (p *Project) Host() string {
+	return os.Getenv("HOST")
+}
+
 // Find the containers id used by the project
 func FindContainerID(containerImage string) (string, error) {
 	cli, err := client.NewClientWithOpts(client.WithVersion("1.39"))
@@ -180,9 +185,6 @@ func FillTemplates(p *Project, write bool) (map[string]string, error) {
 
 	// Dockerfiles
 	dockerfileDataA, _ := p.DockerfilePaths()
-
-	// add Host to project for template
-	p.Host = os.Getenv("HOST")
 
 	for i, dfd := range dockerfileDataA {
 		if write {
