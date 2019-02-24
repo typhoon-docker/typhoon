@@ -18,6 +18,7 @@ import (
 	"github.com/docker/docker/pkg/stdcopy"
 )
 
+// Find the containers id used by the project
 func FindContainerID(containerImage string) (string, error) {
 	cli, err := client.NewClientWithOpts(client.WithVersion("1.39"))
 	if err != nil {
@@ -40,8 +41,8 @@ func FindContainerID(containerImage string) (string, error) {
 	return "", errors.New("Could not find container")
 }
 
+// Get containers info for the project
 func GetContainerStatus(p *Project) ([]types.Container, error) {
-
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

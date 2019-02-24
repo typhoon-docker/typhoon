@@ -10,5 +10,6 @@
     "/": "${folder}/front/src",
     "$root/": "${folder}/front/src",
     "~/": "${folder}/front"
-  }
+  },
+  "go.inferGopath": false
 }
