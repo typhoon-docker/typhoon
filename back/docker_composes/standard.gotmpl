@@ -9,7 +9,7 @@ services:
       - proxy
       - missile
     volumes:
-      - /typhoon_volumes/{{$.Id.Hex}}/persistent:/persistent
+      - {{.VolumePath}}/persistent:/persistent
     environment:
       - TYPHOON_PERSISTENT_DIR=/persistent
       - VIRTUAL_HOST={{.Name}}.{{.Host}}{{range .ExternalDomainNames}},{{.}}{{end}}
@@ -39,7 +39,7 @@ services:
 {{if .EnvPassword}}      - MYSQL_PASSWORD={{.EnvPassword}}{{end}}
 {{if .EnvPassword}}      - MYSQL_ROOT_PASSWORD={{.EnvPassword}}{{end}}
     volumes:
-      - /typhoon_volumes/{{$.Id.Hex}}/mysql:/var/lib/mysql
+      - {{$.VolumePath}}/mysql:/var/lib/mysql
 {{- end}}
 
 {{- if eq .Type "postgres"}}
@@ -54,7 +54,7 @@ services:
 {{if .EnvUsername}}      - POSTGRES_USER={{.EnvUsername}}{{end}}
 {{if .EnvPassword}}      - POSTGRES_PASSWORD={{.EnvPassword}}{{end}}
     volumes:
-      - /typhoon_volumes/{{$.Id.Hex}}/postgres:/var/lib/postgresql/data
+      - {{$.VolumePath}}/postgres:/var/lib/postgresql/data
 {{- end}}
 
 {{- if eq .Type "mongo"}}
@@ -69,7 +69,7 @@ services:
 {{if .EnvUsername}}      - MONGO_INITDB_ROOT_USERNAME={{.EnvUsername}}{{end}}
 {{if .EnvPassword}}      - MONGO_INITDB_ROOT_PASSWORD={{.EnvPassword}}{{end}}
     volumes:
-      - /typhoon_volumes/{{$.Id.Hex}}/mongo:/data/db
+      - {{$.VolumePath}}/mongo:/data/db
 {{- end}}
 
 {{- end}}

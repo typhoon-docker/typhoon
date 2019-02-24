@@ -179,10 +179,7 @@ func GetSourceCode(p *Project) error {
 
 // From a project, will delete the clone directory
 func CleanSourceCode(p *Project) error {
-	clonePath := p.ClonePath()
-
-	log.Println("Will clean " + clonePath + "...")
-	os.RemoveAll(clonePath)
+	os.RemoveAll(p.ClonePath())
 	return nil
 }
 
@@ -321,4 +318,10 @@ func DockerStatus(p *Project) (string, error) {
 		return "", errors.New("Could run docker-compose ps: " + err.Error())
 	}
 	return string(out), nil
+}
+
+// From a project, will delete the persistent directory
+func CleanVolume(p *Project) error {
+	os.RemoveAll(p.VolumePath())
+	return nil
 }

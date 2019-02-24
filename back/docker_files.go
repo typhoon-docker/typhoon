@@ -92,14 +92,19 @@ func MakeStringAndFile(p interface{}, templateFile string, outputFile string) (s
 	return result, nil
 }
 
+// Get the code clone paths
+func (p *Project) ClonePath() string {
+	return filepath.Join("/typhoon_sites", p.Id.Hex())
+}
+
 // Get the code log path
 func (p *Project) LogPath() string {
 	return filepath.Join("/typhoon_logs", p.Id.Hex())
 }
 
-// Get the code clone paths
-func (p *Project) ClonePath() string {
-	return filepath.Join("/typhoon_sites", p.Id.Hex())
+// Get the project volume path
+func (p *Project) VolumePath() string {
+	return filepath.Join("/typhoon_volumes", p.Id.Hex())
 }
 
 // Get the Dockerfile paths, and if they exist

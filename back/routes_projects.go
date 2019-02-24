@@ -189,7 +189,12 @@ func RoutesProjects(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 		}
 
 		// Docker-compose down (in case the project is still running)
+		log.Println("Will clean everything for project " + project.Id.Hex())
 		DockerDown(&project)
+		CleanSourceCode(&project)
+		CleanDockerFiles(&project)
+		CleanLogs(&project)
+		CleanVolume(&project)
 
 		// Delete project in database
 		if err := dao.DeleteProject(id); err != nil {
