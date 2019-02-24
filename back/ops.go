@@ -135,6 +135,12 @@ func GetLogsByName(p *Project, lines int) (string, error) {
 	return ReadLastLines(p.LogPath(), lines), nil
 }
 
+// Clean the logs of the project
+func CleanLogs(p *Project) error {
+	os.Remove(p.LogPath())
+	return nil
+}
+
 // From a project, will clone or pull the source
 func GetSourceCode(p *Project) error {
 	if p.RepositoryUrl == "" {
@@ -168,6 +174,15 @@ func GetSourceCode(p *Project) error {
 		log.Println("Could not clone: " + err.Error())
 		return err
 	}
+	return nil
+}
+
+// From a project, will delete the clone directory
+func CleanSourceCode(p *Project) error {
+	clonePath := p.ClonePath()
+
+	log.Println("Will clean " + clonePath + "...")
+	os.RemoveAll(clonePath)
 	return nil
 }
 
@@ -209,6 +224,20 @@ func FillTemplates(p *Project, write bool) (map[string]string, error) {
 	}
 
 	return results, nil
+}
+
+// From a project, will clean all docker files
+func CleanDockerFiles(p *Project) error {
+	// Dockerfiles
+	dockerfileDataA, _ := p.DockerfilePaths()
+	for _, dfd := range dockerfileDataA {
+		os.RemoveAll(filepath.Dir(dfd.DockerfilePath))
+	}
+	// docker-compose
+	dfDir, _, _ := p.DockerComposePaths()
+	os.RemoveAll(dfDir)
+
+	return nil
 }
 
 // From a project, will write all the templates in files
