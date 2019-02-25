@@ -357,12 +357,12 @@ func main() {
 
 	e.POST("/hook", func(c echo.Context) error {
 		if c.Request().Header.Get("X-GitHub-Event") != "push" {
-			log.Println("not a push method")
+			log.Println("/hook: not a push method")
 			return c.String(http.StatusInternalServerError, "not a push method")
 		}
 		var gh githubHook
 		if err := c.Bind(&gh); err != nil {
-			log.Println("couldn't bind hook: " + err.Error())
+			log.Println("/hook: couldn't bind hook: " + err.Error())
 			return c.String(http.StatusInternalServerError, "couldn't bind hook: "+err.Error())
 		}
 		h := hook{
@@ -371,32 +371,19 @@ func main() {
 			user:     gh.Repository.Owner.Login,
 		}
 		if h.ref != "refs/heads/master" {
-			log.Println("wrong head: " + h.ref)
+			log.Println("/hook: wrong head: " + h.ref)
 			return c.String(http.StatusInternalServerError, "wrong head")
 		}
-		// if i := strings.Index(h.cloneUrl, "//"); i != -1 {
-		// 	h.cloneUrl = h.cloneUrl[i+len("//"):]
-		// }
-		// dir, err := ioutil.TempDir("", "typhoon-clone")
-		// if err != nil {
-		// 	log.Println(err)
-		// 	return
-		// }
-		// defer os.RemoveAll(dir)
-		// path, err := filepath.Abs(dir)
-		// if err != nil {
-		// 	log.Println(err)
-		// 	return
 
 		projects, _ := dao.FindProjectsByUrl(h.cloneUrl)
-		log.Println(h.cloneUrl)
-		log.Println(projects)
+		log.Println("/hook: Received hook for projects with URL: " + h.cloneUrl)
 
 		for _, project := range projects {
+			log.Println("/hook: Applying changes for project: " + project.Id.Hex())
 
 			// Clone the source code
 			if err := GetSourceCode(&project); err != nil {
-				log.Println("Could not clone: " + err.Error())
+				log.Println("/hook: Could not clone: " + err.Error())
 				return c.String(http.StatusInternalServerError, "Could not clone: "+err.Error())
 			}
 
@@ -404,13 +391,13 @@ func main() {
 			output, err := BuildImages(&project)
 			dao.UpdateLogsById(project.Id.Hex(), output)
 			if err != nil {
-				log.Println("Could not build: " + err.Error())
+				log.Println("/hook: Could not build: " + err.Error())
 				return c.String(http.StatusInternalServerError, "Could not build: "+err.Error())
 			}
 
 			// Docker-compose up
 			if err := DockerUp(&project); err != nil {
-				log.Println("Could not up: " + err.Error())
+				log.Println("/hook: Could not up: " + err.Error())
 				return c.String(http.StatusInternalServerError, "Could not up: "+err.Error())
 			}
 		}
