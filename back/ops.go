@@ -142,9 +142,11 @@ func CleanLogs(p *Project) error {
 }
 
 // From a project, will clone or pull the source
-func GetSourceCode(p *Project) error {
+func GetSourceCode(p *Project) (map[string]string, error) {
+	outputs := map[string]string{}
+
 	if p.RepositoryUrl == "" {
-		return errors.New("RepositoryUrl not specified")
+		return outputs, errors.New("RepositoryUrl not specified")
 	}
 	// Where to clone the code
 	clonePath := p.ClonePath()
@@ -169,12 +171,17 @@ func GetSourceCode(p *Project) error {
 	}
 	cmd := exec.Command("git", "clone", "-b", branch, "--single-branch", "-q", "--depth", "1", "--", repoUrl, clonePath)
 	cmd.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
-	if err := cmd.Run(); err != nil {
+	out, err := cmd.CombinedOutput()
+	outputs["git_clone"] = string(out)
+	if err != nil {
 		log.Println(cmd)
 		log.Println("Could not clone: " + err.Error())
-		return err
+		outputs["error_git_clone"] = err.Error()
+		return outputs, err
+	} else {
+		outputs["error_git_clone"] = ""
 	}
-	return nil
+	return outputs, nil
 }
 
 // From a project, will delete the clone directory

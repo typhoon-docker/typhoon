@@ -382,13 +382,15 @@ func main() {
 			log.Println("/hook: Applying changes for project: " + project.Id.Hex())
 
 			// Clone the source code
-			if err := GetSourceCode(&project); err != nil {
+			output, err := GetSourceCode(&project)
+			dao.UpdateLogsById(project.Id.Hex(), output)
+			if err != nil {
 				log.Println("/hook: Could not clone: " + err.Error())
 				return c.String(http.StatusInternalServerError, "Could not clone: "+err.Error())
 			}
 
 			// Build images
-			output, err := BuildImages(&project)
+			output, err = BuildImages(&project)
 			dao.UpdateLogsById(project.Id.Hex(), output)
 			if err != nil {
 				log.Println("/hook: Could not build: " + err.Error())
@@ -396,7 +398,8 @@ func main() {
 			}
 
 			// Docker-compose up
-			if err := DockerUp(&project); err != nil {
+			err = DockerUp(&project)
+			if err != nil {
 				log.Println("/hook: Could not up: " + err.Error())
 				return c.String(http.StatusInternalServerError, "Could not up: "+err.Error())
 			}

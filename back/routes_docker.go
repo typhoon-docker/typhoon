@@ -50,7 +50,9 @@ func RoutesDocker(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 		}
 
 		// Clone the source code
-		if err := GetSourceCode(&project); err != nil {
+		output, err := GetSourceCode(&project)
+		dao.UpdateLogsById(project.Id.Hex(), output)
+		if err != nil {
 			return c.String(http.StatusInternalServerError, "Could not clone: "+err.Error())
 		}
 
