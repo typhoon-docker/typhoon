@@ -63,7 +63,7 @@ func RoutesDocker(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 		}
 
 		// Build images
-		output, err := BuildImages(&project)
+		output, err = BuildImages(&project)
 		dao.UpdateLogsById(project.Id.Hex(), output)
 		if err != nil {
 			return c.String(http.StatusInternalServerError, "Could not build: "+err.Error())
