@@ -169,7 +169,7 @@ func GetSourceCode(p *Project) (map[string]string, error) {
 	if branch == "" {
 		branch = "master"
 	}
-	cmd := exec.Command("git", "clone", "-b", branch, "--single-branch", "-q", "--depth", "1", "--", repoUrl, clonePath)
+	cmd := exec.Command("git", "clone", "-b", branch, "--single-branch", "--depth", "1", "--", repoUrl, clonePath)
 	cmd.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
 	out, err := cmd.CombinedOutput()
 	outputs["git_clone"] = string(out)
@@ -199,7 +199,7 @@ func FillTemplates(p *Project, write bool) (map[string]string, error) {
 
 	// Results will hold template results, errors, and the project JSON itself
 	ps, err := json.Marshal(p)
-	results := map[string]string{"project": string(ps)}
+	results := map[string]string{"_project": string(ps)}
 	outputFile := ""
 
 	// Dockerfiles
