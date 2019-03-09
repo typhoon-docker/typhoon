@@ -24,6 +24,8 @@ export const importMocks = async () => {
   const mockUser = await import('./mock/user.json');
   const mockProjects = (await import('./mock/projects.json')).map(project => ({ ...project, owner: mockUser }));
   const mockContainers = await import('./mock/containers.json');
+  const mockBuildLogs = await import('./mock/buildLogs.json');
+  const mockDockerFiles = await import('./mock/dockerFiles.json');
 
   // getProjects
   mock.onGet('/projects').reply(200, mockProjects);
@@ -86,6 +88,16 @@ export const importMocks = async () => {
 2019-02-19T15:23:12.631459136Z 172.22.0.3 - - [19/Feb/2019:15:23:12 +0000] "GET /src.e3e4955e.css HTTP/1.1" 304 0 "https://typhoon.viarezo.fr/project/5c69f587a10f3c0001fb522e" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36" "138.195.247.76"`,
     ];
   });
+
+  // getBuildLogs
+  mock.onGet(/\/docker\/buildLogs\/.*/).reply(() => {
+    return [200, mockBuildLogs];
+  });
+
+  // getDockerFiles
+  mock.onGet(/\/docker\/files\/.*/).reply(() => {
+    return [200, mockDockerFiles];
+  });
 };
 
 export const getProjects = () => client.get('/projects');
@@ -101,3 +113,5 @@ export const stopProject = projectID => client.post(`/docker/down/${projectID}`)
 export const statusProject = projectID => client.get(`/docker/status/${projectID}`);
 export const getLogs = (projectID, lines = 150) =>
   client.get(`/docker/logs/${projectID}?lines=${lines}`, { timeout: 1 * 60 * 1000 });
+export const getBuildLogs = projectID => client.get(`/docker/buildLogs/${projectID}`);
+export const getDockerFiles = projectID => client.get(`/docker/files/${projectID}`);

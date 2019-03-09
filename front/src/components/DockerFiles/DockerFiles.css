@@ -1,0 +1,31 @@
+h2 {
+  margin-top: 2em;
+}
+
+h3 {
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+}
+
+.lines {
+  --atom-one-dark-background: 40, 44, 51;
+  max-height: 20em;
+  white-space: pre-wrap;
+  font-family: monospace;
+  overflow-y: scroll;
+  background-color: rgb(var(--atom-one-dark-background));
+  padding: 0 1.2em !important;
+  color: white;
+  border: 1.2em solid rgb(var(--atom-one-dark-background));
+  border-left: none;
+  border-right: none;
+  font-size: 0.8em;
+}
+
+.line {
+  display: block;
+
+  & + & {
+    margin-top: 0.2em;
+  }
+}
