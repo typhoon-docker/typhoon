@@ -42,8 +42,11 @@ const Logs = ({ projectID }) => {
           {logs
             .trim()
             .split('\n')
-            .map(log => (
-              <span className={line}>{log}</span>
+            .map((log, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <span className={line} key={i}>
+                {log}
+              </span>
             ))}
         </code>
       </pre>
