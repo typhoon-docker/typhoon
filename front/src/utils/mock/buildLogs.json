@@ -1,11 +1,8 @@
 {
-    "id": "5c7a86fab2fc8000016777be",
-    "logs": {
-        "dockerfile_0": "Sending build context to Docker daemon  335.9kB\r\r\nStep 1/10 : FROM node:10.15.1-stretch-slim\n ---> 160a29bcf153\nStep 2/10 : RUN mkdir /typhoon\n ---> Using cache\n ---> bb34e5106c87\nStep 3/10 : WORKDIR /typhoon\n ---> Using cache\n ---> fb0504ec4438\nStep 4/10 : ENV PATH /typhoon/node_modules/.bin:$PATH\n ---> Using cache\n ---> 45b3fc0dae5e\nStep 5/10 : COPY package.json /typhoon/package.json\n ---> Using cache\n ---> fcd4076957ed\nStep 6/10 : COPY package-lock.json /typhoon/package-lock.json\n ---> Using cache\n ---> 2905a9377a08\nStep 7/10 : RUN npm install\n ---> Using cache\n ---> 17cedcab0469\nStep 8/10 : COPY . /typhoon\n ---> b7c46c2bad70\nStep 9/10 : EXPOSE 7777\n ---> Running in 8b5a9ad7b51b\nRemoving intermediate container 8b5a9ad7b51b\n ---> 2570b179b63e\nStep 10/10 : CMD npm start\n ---> Running in f1a7eb8d93c3\nRemoving intermediate container f1a7eb8d93c3\n ---> 18ed4727b615\nSuccessfully built 18ed4727b615\nSuccessfully tagged pastebin:latest\n",
-        "error_dockerfile_0": "",
-        "dockerfile_1": "",
-        "error_dockerfile_1": "No dockerfile1 for this mock entry",
-        "error_git_clone": "",
-        "git_clone": ""
-    }
+    "dockerfile_0": "Sending build context to Docker daemon  335.9kB\r\r\nStep 1/10 : FROM node:10.15.1-stretch-slim\n ---> 160a29bcf153\nStep 2/10 : RUN mkdir /typhoon\n ---> Using cache\n ---> bb34e5106c87\nStep 3/10 : WORKDIR /typhoon\n ---> Using cache\n ---> fb0504ec4438\nStep 4/10 : ENV PATH /typhoon/node_modules/.bin:$PATH\n ---> Using cache\n ---> 45b3fc0dae5e\nStep 5/10 : COPY package.json /typhoon/package.json\n ---> Using cache\n ---> fcd4076957ed\nStep 6/10 : COPY package-lock.json /typhoon/package-lock.json\n ---> Using cache\n ---> 2905a9377a08\nStep 7/10 : RUN npm install\n ---> Using cache\n ---> 17cedcab0469\nStep 8/10 : COPY . /typhoon\n ---> b7c46c2bad70\nStep 9/10 : EXPOSE 7777\n ---> Running in 8b5a9ad7b51b\nRemoving intermediate container 8b5a9ad7b51b\n ---> 2570b179b63e\nStep 10/10 : CMD npm start\n ---> Running in f1a7eb8d93c3\nRemoving intermediate container f1a7eb8d93c3\n ---> 18ed4727b615\nSuccessfully built 18ed4727b615\nSuccessfully tagged pastebin:latest\n",
+    "error_dockerfile_0": "",
+    "dockerfile_1": "",
+    "error_dockerfile_1": "No dockerfile1 for this mock entry",
+    "error_git_clone": "",
+    "git_clone": "Git clone output..."
 }

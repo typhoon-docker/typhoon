@@ -1,5 +1,5 @@
 {
     "docker_compose": "version: \"3\"\n\nservices:\n  code:\n    image: pastebin\n    container_name: cn_pastebin\n    restart: always\n    networks:\n      - proxy\n      - missile\n    volumes:\n      - /typhoon_volumes/5c7a86fab2fc8000016777be/persistent:/persistent\n    environment:\n      - TYPHOON_PERSISTENT_DIR=/persistent\n      - VIRTUAL_HOST=pastebin.typhoon.viarezo.fr\n      - LETSENCRYPT_HOST=pastebin.typhoon.viarezo.fr\n      - LETSENCRYPT_EMAIL=aymeric.bernard@student.ecp.fr\n\nnetworks:\n  proxy:\n    external:\n      name: nginx-proxy\n  missile:\n",
     "dockerfile_0": "FROM node:10.15.1-stretch-slim\n\nRUN mkdir /typhoon\nWORKDIR /typhoon\nENV PATH /typhoon/node_modules/.bin:$PATH\n\n\n\nCOPY package.json /typhoon/package.json\nCOPY package-lock.json /typhoon/package-lock.json\nRUN npm install\n\nCOPY . /typhoon\n\n\nEXPOSE 7777\n\nCMD npm start\n\n",
-    "project": "{\"id\":\"nope\",\"name\":\"this should not show up\"}"
+    "_project": "{\"id\":\"nope\",\"name\":\"this should not show up\"}"
 }

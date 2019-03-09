@@ -7,8 +7,7 @@ import useAxios from '/utils/useAxios';
 
 import Box from '/components/Box';
 import Logs from '/components/Logs';
-import BuildLogs from '../../components/BuildLogs/BuildLogs'; // FIXME wtf it does not work like just above
-import DockerFiles from '../../components/DockerFiles/DockerFiles';
+import { BuildLogs, DockerFiles } from '/components/LinesBlocks';
 
 const Project = ({ projectID }) => {
   const [project, setProject] = useAxios(getProject(projectID), {}, [projectID]);
