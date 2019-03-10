@@ -5,16 +5,16 @@ import useAxios from '/utils/useAxios';
 
 import { lbh2, lbh3, block, lines, line } from './LinesBlocks.css';
 
-const OneLinesBlock = (keyName, linesText) => {
-  if (!linesText || keyName.startsWith('_')) {
+const TextBlock = ({ title, text }) => {
+  if (!text || title.startsWith('_')) {
     return null;
   }
   return (
-    <div key={keyName}>
-      <h3 className={lbh3}>{keyName}</h3>
+    <>
+      <h3 className={lbh3}>{title}</h3>
       <div className={block}>
         <pre className={lines}>
-          {linesText
+          {text
             .trim()
             .split('\n')
             .map((lineText, i) => (
@@ -26,27 +26,29 @@ const OneLinesBlock = (keyName, linesText) => {
             ))}
         </pre>
       </div>
-    </div>
+    </>
   );
 };
 
-const LinesBlocks = (linesData, title) => {
+const textMultipleBlocks = (linesData, title) => {
   return (
     <>
       <h2 className={lbh2}>{title}</h2>
-      {Object.keys(linesData).map(keyName => OneLinesBlock(keyName, linesData[keyName]))}
+      {Object.keys(linesData).map(keyName => (
+        <TextBlock key={keyName} title={keyName} text={linesData[keyName]} />
+      ))}
     </>
   );
 };
 
 const BuildLogs = ({ projectID }) => {
   const buildLogsData = useAxios(getBuildLogs(projectID), {}, [projectID])[0];
-  return LinesBlocks(buildLogsData, 'Build Logs');
+  return textMultipleBlocks(buildLogsData, 'Build Logs');
 };
 
 const DockerFiles = ({ projectID }) => {
   const dockerFilesData = useAxios(getDockerFiles(projectID), {}, [projectID])[0];
-  return LinesBlocks(dockerFilesData, 'Docker Files');
+  return textMultipleBlocks(dockerFilesData, 'Docker Files');
 };
 
 export { BuildLogs, DockerFiles };
