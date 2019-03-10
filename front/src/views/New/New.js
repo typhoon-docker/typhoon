@@ -109,7 +109,7 @@ const New = () => {
       defaultValue: project.system_dependencies ? project.system_dependencies.join(',') : '',
     },
     {
-      title: 'Fichiers de dépendances',
+      title: "Fichiers de dépendance (fichiers nécessaires pour le script d'installation)",
       name: 'dependency_files',
       placeholder: 'Exemple : package.json,yarn.lock (séparés par une virgule)',
       agreement: 'plural',
