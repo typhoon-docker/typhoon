@@ -141,7 +141,7 @@ func getHookUrl(p *Project) string {
 	return hookURL
 }
 
-func removeHook(p *Project) error {
+func RemoveHook(p *Project) error {
 	removeHookUrl := getHookUrl(p) + "/" + strconv.Itoa(p.RepositoryHookId)
 	_, err := req.Delete(removeHookUrl, req.Header{"Authorization": "token " + p.RepositoryToken})
 	if err != nil {
@@ -163,7 +163,7 @@ func addHook(p *Project) error {
 
 	// Remove previous hook if there is a previous hook
 	if p.RepositoryHookId != 0 {
-		removeHook(p)
+		RemoveHook(p)
 	}
 
 	// Create new hook
