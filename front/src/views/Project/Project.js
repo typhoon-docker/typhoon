@@ -1,7 +1,7 @@
 import React from 'react';
 import { navigate } from '@reach/router';
 
-import { getProject, putProject, deleteProject } from '/utils/typhoonAPI';
+import { getProject, activateProject, putProject, deleteProject } from '/utils/typhoonAPI';
 
 import useAxios from '/utils/useAxios';
 
@@ -11,6 +11,7 @@ import { BuildLogs, DockerFiles } from '/components/LinesBlocks';
 
 const Project = ({ projectID }) => {
   const [project, setProject] = useAxios(getProject(projectID), {}, [projectID]);
+  // ToDo: Use setProject and putProject to modify the project
 
   const onRedeploy = () => {
     if (window.confirm(`Le projet "${project.name}" va être redéployé`)) {
