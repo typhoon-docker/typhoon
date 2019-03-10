@@ -18,6 +18,7 @@ type Project struct {
 	RepositoryType      string             `bson:"repository_type" json:"repository_type"`
 	RepositoryUrl       string             `bson:"repository_url" json:"repository_url"`
 	RepositoryToken     string             `bson:"repository_token" json:"repository_token,omitempty"`
+	RepositoryHookId    int                `bson:"repository_hook_id" json:"-"`
 	Branch              string             `bson:"branch" json:"branch,omitempty"`
 	ExternalDomainNames []string           `bson:"external_domain_names" json:"external_domain_names"`
 	UseHttps            bool               `bson:"use_https" json:"use_https"`

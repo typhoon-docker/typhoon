@@ -29,6 +29,16 @@ type githubHookCreateConfig struct {
 	ContentType string `json:"content_type"`
 }
 
+// https://developer.github.com/v3/repos/hooks/#response
+type githubHookCreatedResponse struct {
+	Id      int    `json:"id"`
+	Url     string `json:"url"`
+	TestUrl string `json:"test_url"`
+	PingUrl string `json:"ping_url"`
+	Name    string `json:"name"`
+	Active  bool   `json:"active"`
+}
+
 type githubTokenResponse struct {
 	AccessToken string `json:"access_token"`
 	Scope       string `json:"scope"`
@@ -121,9 +131,8 @@ func authorizeURL(rawOauth string) (string, error) {
 	return req.URL.String(), nil
 }
 
-func setToken(user string, token string) {
-	// TODO store into database
-}
+// DAO to access data from the database
+var dao = TyphoonDAO{}
 
 func addHook(p *Project) error {
 	buf, err := json.Marshal(githubHookCreate{
@@ -152,15 +161,17 @@ func addHook(p *Project) error {
 	if err != nil {
 		return err
 	}
+	var hookCreated githubHookCreatedResponse
+	err = res.ToJSON(&hookCreated)
+	p.RepositoryHookId = hookCreated.Id
+	dao.UpdateProject(p)
+
 	log.Println(res)
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
 		return errors.New("add hook: github: http: unexpected status code " + strconv.Itoa(res.StatusCode) + "!")
 	}
 	return nil
 }
-
-// DAO to access data from the database
-var dao = TyphoonDAO{}
 
 func main() {
 	loadEnv()
