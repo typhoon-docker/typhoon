@@ -151,6 +151,22 @@ func addHook(p *Project) error {
 	}
 	hookURL := strings.Replace(repoURL, "github.com", "api.github.com/repos", 1) + "/hooks"
 	log.Println("hook " + hookURL)
+
+	// Remove previous hook if there is a previous hook
+	if p.RepositoryHookId {
+		removeHookUrl := hookURL + "/" + strconv.Itoa(p.RepositoryHookId)
+		r, err := http.NewRequest(http.MethodDelete, removeHookUrl, nil)
+		if err != nil {
+			return err
+		}
+		r.Header.Add("Authorization", "token "+p.RepositoryToken)
+		res, err := http.DefaultClient.Do(r)
+		if err != nil {
+			return err
+		}
+	}
+
+	// Create new hook
 	r, err := http.NewRequest(http.MethodPost, hookURL, bytes.NewBuffer(buf))
 	if err != nil {
 		return err
@@ -161,6 +177,8 @@ func addHook(p *Project) error {
 	if err != nil {
 		return err
 	}
+
+	// Save hook id
 	var hookCreated githubHookCreatedResponse
 	err = res.ToJSON(&hookCreated)
 	p.RepositoryHookId = hookCreated.Id
