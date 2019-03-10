@@ -10,7 +10,6 @@
 }
 
 .lines {
-  --atom-one-dark-background: 40, 44, 51;
   max-height: 15em;
   white-space: pre-wrap;
   font-family: monospace;

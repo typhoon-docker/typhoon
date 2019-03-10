@@ -1,25 +1,24 @@
-h2 {
+.lbh2 {
   margin-top: 2em;
 }
 
-h3 {
+.lbh3 {
   margin-top: 1.2em;
   margin-bottom: 0.5em;
 }
 
 .block {
-  --atom-one-dark-background: 40, 44, 51;
-  background-color: rgb(var(--atom-one-dark-background));
+  --background-color: var(--atom-one-dark-background);
+  background-color: rgb(var(--background-color));
   padding: 1.2em 0;
 }
 
 .lines {
-  --atom-one-dark-background: 40, 44, 51;
   max-height: 25em;
   white-space: pre-wrap;
   font-family: monospace;
   overflow-y: scroll;
-  background-color: rgb(var(--atom-one-dark-background));
+  background-color: rgb(var(--background-color));
   margin: 0;
   padding: 0 1.2em;
   color: #eeeeee;
