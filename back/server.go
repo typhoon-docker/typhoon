@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
@@ -114,66 +112,62 @@ func authorizeURL(rawOauth string) (string, error) {
 		return "", errors.New("oauth: unknown oauth service: " + lowerOauth)
 	}
 
-	req, err := http.NewRequest("GET", service.Authorize, nil)
+	r, err := http.NewRequest("GET", service.Authorize, nil)
 	if err != nil {
 		return "", err
 	}
 
-	query := req.URL.Query()
+	query := r.URL.Query()
 	for param, value := range service.Parameters {
 		query.Add(param, value)
 	}
 	query.Add("redirect_uri", os.Getenv("BACKEND_URL")+"/callback/"+lowerOauth)
 	query.Add("client_id", os.Getenv(upperOauth+"_CLIENT_ID"))
 	query.Add("state", "connection-to-oauth")
-	req.URL.RawQuery = query.Encode()
+	r.URL.RawQuery = query.Encode()
 
-	return req.URL.String(), nil
+	return r.URL.String(), nil
 }
 
 // DAO to access data from the database
 var dao = TyphoonDAO{}
 
-func addHook(p *Project) error {
-	buf, err := json.Marshal(githubHookCreate{
-		Name: "web",
-		Config: githubHookCreateConfig{
-			Url:         os.Getenv("BACKEND_URL") + "/hook",
-			ContentType: "json",
-		},
-	})
-	if err != nil {
-		return err
-	}
+func getHookUrl(p *Project) string {
 	repoURL := p.RepositoryUrl
 	if strings.HasSuffix(repoURL, ".git") {
 		repoURL = strings.TrimSuffix(repoURL, ".git")
 	}
 	hookURL := strings.Replace(repoURL, "github.com", "api.github.com/repos", 1) + "/hooks"
-	log.Println("hook " + hookURL)
+	return hookURL
+}
 
-	// Remove previous hook if there is a previous hook
-	if p.RepositoryHookId {
-		removeHookUrl := hookURL + "/" + strconv.Itoa(p.RepositoryHookId)
-		r, err := http.NewRequest(http.MethodDelete, removeHookUrl, nil)
-		if err != nil {
-			return err
-		}
-		r.Header.Add("Authorization", "token "+p.RepositoryToken)
-		res, err := http.DefaultClient.Do(r)
-		if err != nil {
-			return err
-		}
-	}
-
-	// Create new hook
-	r, err := http.NewRequest(http.MethodPost, hookURL, bytes.NewBuffer(buf))
+func removeHook(p *Project) error {
+	removeHookUrl := getHookUrl(p) + "/" + strconv.Itoa(p.RepositoryHookId)
+	_, err := req.Delete(removeHookUrl, req.Header{"Authorization": "token " + p.RepositoryToken})
 	if err != nil {
 		return err
 	}
-	r.Header.Add("Authorization", "token "+p.RepositoryToken)
-	log.Println(r)
-	res, err := http.DefaultClient.Do(r)
+	return nil
+}
+
+func addHook(p *Project) error {
+	hookCreate := githubHookCreate{
+		Name: "web",
+		Config: githubHookCreateConfig{
+			Url:         os.Getenv("BACKEND_URL") + "/hook",
+			ContentType: "json",
+		},
+	}
+	hookURL := getHookUrl(p)
+	log.Println("hook " + hookURL)
+
+	// Remove previous hook if there is a previous hook
+	if p.RepositoryHookId != 0 {
+		removeHook(p)
+	}
+
+	// Create new hook
+	res, err := req.Post(hookURL, req.Header{"Authorization": "token " + p.RepositoryToken}, req.BodyJSON(&hookCreate))
 	if err != nil {
 		return err
 	}
@@ -182,11 +176,12 @@ func addHook(p *Project) error {
 	var hookCreated githubHookCreatedResponse
 	err = res.ToJSON(&hookCreated)
 	p.RepositoryHookId = hookCreated.Id
-	dao.UpdateProject(p)
+	dao.UpdateProject(*p)
 
 	log.Println(res)
-	if res.StatusCode < 200 || res.StatusCode >= 300 {
-		return errors.New("add hook: github: http: unexpected status code " + strconv.Itoa(res.StatusCode) + "!")
+	resp := res.Response()
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return errors.New("add hook: github: http: unexpected status code " + strconv.Itoa(resp.StatusCode) + "!")
 	}
 	return nil
 }
