@@ -1,0 +1,34 @@
+.lbh2 {
+  margin-top: 2em;
+}
+
+.lbh3 {
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+}
+
+.block {
+  --background-color: var(--atom-one-dark-background);
+  background-color: rgb(var(--background-color));
+  padding: 1.2em 0;
+}
+
+.lines {
+  max-height: 25em;
+  white-space: pre-wrap;
+  font-family: monospace;
+  overflow-y: scroll;
+  background-color: rgb(var(--background-color));
+  margin: 0;
+  padding: 0 1.2em;
+  color: #eeeeee;
+  font-size: 0.8em;
+}
+
+.line {
+  display: block;
+
+  & + & {
+    margin-top: 0.2em;
+  }
+}

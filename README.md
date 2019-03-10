@@ -227,7 +227,7 @@ Once the development backend is running, (also from `./back`), run `docker-compo
 
 ```
 {
-  "project": <project structure>,
+  "_project": <project structure>,
   "dockerfile_0": <dockerfile> || "error_dockerfile_0": <error>,
   "docker_compose": <docker_compose> || "error_docker_compose": <error>
 }
@@ -282,11 +282,8 @@ Parameter lines is optional. Default is 30.
 - return:
 ```json
 {
-  "id": "<project_id>",
-  "logs": {
-    "dockerfile_0": "... <stdin+stderr of the `docker build` command>",
-    "error_dockerfile_0": "<error status only if the command failed>"
-  }
+  "dockerfile_0": "... <stdin+stderr of the `docker build` command>",
+  "error_dockerfile_0": "<error status only if the command failed>"
 }
 ```
 

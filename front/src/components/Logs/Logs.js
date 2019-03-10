@@ -43,7 +43,9 @@ const Logs = ({ projectID }) => {
             .trim()
             .split('\n')
             .map(log => (
-              <span className={line}>{log}</span>
+              <span className={line} key={log}>
+                {log}
+              </span>
             ))}
         </code>
       </pre>

@@ -204,6 +204,6 @@ func RoutesDocker(e *echo.Echo, m echo.MiddlewareFunc, dao TyphoonDAO) {
 		}
 
 		// Return output
-		return c.JSON(http.StatusOK, logs)
+		return c.JSON(http.StatusOK, logs.Logs)
 	})
 }
