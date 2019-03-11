@@ -3,7 +3,7 @@ import { navigate } from '@reach/router';
 
 import { getProject, activateProject, putProject, deleteProject } from '/utils/typhoonAPI';
 
-import useAxios from '/utils/useAxios';
+import { useAxios } from '/utils/hooks';
 
 import Box from '/components/Box';
 import Logs from '/components/Logs';

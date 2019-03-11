@@ -1,6 +1,6 @@
 import React from 'react';
 
-import useProperty from '/utils/useProperty';
+import { useProperty } from '/utils/hooks';
 import { underline, bold } from './Underline.css';
 
 const validStyle = [
@@ -28,9 +28,9 @@ const Underline = ({
   ...props
 }) => {
   const el = useProperty(
-    () => ({
+    {
       '--color': `rgb(var(--${color}))`,
-    }),
+    },
     [color],
   );
 

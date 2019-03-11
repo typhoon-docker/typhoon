@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { statusProject } from '/utils/typhoonAPI';
-import useAxios from '/utils/useAxios';
+import { useAxios } from '/utils/hooks';
 
 import { bubble } from './StatusBubbles.css';
 

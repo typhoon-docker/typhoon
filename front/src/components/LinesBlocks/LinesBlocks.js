@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { getBuildLogs, getDockerFiles } from '/utils/typhoonAPI';
-import useAxios from '/utils/useAxios';
+import { useAxios } from '/utils/hooks';
 
 import { lbh2, lbh3, block, lines, line } from './LinesBlocks.css';
 

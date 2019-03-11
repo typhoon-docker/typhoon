@@ -8,14 +8,14 @@ import { details, summary, content } from './Project.css';
 import { highlightable } from '/styles/highlightable.css';
 
 import cx from '/utils/className';
-import useProperty from '/utils/useProperty';
+import { useProperty } from '/utils/hooks';
 
 const Project = ({ project, onSelect, selected }) => {
   const { id, name, repository_url, template_id } = project;
   const el = useProperty(
-    () => ({
+    {
       '--border-color': `rgb(var(--${template_id}))`,
-    }),
+    },
     [template_id],
   );
 

@@ -1,10 +1,10 @@
 import { useRef, useEffect } from 'react';
 
-const useProperty = (cb, mem) => {
+const useProperty = (object, mem) => {
   const ref = useRef(null);
 
   useEffect(() => {
-    Object.entries(cb()).forEach(([key, value]) => {
+    Object.entries(object).forEach(([key, value]) => {
       ref.current.style.setProperty(key, value);
     });
   }, mem);

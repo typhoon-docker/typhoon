@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { getProjects, getAllProjects } from '/utils/typhoonAPI';
-import useAxios from '/utils/useAxios';
+import { useAxios } from '/utils/hooks';
 
 import Box from '/components/Box/';
 import ArrowButton from '/components/ArrowButton/';
