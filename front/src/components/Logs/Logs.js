@@ -12,7 +12,7 @@ import { button, lines, line } from './Logs.css';
 hljs.registerLanguage('accesslog', accesslog);
 
 const Logs = ({ projectID }) => {
-  const [logs, , refetch] = useAxios(getLogs(projectID), '', [projectID]);
+  const [logs, , refetch] = useAxios(() => getLogs(projectID), '', [projectID]);
   const ref = useRef(null);
 
   useEffect(() => {

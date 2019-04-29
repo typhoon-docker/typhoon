@@ -16,7 +16,7 @@ const colors = {
 };
 
 const StatusBubbles = ({ projectID, ...props }) => {
-  const [containers] = useAxios(statusProject(projectID), [], [projectID]);
+  const [containers] = useAxios(() => statusProject(projectID), [], [projectID]);
 
   return (
     <div {...props}>

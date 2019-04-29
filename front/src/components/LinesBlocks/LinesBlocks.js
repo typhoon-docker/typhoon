@@ -42,12 +42,12 @@ const textMultipleBlocks = (linesData, title) => {
 };
 
 const BuildLogs = ({ projectID }) => {
-  const buildLogsData = useAxios(getBuildLogs(projectID), {}, [projectID])[0];
+  const buildLogsData = useAxios(() => getBuildLogs(projectID), {}, [projectID])[0];
   return textMultipleBlocks(buildLogsData, 'Build Logs');
 };
 
 const DockerFiles = ({ projectID }) => {
-  const dockerFilesData = useAxios(getDockerFiles(projectID), {}, [projectID])[0];
+  const dockerFilesData = useAxios(() => getDockerFiles(projectID), {}, [projectID])[0];
   return textMultipleBlocks(dockerFilesData, 'Docker Files');
 };
 

@@ -10,7 +10,7 @@ import Logs from '/components/Logs';
 import { BuildLogs, DockerFiles } from '/components/LinesBlocks';
 
 const Project = ({ projectID }) => {
-  const [project, setProject] = useAxios(getProject(projectID), {}, [projectID]);
+  const [project, setProject] = useAxios(() => getProject(projectID), {}, [projectID]);
   // ToDo: Use setProject and putProject to modify the project
 
   const onRedeploy = () => {
