@@ -1,0 +1,33 @@
+.container {
+  display: grid;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  grid-template-columns: 15em 3fr 1fr;
+  grid-template-areas:
+    "projects-list project-details env"
+    "projects-list project-details build";
+  grid-column-gap: 1em;
+}
+.projects_list {
+  grid-area: projects-list;
+  background-color: rgb(var(--atom-one-dark-background));
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+.project_item {
+  color: white;
+}
+.project_details {
+  grid-area: project-details;
+  overflow-y: scroll;
+}
+.env_section {
+  grid-area: env;
+}
+.build_section {
+  grid-area: build;
+}

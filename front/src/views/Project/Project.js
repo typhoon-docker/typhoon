@@ -1,16 +1,19 @@
 import React from 'react';
-import { navigate } from '@reach/router';
+import { navigate, Link } from '@reach/router';
 
-import { getProject, activateProject, putProject, deleteProject } from '/utils/typhoonAPI';
+import { getProjects, getProject, activateProject, putProject, deleteProject } from '/utils/typhoonAPI';
 
 import { useAxios } from '/utils/hooks';
 
-import Box from '/components/Box';
+// import Box from '/components/Box';
 import Logs from '/components/Logs';
 import { BuildLogs, DockerFiles } from '/components/LinesBlocks';
 
+import { container, projects_list, project_item, project_details, env_section, build_section } from './Project.css';
+
 const Project = ({ projectID }) => {
   const [project, setProject] = useAxios(() => getProject(projectID), {}, [projectID]);
+  const [projects] = useAxios(() => getProjects(), [], []);
   // ToDo: Use setProject and putProject to modify the project
 
   const onRedeploy = () => {
@@ -26,18 +29,27 @@ const Project = ({ projectID }) => {
   };
 
   return (
-    <Box>
-      <pre>{JSON.stringify(project, null, 2)}</pre>
-      <button type="button" onClick={onRedeploy}>
-        Redéployer
-      </button>
-      <button type="button" onClick={onDelete}>
-        Supprimer
-      </button>
-      <Logs projectID={projectID} />
-      <BuildLogs projectID={projectID} />
-      <DockerFiles projectID={projectID} />
-    </Box>
+    <div className={container}>
+      <div className={projects_list}>
+        {projects.map(p => (
+          <Link key={p.id} to={`/project/${p.id}`}>
+            <div className={project_item}>{p.name}</div>
+          </Link>
+        ))}
+      </div>
+      <div className={project_details}>
+        <pre>{JSON.stringify(project, null, 2)}</pre>
+        <button type="button" onClick={onRedeploy}>
+          Redéployer
+        </button>
+        <button type="button" onClick={onDelete}>
+          Supprimer
+        </button>
+        <Logs projectID={projectID} />
+        <BuildLogs projectID={projectID} />
+        <DockerFiles projectID={projectID} />
+      </div>
+    </div>
   );
 };
 
