@@ -11,5 +11,6 @@
     "$root/": "${folder}/front/src",
     "~/": "${folder}/front"
   },
-  "go.inferGopath": false
+  "go.inferGopath": false,
+  "go.formatTool": "goimports"
 }
