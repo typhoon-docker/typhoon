@@ -1,9 +1,8 @@
-import React from 'react';
+import h from '/utils/h';
 
 import { button } from './Button.css';
 
 import { auto_highlightable as highlightable } from '/styles/highlightable.css';
-import cx from '/utils/className/';
 import { useProperty } from '/utils/hooks';
 
 const Button = ({ color, className: cn, style: s, ...props }) => {
@@ -16,7 +15,13 @@ const Button = ({ color, className: cn, style: s, ...props }) => {
 
   const style = s ? { ...s } : {};
 
-  return <button type="button" {...props} className={cx(button, highlightable, cn)} style={style} ref={ref} />;
+  return h('button', {
+    type: 'button',
+    ...props,
+    className: [button, highlightable, cn],
+    style,
+    ref,
+  });
 };
 
 export default Button;

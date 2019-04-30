@@ -1,8 +1,6 @@
-import React from 'react';
-
 import { button, next, previous } from './ArrowButton.css';
 
-import cx from '/utils/className/';
+import h from '/utils/h';
 import { useProperty } from '/utils/hooks';
 
 const ArrowButton = ({ color = 'tertiary', direction = 'next', className: cn, as = 'button', ...props }) => {
@@ -13,11 +11,11 @@ const ArrowButton = ({ color = 'tertiary', direction = 'next', className: cn, as
     [color],
   );
   const className = [button, direction === 'previous' ? previous : next, cn];
-  return React.createElement(as, {
+  return h(as, {
     ref,
     types: 'button',
     ...props,
-    className: cx(className),
+    className,
   });
 };
 
