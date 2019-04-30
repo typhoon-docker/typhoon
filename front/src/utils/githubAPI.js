@@ -1,19 +1,10 @@
 import axios from 'axios';
+import { shouldMock } from '/utils/env';
 
 import { newProjectCup } from './project';
 import { arrayToJSON } from './formData';
 
 let client;
-
-const updateClient = token => {
-  const config = {
-    baseURL: 'https://api.github.com',
-    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' },
-  };
-  client = axios.create(config);
-};
-newProjectCup.on(({ repository_token }) => updateClient(repository_token));
-updateClient(newProjectCup());
 
 export const importMocks = async () => {
   const MockAdapter = await import('axios-mock-adapter');
@@ -35,6 +26,20 @@ export const importMocks = async () => {
   // getOrgRepos
   mock.onGet('/orgs/orga/repos').reply(200, mockRepos);
 };
+
+const updateClient = async token => {
+  const config = {
+    baseURL: 'https://api.github.com',
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' },
+  };
+  client = axios.create(config);
+  if (shouldMock) {
+    await importMocks();
+  }
+};
+
+newProjectCup.on(({ repository_token }) => updateClient(repository_token));
+updateClient(newProjectCup());
 
 export const getRepos = async (page, admin = true) => {
   const res = await client.get(page ? `/user/repos?page=${page}` : `/user/repos`);

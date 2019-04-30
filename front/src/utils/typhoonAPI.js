@@ -1,18 +1,9 @@
 import axios from 'axios';
+import { shouldMock } from '/utils/env';
 
 import { getRawToken, tokenCup } from './connect';
 
 let client;
-
-const updateClient = token => {
-  const config = {
-    baseURL: process.env.BACKEND_URL,
-    headers: { Authorization: `Bearer ${token}` },
-  };
-  client = axios.create(config);
-};
-tokenCup.on(token => updateClient(token));
-updateClient(getRawToken());
 
 export const importMocks = async () => {
   const [MockAdapter, { default: randomArray }] = await Promise.all([
@@ -99,6 +90,20 @@ export const importMocks = async () => {
     return [200, mockDockerFiles];
   });
 };
+
+const updateClient = async token => {
+  const config = {
+    baseURL: process.env.BACKEND_URL,
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  client = axios.create(config);
+  if (shouldMock) {
+    await importMocks();
+  }
+};
+
+tokenCup.on(token => updateClient(token));
+updateClient(getRawToken());
 
 export const getProjects = () => client.get('/projects');
 export const getAllProjects = () => client.get('/projects?all');
