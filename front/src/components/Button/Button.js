@@ -3,7 +3,7 @@ import React from 'react';
 import { button } from './Button.css';
 
 import { auto_highlightable as highlightable } from '/styles/highlightable.css';
-import cx from '/utils/className';
+import cx from '/utils/className/';
 import { useProperty } from '/utils/hooks';
 
 const Button = ({ color, className: cn, style: s, ...props }) => {

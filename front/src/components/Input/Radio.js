@@ -3,7 +3,7 @@ import React from 'react';
 import { content, radio, auto_check } from './Input.css';
 import { highlightable_ref, highlightable_offset } from '/styles/highlightable.css';
 
-import cx from '/utils/className';
+import cx from '/utils/className/';
 
 const Radio = ({ autoCheck, id, className: cn, children, ...props }) => (
   <>

@@ -5,7 +5,7 @@ import accesslog from 'highlight.js/lib/languages/accesslog';
 
 import { getLogs } from '/utils/typhoonAPI';
 import { useAxios } from '/utils/hooks';
-import cx from '/utils/className';
+import cx from '/utils/className/';
 
 import { button, lines, line } from './Logs.css';
 

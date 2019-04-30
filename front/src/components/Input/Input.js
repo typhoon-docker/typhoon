@@ -6,7 +6,7 @@ import { auto_highlightable as highlightable } from '/styles/highlightable.css';
 
 import Button from '/components/Button';
 
-import cx from '/utils/className';
+import cx from '/utils/className/';
 
 const agreements = agreement => {
   if (agreement === 'plural') {
