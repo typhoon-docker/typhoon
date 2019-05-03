@@ -26,9 +26,8 @@ const Env = ({ value, onChange }) => {
   );
 };
 
-const Envs = ({ defaultEnvs }) => {
+const Envs = () => {
   const [keys, setKeys] = useState(['']);
-  const haveDefaultEnvs = defaultEnvs && Object.keys(defaultEnvs).length;
 
   if (keys.length === keys.filter(Boolean).length) {
     setKeys([...keys, '']);
@@ -39,26 +38,10 @@ const Envs = ({ defaultEnvs }) => {
     dump[index] = value;
     setKeys(dump);
   };
-  return (
-    <>
-      {haveDefaultEnvs && (
-        <>
-          {Object.keys(defaultEnvs).map(defaultEnvName => (
-            <input
-              key={defaultEnvName}
-              type="hidden"
-              name={`env.${defaultEnvName}`}
-              value={defaultEnvs[defaultEnvName]}
-            />
-          ))}
-        </>
-      )}
-      {keys.map((key, index) => (
-        // eslint-disable-next-line
-        <Env key={index} value={key} onChange={onChange(index)} />
-      ))}
-    </>
-  );
+  return keys.map((key, index) => (
+    // eslint-disable-next-line
+    <Env key={index} value={key} onChange={onChange(index)} />
+  ));
 };
 
 export default Envs;

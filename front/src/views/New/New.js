@@ -231,12 +231,15 @@ const New = () => {
         },
     {
       name: 'Environnement',
-      onSubmit: onSubmit({}, null, finalProject =>
-        postProject(finalProject)
-          .then(({ data: { id } }) => activateProject(id))
-          .then(() => setLoading(false)),
+      onSubmit: onSubmit(
+        {},
+        newEnvs => ({ env: { ...newEnvs.env, ...project.env } }),
+        finalProject =>
+          postProject(finalProject)
+            .then(({ data: { id } }) => activateProject(id))
+            .then(() => setLoading(false)),
       ),
-      content: <Envs defaultEnvs={project.env} />,
+      content: <Envs />,
     },
     {
       name: 'Envoyer',
