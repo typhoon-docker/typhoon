@@ -17,9 +17,22 @@
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
+  & > a + a {
+    border-top: 2px solid rgba(120, 120, 120);
+  }
 }
 .project_item {
   color: white;
+  padding-left: 1em;
+  padding-bottom: 1em;
+  padding-top: 1em;
+  text-decoration: none;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  &:global(.active) {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 }
 .project_details {
   grid-area: project-details;

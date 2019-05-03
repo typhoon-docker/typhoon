@@ -32,8 +32,8 @@ const Project = ({ projectID }) => {
     <div className={container}>
       <div className={projects_list}>
         {projects.map(p => (
-          <Link key={p.id} to={`/project/${p.id}`}>
-            <div className={project_item}>{p.name}</div>
+          <Link key={p.id} to={`/project/${p.id}`} className={project_item} $class-active={project.id === p.id}>
+            {p.name}
           </Link>
         ))}
       </div>
