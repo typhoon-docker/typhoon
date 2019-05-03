@@ -1,4 +1,4 @@
-import React from 'react';
+import { createElement } from 'react';
 
 import { useProperty } from '/utils/hooks';
 import { underline, bold } from './Underline.css';
@@ -50,7 +50,7 @@ const Underline = ({
 
   className = className.join(' ');
 
-  return React.createElement(as, {
+  return createElement(as, {
     ...props,
     ref: el,
     className,

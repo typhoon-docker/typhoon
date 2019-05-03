@@ -1,4 +1,4 @@
-import React from 'react';
+import h from '/utils/h';
 
 const AOA = () => <div>Oups</div>;
 

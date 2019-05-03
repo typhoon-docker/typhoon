@@ -1,4 +1,4 @@
-import React from 'react';
+import h from '/utils/h';
 import { navigate, Link } from '@reach/router';
 
 import { getProjects, getProject, activateProject, putProject, deleteProject } from '/utils/typhoonAPI';

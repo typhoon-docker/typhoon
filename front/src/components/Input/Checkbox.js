@@ -1,4 +1,5 @@
-import React from 'react';
+import h from '/utils/h';
+
 import murmur from '@emotion/hash';
 
 import { label, input, error as errorCN } from './Input.css';

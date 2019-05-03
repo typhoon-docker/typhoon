@@ -1,4 +1,6 @@
-import React, { useRef } from 'react';
+import h from '/utils/h';
+
+import { Children, useRef } from 'react';
 
 import injectClassName from '/utils/injectClassName';
 
@@ -19,7 +21,7 @@ const Steps = ({ step = 0, children: c, ...props }) => {
     focEl.focus();
   };
 
-  const children = React.Children.toArray(c);
+  const children = Children.toArray(c);
   const nbChildren = children.length;
   if (nbChildren === 0) {
     return null;

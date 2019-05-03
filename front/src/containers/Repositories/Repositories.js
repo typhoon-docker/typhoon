@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import h from '/utils/h';
+
+import { useState, useEffect } from 'react';
 
 import { getRepos } from '/utils/githubAPI';
 

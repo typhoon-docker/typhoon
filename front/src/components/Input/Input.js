@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import h from '/utils/h';
+
+import { useState } from 'react';
 import murmur from '@emotion/hash';
 
 import { wrapper, label, error as errorCN, input } from './Input.css';

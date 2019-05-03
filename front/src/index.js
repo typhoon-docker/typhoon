@@ -1,4 +1,5 @@
-import React from 'react';
+import h from '/utils/h';
+
 import ReactDOM from 'react-dom';
 import { shouldMock } from '/utils/env';
 import { importMocks as importMocksTyphoon } from '/utils/typhoonAPI';

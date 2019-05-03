@@ -1,4 +1,6 @@
-import React, { Fragment } from 'react';
+import h from '/utils/h';
+
+import { Fragment } from 'react';
 import { Router } from '@reach/router';
 import 'highlight.js/styles/atom-one-dark.css';
 

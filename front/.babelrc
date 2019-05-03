@@ -1,4 +1,12 @@
 {
-  "presets": ["@babel/preset-react"],
+  "presets": [
+    [
+      "@babel/preset-react",
+      {
+        "pragma": "h",
+        "pragmaFrag": "h.Fragment"
+      }
+    ]
+  ],
   "plugins": ["@babel/plugin-transform-runtime"]
 }

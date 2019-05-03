@@ -1,4 +1,4 @@
-import React from 'react';
+import h from '/utils/h';
 
 import { content, radio, auto_check } from './Input.css';
 import { highlightable_ref, highlightable_offset } from '/styles/highlightable.css';

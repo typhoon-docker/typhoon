@@ -1,4 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import h from '/utils/h';
+
+import { useEffect, useRef } from 'react';
 
 import hljs from 'highlight.js/lib/highlight';
 import accesslog from 'highlight.js/lib/languages/accesslog';

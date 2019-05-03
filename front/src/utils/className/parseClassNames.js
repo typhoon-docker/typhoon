@@ -1,4 +1,4 @@
-const classNameRegex = /^class-/;
+const classNameRegex = /^\$class-/;
 
 const parseClassNames = props => {
   const classNames = [];
@@ -6,7 +6,7 @@ const parseClassNames = props => {
   Object.keys(props).forEach(propName => {
     if (propName.match(classNameRegex)) {
       if (props[propName]) {
-        classNames.push(propName.substr(6));
+        classNames.push(propName.substr(7));
       }
     } else {
       newProps[propName] = props[propName];

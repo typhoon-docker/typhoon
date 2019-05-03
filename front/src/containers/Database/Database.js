@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import h from '/utils/h';
+
+import { useState } from 'react';
 
 import { Checkbox, Input } from '/components/Input';
 import list from '/utils/databases.json';

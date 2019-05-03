@@ -13,5 +13,8 @@ module.exports = {
         rootDir: path.resolve(__dirname, 'src'),
       },
     },
+    react: {
+      pragma: 'h',
+    },
   },
 };

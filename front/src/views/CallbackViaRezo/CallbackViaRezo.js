@@ -1,4 +1,5 @@
-import React from 'react';
+import h from '/utils/h';
+
 import { Redirect } from '@reach/router';
 import { saveToken, retrieveLocation } from '/utils/connect';
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import h from '/utils/h';
 
 import { getBuildLogs, getDockerFiles } from '/utils/typhoonAPI';
 import { useAxios } from '/utils/hooks';

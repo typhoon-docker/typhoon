@@ -1,4 +1,5 @@
-import React from 'react';
+import h from '/utils/h';
+
 import { Link } from '@reach/router';
 
 import ArrowButton from '/components/ArrowButton';
