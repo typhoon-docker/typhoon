@@ -82,16 +82,17 @@ const New = () => {
         return array;
       })
       .then(array => array.reduce((acc, isValid, index) => (isValid ? [...acc, newDataArray[index]] : acc), []))
-      .then(array => {
+      .then(array =>
         setProject(p => {
           let newData = arrayToJSON(array);
           newData = { ...newData, ...(transform || (x => x))(newData, p) };
-
           return { ...p, ...newData };
-        });
+        }),
+      )
+      .then(newProject => {
         nextStep();
+        return cb(newProject);
       })
-      .then(cb)
       .catch(console.warn);
   };
 
@@ -230,12 +231,12 @@ const New = () => {
         },
     {
       name: 'Environnement',
-      onSubmit: onSubmit({}, null, () =>
-        postProject(project)
+      onSubmit: onSubmit({}, null, finalProject =>
+        postProject(finalProject)
           .then(({ data: { id } }) => activateProject(id))
           .then(() => setLoading(false)),
       ),
-      content: <Envs />,
+      content: <Envs defaultEnvs={project.env} />,
     },
     {
       name: 'Envoyer',
