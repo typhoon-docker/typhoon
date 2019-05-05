@@ -7,24 +7,29 @@ import { arrayToJSON } from './formData';
 let client;
 
 export const importMocks = async () => {
-  const MockAdapter = await import('axios-mock-adapter');
+  const [MockAdapter, { default: logMock }] = await Promise.all([import('axios-mock-adapter'), import('./mock/log')]);
   const mock = new MockAdapter(client);
 
-  const mockRepos = await import('./mock/repositories.json');
-  const mockBranches = await import('./mock/branches.json');
-  const mockOrgs = await import('./mock/organizations.json');
+  const [mockRepos, mockBranches, mockOrgs] = await Promise.all([
+    import('./mock/repositories.json'),
+    import('./mock/branches.json'),
+    import('./mock/organizations.json'),
+  ]);
 
   // getRepos
-  mock.onGet('/user/repos').reply(200, mockRepos);
+  mock.onGet('/user/repos').reply(logMock(200, mockRepos));
 
   // getBranches
-  mock.onGet(/\/repos\/.*\/branches/).reply(200, mockBranches);
+  mock.onGet(/\/repos\/.*\/branches/).reply(logMock(200, mockBranches));
 
   // getOrgs
-  mock.onGet('/user/orgs').reply(200, mockOrgs);
+  mock.onGet('/user/orgs').reply(logMock(200, mockOrgs));
 
   // getOrgRepos
-  mock.onGet('/orgs/orga/repos').reply(200, mockRepos);
+  mock.onGet('/orgs/orga/repos').reply(logMock(200, mockRepos));
+
+  // Forward non mocked functions
+  mock.onAny().passThrough();
 };
 
 const updateClient = async token => {
