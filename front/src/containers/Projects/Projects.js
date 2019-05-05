@@ -17,7 +17,7 @@ import { title, git_wrapper } from './Projects.css';
 const Projects = ({ all = false }) => {
   const fetchFn = all ? getAllProjects : getProjects;
 
-  const [projects] = useAxios(fetchFn, null, []);
+  const [projects] = useAxios(fetchFn, null, [fetchFn]);
   const [selectedProjects, selectProject] = useState({});
   const [step, setStep] = useState(0);
 
