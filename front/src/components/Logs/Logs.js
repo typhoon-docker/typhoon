@@ -24,13 +24,20 @@ const createRawLogs = logs => {
       span.textContent = log;
       code.appendChild(span);
     });
-  hljs.highlightBlock(code);
   return { __html: code.outerHTML };
 };
 
 const Logs = ({ projectID }) => {
   const [logs, , refetch] = useAxios(() => getLogs(projectID), '', [projectID]);
   const logRef = useRef(null);
+
+  useEffect(() => {
+    if (logs.length && logRef.current.children) {
+      Array.from(logRef.current.children).forEach(el => {
+        hljs.highlightBlock(el);
+      });
+    }
+  }, [logs]);
 
   useEffect(() => {
     logRef.current.scrollTop = logRef.current.scrollHeight;
