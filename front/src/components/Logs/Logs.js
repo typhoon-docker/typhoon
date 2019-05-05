@@ -13,20 +13,27 @@ import { button, lines, line } from './Logs.css';
 
 hljs.registerLanguage('accesslog', accesslog);
 
+const createRawLogs = logs => {
+  const code = document.createElement('code');
+  logs
+    .trim()
+    .split('\n')
+    .forEach(log => {
+      const span = document.createElement('span');
+      span.classList.add(line);
+      span.textContent = log;
+      code.appendChild(span);
+    });
+  hljs.highlightBlock(code);
+  return { __html: code.outerHTML };
+};
+
 const Logs = ({ projectID }) => {
   const [logs, , refetch] = useAxios(() => getLogs(projectID), '', [projectID]);
-  const ref = useRef(null);
+  const logRef = useRef(null);
 
   useEffect(() => {
-    if (logs.length && ref.current.children) {
-      Array.from(ref.current.children).forEach(el => {
-        hljs.highlightBlock(el);
-      });
-    }
-  }, [logs]);
-
-  useEffect(() => {
-    ref.current.scrollTop = ref.current.scrollHeight;
+    logRef.current.scrollTop = logRef.current.scrollHeight;
   }, [logs]);
 
   return (
@@ -39,18 +46,7 @@ const Logs = ({ projectID }) => {
           </span>
         </button>
       </h2>
-      <pre ref={ref} className={cx(lines, 'accesslog')}>
-        <code>
-          {logs
-            .trim()
-            .split('\n')
-            .map(log => (
-              <span className={line} key={log}>
-                {log}
-              </span>
-            ))}
-        </code>
-      </pre>
+      <pre ref={logRef} className={cx(lines, 'accesslog')} dangerouslySetInnerHTML={createRawLogs(logs)} />
     </>
   );
 };
