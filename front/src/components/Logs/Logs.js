@@ -18,7 +18,7 @@ const Logs = ({ projectID }) => {
   const ref = useRef(null);
 
   useEffect(() => {
-    if (logs) {
+    if (logs.length && ref.current.children) {
       Array.from(ref.current.children).forEach(el => {
         hljs.highlightBlock(el);
       });
