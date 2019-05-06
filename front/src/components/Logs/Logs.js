@@ -14,17 +14,14 @@ import { button, lines, line } from './Logs.css';
 hljs.registerLanguage('accesslog', accesslog);
 
 const createRawLogs = logs => {
-  const code = document.createElement('code');
-  logs
+  const html = `<code>${logs
     .trim()
     .split('\n')
-    .forEach(log => {
-      const span = document.createElement('span');
-      span.classList.add(line);
-      span.textContent = log;
-      code.appendChild(span);
-    });
-  return { __html: code.outerHTML };
+    .map(log => {
+      return `<span class="${line}">${log}</span>`;
+    })
+    .join('\n')}</code>`;
+  return { __html: html };
 };
 
 const Logs = ({ projectID }) => {
