@@ -24,10 +24,15 @@ body {
   font-family: "Roboto", sans-serif;
   max-width: 700px;
   overflow-x: hidden;
-  margin: 2em auto;
-  padding: 1em;
   color: rgb(var(--text));
   background-color: #f1f1f1;
+  margin: 2em auto;
+  padding: 1em;
+}
+
+body.full {
+  margin: 0;
+  padding: 0;
 }
 
 * {

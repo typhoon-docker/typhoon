@@ -1,9 +1,6 @@
 .container {
   display: grid;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   grid-template-columns: 15em 3fr 1fr;
   grid-template-areas:
@@ -37,6 +34,7 @@
 .project_details {
   grid-area: project-details;
   overflow-y: scroll;
+  padding-bottom: 1em;
 }
 .env_section {
   grid-area: env;

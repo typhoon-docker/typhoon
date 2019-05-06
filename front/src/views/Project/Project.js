@@ -5,6 +5,8 @@ import { getProjects, getProject, activateProject, putProject, deleteProject } f
 
 import { useAxios } from '/utils/hooks';
 
+import useFullBody from '/utils/useFullBody';
+
 // import Box from '/components/Box';
 import Logs from '/components/Logs';
 import { BuildLogs, DockerFiles } from '/components/LinesBlocks';
@@ -15,6 +17,8 @@ const Project = ({ projectID }) => {
   const [project, setProject] = useAxios(() => getProject(projectID), {}, [projectID]);
   const [projects] = useAxios(() => getProjects(), [], []);
   // ToDo: Use setProject and putProject to modify the project
+
+  useFullBody();
 
   const onRedeploy = () => {
     if (window.confirm(`Le projet "${project.name}" va être redéployé`)) {
